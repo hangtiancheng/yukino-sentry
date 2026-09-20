@@ -1,0 +1,157 @@
+/**
+ * Copyright (c) 2026 hangtiancheng
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import CopyWebpackPlugin from "copy-webpack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+// import { sentryPlugin } from "@yukino.js/sentry/webpack";
+import PageRoutesPlugin from "./plugins/webpack-plugin-page-routes.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const displayNameLoader = resolve(
+  __dirname,
+  "plugins/webpack-loader-react-display-name.js",
+);
+
+// Reuse the vite index.html, stripping the vite-specific module script
+// (webpack injects its own bundles via HtmlWebpackPlugin).
+const htmlTemplate = readFileSync(
+  resolve(__dirname, "index.html"),
+  "utf8",
+).replace(/\s*<script type="module" src="\/src\/main\.tsx"><\/script>/, "");
+
+export default (env, argv) => {
+  const isDev = argv.mode !== "production";
+
+  /** @type {import("webpack").Configuration} */
+  const config = {
+    mode: isDev ? "development" : "production",
+    entry: "./src/main.tsx",
+    // dev: plain source-map so `.map` assets are emitted and the sentry plugin
+    //      can resolve reported errors against them;
+    // build: hidden-source-map keeps maps but omits the sourceMappingURL comment.
+    devtool: isDev ? "source-map" : "hidden-source-map",
+    output: {
+      path: resolve(__dirname, "dist-webpack"),
+      filename: isDev ? "[name].js" : "[name].[contenthash:8].js",
+      sourceMapFilename: ".sourcemaps/[file].map",
+      publicPath: "/",
+      clean: true,
+    },
+    resolve: {
+      extensions: [".tsx", ".ts", ".js"],
+      alias: {
+        "@": resolve(__dirname, "src"),
+      },
+      extensionAlias: {
+        ".js": [".ts", ".tsx", ".js"],
+      },
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx$/,
+          use: [
+            {
+              loader: "esbuild-loader",
+              options: { loader: "tsx", jsx: "automatic", target: "es2020" },
+            },
+            // build-only displayName injection, runs first (right-to-left)
+            // on the raw TSX — mirrors the vite plugin's apply: "build"
+            ...(isDev ? [] : [displayNameLoader]),
+          ],
+        },
+        {
+          test: /\.ts$/,
+          use: [
+            {
+              loader: "esbuild-loader",
+              options: { loader: "ts", target: "es2020" },
+            },
+            ...(isDev ? [] : [displayNameLoader]),
+          ],
+        },
+        {
+          test: /\.css$/,
+          use: [
+            isDev ? "style-loader" : MiniCssExtractPlugin.loader,
+            "css-loader",
+            {
+              loader: "postcss-loader",
+              options: {
+                postcssOptions: { plugins: ["@tailwindcss/postcss"] },
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(svg|png|jpe?g|gif|webp|woff2?)$/,
+          type: "asset",
+        },
+      ],
+    },
+    plugins: [
+      new PageRoutesPlugin(),
+      new HtmlWebpackPlugin({ templateContent: htmlTemplate }),
+      new CopyWebpackPlugin({
+        // vite silently skips a missing publicDir; mirror that here
+        patterns: [{ from: "public", to: ".", noErrorOnMissing: true }],
+      }),
+      ...(isDev
+        ? []
+        : [
+            new MiniCssExtractPlugin({
+              filename: "[name].[contenthash:8].css",
+            }),
+          ]),
+      // SDK reports go to the standalone Koa server via devServer.proxy below
+      // (matching vite.config.ts). Re-enable to mock the endpoint in-process:
+      // ...(env?.WEBPACK_SERVE ? [sentryPlugin({ dsn: "/api/log" })] : []),
+    ],
+  };
+
+  if (env?.WEBPACK_SERVE) {
+    config.devServer = {
+      port: 5174,
+      historyApiFallback: true,
+      client: { overlay: false },
+      // SDK reports (POST/HEAD /api/log), dashboard reads (/api/logs/*) and
+      // the error-seeder's /api + /static probes all go to the standalone
+      // server (`pnpm server`, port 8088), matching the vite dev topology.
+      // Without this, historyApiFallback answers 200 index.html for every
+      // /api request, breaking the dashboard and silencing the 404 seeds.
+      proxy: [
+        {
+          context: ["/api", "/static"],
+          target: "http://localhost:8088",
+          changeOrigin: true,
+        },
+      ],
+    };
+  }
+
+  return config;
+};

@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+/* Class-based dark mode so the toggle (not just the OS) is authoritative. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Custom elements default to display: inline; make them block so Tailwind
+   layout utilities passed via className behave like the divs they replace.
+   Must live in @layer base: unlayered rules outrank every @layer, so an
+   unlayered `display: block` would beat the `grid`/`flex` utilities. */
+@layer base {
+  code-block,
+  enter-effect,
+  loop-effect,
+  scroll-progress,
+  site-navbar,
+  frameworks-section,
+  ui-reveal,
+  ui-reveal-item,
+  ui-reveal-list {
+    display: block;
+    /* As grid/flex items these default to min-width:auto, which lets their
+       max-content blow out the track and clip on narrow viewports (e.g. the
+       hero badge and the frameworks tab bar). Allow them to shrink to the
+       column width instead. */
+    min-width: 0;
+  }
+
+  /* Keyboard focus ring. focus-visible only fires for keyboard navigation, so
+     mouse/touch users never see it. outline (not box-shadow) avoids colliding
+     with the component shadows already on these elements. */
+  :where(a, button, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+}
+
+@theme {
+  --font-sans:
+    "Geist Mono", "Menlo", "Cascadia Code", "PingFang SC", "Microsoft YaHei",
+    monospace;
+  --font-mono:
+    "Geist Mono", "Menlo", "Cascadia Code", "PingFang SC", "Microsoft YaHei",
+    monospace;
+
+  /* Lavender purple brand scale. */
+  --color-brand-50: #f6f3ff;
+  --color-brand-100: #ede6ff;
+  --color-brand-200: #ddd0ff;
+  --color-brand-300: #c3aaff;
+  --color-brand-400: #a57dff;
+  --color-brand-500: #8952f6;
+  --color-brand-600: #7333e4;
+  --color-brand-700: #6126c4;
+  --color-brand-800: #50219f;
+  --color-brand-900: #421d80;
+  --color-brand-950: #291058;
+
+  /* Warm magenta accent that pairs with lavender. */
+  --color-accent-200: #fbd0ff;
+  --color-accent-300: #f4adff;
+  --color-accent-400: #ec86fb;
+  --color-accent-500: #dd5cf0;
+  --color-accent-600: #c93ad8;
+
+  /* Near-black surfaces used by the hero and code panels. */
+  --color-ink-950: #0a0611;
+  --color-ink-900: #110a1e;
+  --color-ink-800: #191031;
+  --color-ink-700: #241645;
+
+  /* Brand-tinted elevation: a hairline ring plus a soft purple cast. */
+  --shadow-glow:
+    0 0 0 1px rgb(137 82 246 / 0.16), 0 18px 60px -18px rgb(115 51 228 / 0.45);
+  --shadow-soft:
+    0 1px 2px rgb(41 16 88 / 0.04), 0 12px 32px -12px rgb(41 16 88 / 0.14);
+  --shadow-card:
+    0 1px 2px rgb(41 16 88 / 0.05), 0 22px 50px -26px rgb(41 16 88 / 0.25);
+
+  --animate-floaty: floaty 7s ease-in-out infinite;
+  --animate-drift: drift 22s ease-in-out infinite;
+  --animate-blink: blink 1.1s step-end infinite;
+
+  @keyframes floaty {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    33% {
+      transform: translate3d(4%, -6%, 0) scale(1.08);
+    }
+    66% {
+      transform: translate3d(-5%, 4%, 0) scale(0.96);
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+/* JS-driven animations consult reducedMotion() themselves (see
+   src/lib/motion.ts); this collapses the CSS-driven ones: drifting glows,
+   floating badges, blinking carets and hover transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

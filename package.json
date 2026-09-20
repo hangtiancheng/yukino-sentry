@@ -1,0 +1,56 @@
+{
+  "name": "yukino-sentry",
+  "version": "0.0.0",
+  "packageManager": "pnpm@12.3.4",
+  "type": "module",
+  "workspaces": [
+    "client",
+    "yukino.js",
+    "sentry",
+    "server"
+  ],
+  "scripts": {
+    "prepare": "husky",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "clean": "rm -rf ./client/logs ./client/dist ./server/logs ./server/dist",
+    "format": "concurrently \"pnpm --filter @yukino.js/sentry format\" \"pnpm --filter docs format\" \"pnpm --filter client format\" \"pnpm --filter server format\"",
+    "typecheck": "concurrently \"pnpm --filter @yukino.js/sentry typecheck\" \"pnpm --filter docs typecheck\" \"pnpm --filter client typecheck\" \"pnpm --filter server typecheck\"",
+    "dev": "pnpm build && concurrently \"pnpm client:dev\" \"pnpm server:dev\"",
+    "dev:webpack": "concurrently \"pnpm client:dev:webpack\" \"pnpm server:dev\"",
+    "build": "pnpm --filter @yukino.js/sentry build && concurrently \"pnpm docs:build\" \"pnpm client:build\" \"pnpm server:build\"",
+    "preview": "concurrently \"pnpm client:preview\" \"pnpm server:dev\"",
+    "preview:webpack": "concurrently \"pnpm client:preview:webpack\" \"pnpm server:dev\"",
+    "docs:dev": "pnpm --filter docs dev",
+    "docs:build": "pnpm --filter docs build",
+    "client:dev": "pnpm --filter client dev",
+    "client:dev:webpack": "pnpm --filter client dev:webpack",
+    "client:build": "pnpm --filter client build",
+    "client:build:webpack": "pnpm --filter client build:webpack",
+    "client:preview": "pnpm --filter client preview",
+    "client:preview:webpack": "pnpm --filter client preview:webpack",
+    "server:dev": "pnpm --filter server dev",
+    "server:build": "pnpm --filter server build",
+    "git:commit": "git add -A && git commit -m \"feat: Introduce new features\"",
+    "git:push": "pnpm git:commit && git push origin main"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^25.9.5",
+    "concurrently": "^10.0.4",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.4",
+    "eslint-plugin-unicorn": "^64.0.0",
+    "globals": "^17.11.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.67.0"
+  },
+  "lint-staged": {
+    "./*.{js,cjs,mjs,jsx,ts,tsx,html,css,scss,json}": [
+      "sh -c 'pnpm format'"
+    ]
+  }
+}

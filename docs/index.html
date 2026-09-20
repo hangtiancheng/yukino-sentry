@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Yukino Sentry is a framework-agnostic browser monitoring SDK for errors, HTTP, Web Vitals, page views, declarative clicks, exposure tracking, white-screen detection, offline reporting and screen recordings."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      property="og:title"
+      content="Yukino Sentry — Frontend observability, five lines away"
+    />
+    <meta
+      property="og:description"
+      content="Catch errors, requests, performance, page views, clicks and sessions from a single, fully typed SDK. React and Vue first-class, zero config."
+    />
+    <title>Yukino Sentry — Frontend observability, five lines away</title>
+    <script>
+      // Applied before first paint so the correct theme class is always present.
+      // Light is the default; only an explicit stored choice enables dark.
+      (function () {
+        try {
+          var stored = localStorage.getItem("yukino-theme");
+          var dark = stored === "dark";
+          if (dark) document.documentElement.classList.add("dark");
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", dark ? "#0a0611" : "#ffffff");
+        } catch (error) {
+          /* ignore */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
