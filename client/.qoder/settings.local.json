@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(ls /Users/hangtiancheng/github/swifty-sentry/client/src && ls /Users/hangtiancheng/github/swifty-sentry/client/src/components 2>/dev/null | head -30)"
-    ]
-  }
-}
