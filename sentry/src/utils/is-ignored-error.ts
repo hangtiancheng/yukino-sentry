@@ -30,5 +30,7 @@ function matchesPattern(value: string, pattern: string | RegExp): boolean {
 }
 
 export default function isIgnoredError(message: string): boolean {
-  return sentry.options.ignoreErrors.some((pattern) => matchesPattern(message, pattern));
+  return sentry.options.ignoreErrors.some((pattern) =>
+    matchesPattern(message, pattern),
+  );
 }

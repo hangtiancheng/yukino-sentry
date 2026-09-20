@@ -41,7 +41,10 @@ import breadcrumb from "./breadcrumb.js";
 import { reportOncePerError } from "./error-dedup.js";
 import { handleCodeError } from "./handle-code-error.js";
 
-export const handleError: TEventHandler<IBaseDataWithEvent> = ({ extra: err, ...rest }) => {
+export const handleError: TEventHandler<IBaseDataWithEvent> = ({
+  extra: err,
+  ...rest
+}) => {
   sentryLogger.error("Error captured", err);
   if (isErrorEvent(err)) {
     if (!isIgnoredError(err.message)) handleCodeError(err);
@@ -80,12 +83,18 @@ function reportResourceError(
     ...resourceError,
     userAction: event2breadcrumb(EventType.Resource),
   });
-  reportOncePerError(`${EventType.Resource}-${localName}-${src || href}`, () => {
-    reporter.send(resourceError);
-  });
+  reportOncePerError(
+    `${EventType.Resource}-${localName}-${src || href}`,
+    () => {
+      reporter.send(resourceError);
+    },
+  );
 }
 
-function reportRuntimeError(err: Error, rest: Omit<IBaseDataWithEvent, "extra">): void {
+function reportRuntimeError(
+  err: Error,
+  rest: Omit<IBaseDataWithEvent, "extra">,
+): void {
   const { name, message, stack } = err;
   if (isIgnoredError(message)) return;
   reportBaseError({
@@ -97,7 +106,10 @@ function reportRuntimeError(err: Error, rest: Omit<IBaseDataWithEvent, "extra">)
   });
 }
 
-function reportUnknownError(err: unknown, rest: Omit<IBaseDataWithEvent, "extra">): void {
+function reportUnknownError(
+  err: unknown,
+  rest: Omit<IBaseDataWithEvent, "extra">,
+): void {
   const message = typeof err === "string" ? err : JSON.stringify(err);
   if (isIgnoredError(message)) return;
   reportBaseError({
@@ -115,7 +127,10 @@ function reportBaseError(data: IBaseDataWithEvent): void {
     ...payload,
     userAction: event2breadcrumb(EventType.Error),
   });
-  reportOncePerError(`${EventType.Error}-${payload.name}-${payload.message}`, () => {
-    reporter.send(payload);
-  });
+  reportOncePerError(
+    `${EventType.Error}-${payload.name}-${payload.message}`,
+    () => {
+      reporter.send(payload);
+    },
+  );
 }

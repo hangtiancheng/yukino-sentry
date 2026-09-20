@@ -32,7 +32,9 @@ export type BeforeSendBatchHook = (
   data: readonly IReportData[],
 ) => Promise<readonly IReportData[] | false> | readonly IReportData[] | false;
 
-export type AfterSendHook = (data: readonly IReportData[]) => Promise<void> | void;
+export type AfterSendHook = (
+  data: readonly IReportData[],
+) => Promise<void> | void;
 
 export type BeforeBreadcrumbHook = (data: IBreadcrumbItem) => IBreadcrumbItem;
 

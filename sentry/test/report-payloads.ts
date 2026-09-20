@@ -20,7 +20,9 @@
  * SOFTWARE.
  */
 
-export function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
+export function isRecord(
+  value: unknown,
+): value is Readonly<Record<string, unknown>> {
   return typeof value === "object" && value !== null;
 }
 

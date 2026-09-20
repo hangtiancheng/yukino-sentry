@@ -179,7 +179,9 @@ async function checkDiskSpace() {
   } catch (err) {
     return {
       status: "warning",
-      error: "Directory not writable, err:" + (err instanceof Error ? err.message : String(err)),
+      error:
+        "Directory not writable, err:" +
+        (err instanceof Error ? err.message : String(err)),
     };
   }
 

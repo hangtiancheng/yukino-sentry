@@ -30,6 +30,8 @@ export function parseServerTiming(value: string | null): readonly string[] {
     .filter((item) => item.length > 0);
 }
 
-export function getServerTimingFromHeaders(headers: Headers | null): readonly string[] {
+export function getServerTimingFromHeaders(
+  headers: Headers | null,
+): readonly string[] {
   return parseServerTiming(headers?.get("server-timing") ?? null);
 }

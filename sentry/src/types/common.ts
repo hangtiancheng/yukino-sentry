@@ -169,7 +169,9 @@ export type TOnReportWhiteScreenData = (data: IBaseDataWithEvent) => void;
 
 export type TOnReportPerformanceData = (data: IPerformanceData) => void;
 
-export interface IReportData<T extends TReportPayload = TReportPayload> extends IReportPayload {
+export interface IReportData<
+  T extends TReportPayload = TReportPayload,
+> extends IReportPayload {
   url: string;
   userId: string;
   anonymousId: string;

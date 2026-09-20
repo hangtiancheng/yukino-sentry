@@ -36,11 +36,14 @@ const excludedInitiatorTypes = new Set(["fetch", "xmlhttprequest", "beacon"]);
 
 function canUsePerformanceEntries(): boolean {
   return (
-    "performance" in globalThis && typeof globalThis.performance.getEntriesByType === "function"
+    "performance" in globalThis &&
+    typeof globalThis.performance.getEntriesByType === "function"
   );
 }
 
-function isResourceTiming(entry: PerformanceEntry): entry is PerformanceResourceTiming {
+function isResourceTiming(
+  entry: PerformanceEntry,
+): entry is PerformanceResourceTiming {
   return entry.entryType === "resource" && "initiatorType" in entry;
 }
 
@@ -49,10 +52,15 @@ export function isSdkReportUrl(url: string): boolean {
 }
 
 function shouldReportResource(entry: PerformanceResourceTiming): boolean {
-  return !excludedInitiatorTypes.has(entry.initiatorType) && !isSdkReportUrl(entry.name);
+  return (
+    !excludedInitiatorTypes.has(entry.initiatorType) &&
+    !isSdkReportUrl(entry.name)
+  );
 }
 
-function toResourceTiming(entry: PerformanceResourceTiming): IPerformanceResourceTiming {
+function toResourceTiming(
+  entry: PerformanceResourceTiming,
+): IPerformanceResourceTiming {
   return {
     name: entry.name,
     initiatorType: entry.initiatorType,
@@ -66,7 +74,9 @@ function toResourceTiming(entry: PerformanceResourceTiming): IPerformanceResourc
   };
 }
 
-export function createResourceTimingData(resource: IPerformanceResourceTiming): IPerformanceData {
+export function createResourceTimingData(
+  resource: IPerformanceResourceTiming,
+): IPerformanceData {
   return {
     ...getBaseData(),
     type: EventType.Performance,

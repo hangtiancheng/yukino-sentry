@@ -20,7 +20,11 @@
  * SOFTWARE.
  */
 
-import { EventType, type IPerformanceData, type TOnReportPerformanceData } from "../../types";
+import {
+  EventType,
+  type IPerformanceData,
+  type TOnReportPerformanceData,
+} from "../../types";
 
 import {
   onCLS,

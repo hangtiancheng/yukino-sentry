@@ -100,7 +100,8 @@ function pubError(): Cleanup {
             ...getBaseData(),
             type: EventType.Error,
             extra:
-              args.find((arg) => arg instanceof Error) ?? args.map(stringifyConsoleArg).join(" "),
+              args.find((arg) => arg instanceof Error) ??
+              args.map(stringifyConsoleArg).join(" "),
           });
         } finally {
           isPublishingConsoleError = false;

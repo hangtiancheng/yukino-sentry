@@ -132,7 +132,9 @@ describe("resource load error classification", () => {
 
     const payloads = sendBeacon.mock.calls
       .flatMap(getPayloads)
-      .filter((payload) => isRecord(payload) && payload.type === EventType.Resource);
+      .filter(
+        (payload) => isRecord(payload) && payload.type === EventType.Resource,
+      );
     expect(payloads).toHaveLength(1);
   });
 });

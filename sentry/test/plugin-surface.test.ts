@@ -25,7 +25,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { DEFAULT_OPTIONS } from "@/constants/index.js";
 import { destroy, enablePlugin } from "@/index.js";
 import ExposurePlugin from "@/plugins/exposure/index.js";
-import ScreenRecordPlugin, { unzipScreenRecord } from "@/plugins/screen-record/index.js";
+import ScreenRecordPlugin, {
+  unzipScreenRecord,
+} from "@/plugins/screen-record/index.js";
 import { EventType, SentryPlugin } from "@/types/index.js";
 import { sentry } from "@/utils/index.js";
 import { FakeIntersectionObserver } from "./fake-intersection-observer.js";
@@ -101,7 +103,10 @@ describe("plugin public surface", () => {
     FakeIntersectionObserver.instances[0]?.emit(target, false);
     await Promise.resolve();
 
-    const payload = findPayload(sendBeacon.mock.calls.flatMap(getPayloads), "Exposure");
+    const payload = findPayload(
+      sendBeacon.mock.calls.flatMap(getPayloads),
+      "Exposure",
+    );
     expect(payload).toMatchObject({
       type: EventType.Exposure,
       extra: {
@@ -127,8 +132,12 @@ describe("plugin public surface", () => {
     ]);
     plugin.unobserve([first, second]);
 
-    expect(FakeIntersectionObserver.instances[0]?.unobserve).toHaveBeenCalledWith(first);
-    expect(FakeIntersectionObserver.instances[0]?.unobserve).toHaveBeenCalledWith(second);
+    expect(
+      FakeIntersectionObserver.instances[0]?.unobserve,
+    ).toHaveBeenCalledWith(first);
+    expect(
+      FakeIntersectionObserver.instances[0]?.unobserve,
+    ).toHaveBeenCalledWith(second);
   });
 
   it("packages a rolling screen record window and exposes a decoder", async () => {
@@ -150,7 +159,10 @@ describe("plugin public surface", () => {
     recordEmit?.({ timestamp: 150, type: 3 }, true);
     await Promise.resolve();
 
-    const payload = findPayload(sendBeacon.mock.calls.flatMap(getPayloads), "ScreenRecord");
+    const payload = findPayload(
+      sendBeacon.mock.calls.flatMap(getPayloads),
+      "ScreenRecord",
+    );
     expect(payload?.eventCount).toBe(2);
     expect(await unzipScreenRecord(String(payload?.event))).toMatchObject([
       { timestamp: 50 },

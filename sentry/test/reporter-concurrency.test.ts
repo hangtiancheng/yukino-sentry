@@ -66,7 +66,10 @@ describe("DataReporter concurrent flush behavior", () => {
     vi.spyOn(navigator, "sendBeacon").mockReturnValue(false);
     const first = createDeferredResponse();
     const second = createDeferredResponse();
-    const fetch = vi.fn().mockReturnValueOnce(first.promise).mockReturnValueOnce(second.promise);
+    const fetch = vi
+      .fn()
+      .mockReturnValueOnce(first.promise)
+      .mockReturnValueOnce(second.promise);
     vi.stubGlobal("fetch", fetch);
     sentry.setOptions({
       ...DEFAULT_OPTIONS,

@@ -46,7 +46,10 @@ describe("lifecycle", () => {
 
     init({ dsn: "/api/log", ...captureDisabled });
 
-    expect(addEventListener).not.toHaveBeenCalledWith("click", expect.any(Function));
+    expect(addEventListener).not.toHaveBeenCalledWith(
+      "click",
+      expect.any(Function),
+    );
   });
 
   it("restores fetch after destroy", () => {

@@ -57,7 +57,11 @@ function sendPageView(page: PageState, immediate: boolean): void {
   );
 }
 
-function sendDwellTime(page: PageState, duration: number, immediate: boolean): void {
+function sendDwellTime(
+  page: PageState,
+  duration: number,
+  immediate: boolean,
+): void {
   if (duration <= minimumDwellTime) {
     return;
   }
@@ -78,7 +82,11 @@ function sendDwellTime(page: PageState, duration: number, immediate: boolean): v
   );
 }
 
-function createPageState(url: string, referrer: string, name: string): PageState {
+function createPageState(
+  url: string,
+  referrer: string,
+  name: string,
+): PageState {
   return {
     url,
     referrer,
@@ -88,11 +96,19 @@ function createPageState(url: string, referrer: string, name: string): PageState
 }
 
 export function initPageView(): void {
-  currentPage = createPageState(getCurrentUrl(), globalThis.document?.referrer ?? "", "PageLoad");
+  currentPage = createPageState(
+    getCurrentUrl(),
+    globalThis.document?.referrer ?? "",
+    "PageLoad",
+  );
   sendPageView(currentPage, true);
 }
 
-export function recordRoutePageView(to: string, from: string, name: string): void {
+export function recordRoutePageView(
+  to: string,
+  from: string,
+  name: string,
+): void {
   const baseUrl = globalThis.location.href;
   const normalizedTo = new URL(to, baseUrl).href;
   const normalizedFrom = new URL(from, baseUrl).href;

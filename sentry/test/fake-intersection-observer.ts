@@ -22,7 +22,9 @@
 
 import { vi } from "vitest";
 
-function normalizeThresholds(threshold: number | readonly number[] | undefined): readonly number[] {
+function normalizeThresholds(
+  threshold: number | readonly number[] | undefined,
+): readonly number[] {
   if (typeof threshold === "number") {
     return [threshold];
   }
@@ -55,11 +57,19 @@ export class FakeIntersectionObserver implements IntersectionObserver {
     return this.records.splice(0);
   }
 
-  emit(target: Element, isIntersecting: boolean, time = performance.now()): void {
+  emit(
+    target: Element,
+    isIntersecting: boolean,
+    time = performance.now(),
+  ): void {
     this.callback([this.createEntry(target, isIntersecting, time)], this);
   }
 
-  queue(target: Element, isIntersecting: boolean, time = performance.now()): void {
+  queue(
+    target: Element,
+    isIntersecting: boolean,
+    time = performance.now(),
+  ): void {
     this.records.push(this.createEntry(target, isIntersecting, time));
   }
 

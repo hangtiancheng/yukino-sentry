@@ -21,7 +21,11 @@
  */
 
 import { Status, EventType } from "../types/index.js";
-import type { AfterSendHook, BeforeSendBatchHook, BeforeSendHook } from "../types/index.js";
+import type {
+  AfterSendHook,
+  BeforeSendBatchHook,
+  BeforeSendHook,
+} from "../types/index.js";
 import { getBaseData, sentry } from "../utils/index.js";
 import { handleError } from "./handlers.js";
 import reporter from "../reporter/index.js";

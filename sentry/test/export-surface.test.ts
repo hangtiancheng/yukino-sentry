@@ -25,7 +25,9 @@ import { describe, expect, it } from "vitest";
 import * as root from "@/index.js";
 import ExposurePlugin from "@/plugins/exposure/index.js";
 import PerformancePlugin from "@/plugins/performance/index.js";
-import ScreenRecordPlugin, { unzipScreenRecord } from "@/plugins/screen-record/index.js";
+import ScreenRecordPlugin, {
+  unzipScreenRecord,
+} from "@/plugins/screen-record/index.js";
 import { ReactErrorBoundary } from "@/react.js";
 import { vuePlugin } from "@/vue.js";
 

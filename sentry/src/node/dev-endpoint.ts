@@ -25,7 +25,12 @@
 
 import { Buffer } from "node:buffer";
 import { join } from "node:path";
-import { createWriteStream, existsSync, mkdirSync, type WriteStream } from "node:fs";
+import {
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  type WriteStream,
+} from "node:fs";
 
 export const DEFAULT_MOCK_DSN = "/sentry";
 
@@ -42,7 +47,11 @@ export interface MockResponse {
   end(body?: string): unknown;
 }
 
-export type MockMiddleware = (req: MockRequest, res: MockResponse, next: () => void) => void;
+export type MockMiddleware = (
+  req: MockRequest,
+  res: MockResponse,
+  next: () => void,
+) => void;
 
 /** Optional per-batch transform, e.g. sourcemap enrichment of error records. */
 export type ReportEnricher = (records: unknown) => Promise<unknown>;

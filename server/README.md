@@ -6,13 +6,13 @@ serves it back to the [dashboard](../client) over a REST + SSE API.
 
 ## Endpoints
 
-| Method | Path               | Description                                                   |
+| Method | Path | Description |
 | ------ | ------------------ | ------------------------------------------------------------- | --------------------------- |
-| `POST` | `/api/log`         | Ingest a batch of reported events.                            |
-| `HEAD` | `/api/log`         | Liveness probe used by the SDK's reporter before a full POST. |
-| `GET`  | `/api/health`      | Health check.                                                 |
-| `GET`  | `/api/logs/files`  | List log files with name, size, mtime, and line count.        |
-| `GET`  | `/api/logs/events` | Read events from a file (`?file=<name                         | all>`), flattened & sorted. |
+| `POST` | `/api/log` | Ingest a batch of reported events. |
+| `HEAD` | `/api/log` | Liveness probe used by the SDK's reporter before a full POST. |
+| `GET` | `/api/health` | Health check. |
+| `GET` | `/api/logs/files` | List log files with name, size, mtime, and line count. |
+| `GET` | `/api/logs/events` | Read events from a file (`?file=<name                         | all>`), flattened & sorted. |
 
 ## Highlights
 

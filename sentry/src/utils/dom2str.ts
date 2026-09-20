@@ -58,8 +58,12 @@ function dom2str(target: HTMLElement): string {
 
     while (current && height++ < MAX_TRAVERSE_HEIGHT) {
       const selector = elementToSelector(current);
-      const nextLength = length + path.length * SEPARATOR.length + selector.length;
-      if (selector === "html" || (height > 1 && nextLength >= MAX_OUTPUT_LENGTH)) {
+      const nextLength =
+        length + path.length * SEPARATOR.length + selector.length;
+      if (
+        selector === "html" ||
+        (height > 1 && nextLength >= MAX_OUTPUT_LENGTH)
+      ) {
         break;
       }
       path.push(selector);

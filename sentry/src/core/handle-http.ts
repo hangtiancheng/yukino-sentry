@@ -20,8 +20,19 @@
  * SOFTWARE.
  */
 
-import { EventType, Status, type IHttpData, type TEventHandler } from "../types";
-import { event2breadcrumb, getBaseData, sentryLogger, sentry, transformHttpData } from "../utils";
+import {
+  EventType,
+  Status,
+  type IHttpData,
+  type TEventHandler,
+} from "../types";
+import {
+  event2breadcrumb,
+  getBaseData,
+  sentryLogger,
+  sentry,
+  transformHttpData,
+} from "../utils";
 import reporter from "../reporter";
 import breadcrumb from "./breadcrumb.js";
 

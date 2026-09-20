@@ -47,7 +47,9 @@ function httpData(timestamp: number): IHttpData {
   };
 }
 
-function getReports(calls: readonly (readonly unknown[])[]): Readonly<Record<string, unknown>>[] {
+function getReports(
+  calls: readonly (readonly unknown[])[],
+): Readonly<Record<string, unknown>>[] {
   return calls.flatMap((call) => {
     const body = call[1];
     if (typeof body !== "string") return [];

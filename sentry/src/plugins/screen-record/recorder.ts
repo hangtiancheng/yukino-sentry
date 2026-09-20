@@ -20,7 +20,11 @@
  * SOFTWARE.
  */
 
-import { EventType, type IDataReporter, type IScreenRecordData } from "../../types";
+import {
+  EventType,
+  type IDataReporter,
+  type IScreenRecordData,
+} from "../../types";
 
 import { dom2str, getBaseData, noop, sentry, sentryLogger } from "../../utils";
 import type { Cleanup } from "../../utils/decorate-prop.js";
@@ -51,14 +55,21 @@ function base64ToBytes(value: string): Uint8Array {
 export async function recorder(reporter: IDataReporter): Promise<Cleanup> {
   sentryLogger.info("Initializing web recorder...");
   try {
-    const [{ record }, pako] = await Promise.all([import("@rrweb/record"), import("pako")]);
+    const [{ record }, pako] = await Promise.all([
+      import("@rrweb/record"),
+      import("pako"),
+    ]);
 
     pakoInstance = pako.default;
     const recordWindow: RecordEvent[] = [];
 
     const pruneWindow = (currentTimestamp: number) => {
-      const minTimestamp = currentTimestamp - sentry.options.screenRecordDurationMs;
-      while (recordWindow.length > 0 && recordWindow[0].timestamp < minTimestamp) {
+      const minTimestamp =
+        currentTimestamp - sentry.options.screenRecordDurationMs;
+      while (
+        recordWindow.length > 0 &&
+        recordWindow[0].timestamp < minTimestamp
+      ) {
         recordWindow.shift();
       }
     };

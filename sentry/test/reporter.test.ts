@@ -80,7 +80,9 @@ describe("DataReporter", () => {
   });
 
   it("falls back to fetch when beacon fails even for small batches", async () => {
-    const fetch = vi.fn(() => Promise.resolve(new Response(null, { status: 204 })));
+    const fetch = vi.fn(() =>
+      Promise.resolve(new Response(null, { status: 204 })),
+    );
     vi.spyOn(navigator, "sendBeacon").mockReturnValue(false);
     vi.stubGlobal("fetch", fetch);
     sentry.setOptions({

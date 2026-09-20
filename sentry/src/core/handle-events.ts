@@ -20,8 +20,18 @@
  * SOFTWARE.
  */
 
-import { EventType, Status, type IBaseDataWithEvent, type TEventHandler } from "../types";
-import { event2breadcrumb, getDeclarativeClickData, isErrorEvent, sentryLogger } from "../utils";
+import {
+  EventType,
+  Status,
+  type IBaseDataWithEvent,
+  type TEventHandler,
+} from "../types";
+import {
+  event2breadcrumb,
+  getDeclarativeClickData,
+  isErrorEvent,
+  sentryLogger,
+} from "../utils";
 import reporter from "../reporter";
 import breadcrumb from "./breadcrumb.js";
 import { handleCodeError } from "./handle-code-error.js";

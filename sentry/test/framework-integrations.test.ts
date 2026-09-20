@@ -32,7 +32,9 @@ import { sentry } from "@/utils/index.js";
 import { vuePlugin } from "@/vue.js";
 import { findPayload, getPayloads } from "./report-payloads.js";
 
-function getFrameworkPayload(name: string): Readonly<Record<string, unknown>> | null {
+function getFrameworkPayload(
+  name: string,
+): Readonly<Record<string, unknown>> | null {
   const sendBeacon = vi.mocked(navigator.sendBeacon);
   return findPayload(sendBeacon.mock.calls.flatMap(getPayloads), name);
 }
@@ -62,7 +64,11 @@ describe("framework integrations", () => {
     await Promise.resolve();
 
     const payload = getFrameworkPayload("Error");
-    expect(originalHandler).toHaveBeenCalledWith(expect.any(Error), null, "render");
+    expect(originalHandler).toHaveBeenCalledWith(
+      expect.any(Error),
+      null,
+      "render",
+    );
     expect(payload).toMatchObject({
       type: EventType.Vue,
       message: "vue boom",

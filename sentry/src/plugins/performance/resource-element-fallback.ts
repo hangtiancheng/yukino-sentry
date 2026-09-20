@@ -23,11 +23,17 @@
 import { type IPerformanceResourceTiming } from "../../types";
 import { noop } from "../../utils";
 import type { Cleanup } from "../../utils/decorate-prop.js";
-import { createResourceTimingData, getResourceList, isSdkReportUrl } from "./resource-timing.js";
+import {
+  createResourceTimingData,
+  getResourceList,
+  isSdkReportUrl,
+} from "./resource-timing.js";
 import { supportsPerformanceEntryType } from "./performance-observer-support.js";
 
 type ResourceElement = HTMLImageElement | HTMLScriptElement | HTMLLinkElement;
-type PerformanceReporter = (data: ReturnType<typeof createResourceTimingData>) => void;
+type PerformanceReporter = (
+  data: ReturnType<typeof createResourceTimingData>,
+) => void;
 
 const observedElementNames = new Set(["IMG", "SCRIPT", "LINK"]);
 
@@ -42,7 +48,9 @@ function createFallbackResourceTiming(
   initiatorType: string,
 ): IPerformanceResourceTiming {
   const startTime =
-    "performance" in globalThis ? Math.round(globalThis.performance.now()) : Date.now();
+    "performance" in globalThis
+      ? Math.round(globalThis.performance.now())
+      : Date.now();
   return {
     name: url,
     initiatorType,
@@ -78,7 +86,9 @@ function findLatestResource(url: string): IPerformanceResourceTiming | null {
   );
 }
 
-export function observeResourceElementFallback(onReport: PerformanceReporter): Cleanup {
+export function observeResourceElementFallback(
+  onReport: PerformanceReporter,
+): Cleanup {
   if (
     supportsPerformanceEntryType("resource") ||
     !("MutationObserver" in globalThis) ||
@@ -97,7 +107,8 @@ export function observeResourceElementFallback(onReport: PerformanceReporter): C
     }
     reportedUrls.add(url);
     const resource =
-      findLatestResource(url) ?? createFallbackResourceTiming(url, element.tagName.toLowerCase());
+      findLatestResource(url) ??
+      createFallbackResourceTiming(url, element.tagName.toLowerCase());
     onReport(createResourceTimingData(resource));
   };
 

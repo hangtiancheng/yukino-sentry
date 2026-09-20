@@ -20,7 +20,12 @@
  * SOFTWARE.
  */
 
-import { destroy, init, isInitialized, enablePlugin } from "./core/sdk-lifecycle.js";
+import {
+  destroy,
+  init,
+  isInitialized,
+  enablePlugin,
+} from "./core/sdk-lifecycle.js";
 import { setUserId, setVisitorId, getIdentity } from "./core/identity.js";
 import {
   afterSend,

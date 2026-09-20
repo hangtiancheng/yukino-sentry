@@ -28,7 +28,9 @@ interface NetworkListenerCallbacks {
   readonly flush: () => Promise<void>;
 }
 
-export function initNetworkListener(callbacks: NetworkListenerCallbacks): Cleanup {
+export function initNetworkListener(
+  callbacks: NetworkListenerCallbacks,
+): Cleanup {
   callbacks.setOnline(navigator.onLine !== false);
   const onOnline = () => {
     callbacks.setOnline(true);

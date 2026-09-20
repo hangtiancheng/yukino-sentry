@@ -20,7 +20,12 @@
  * SOFTWARE.
  */
 
-import { EventType, type IBaseDataWithEvent, type IRouteData, type TEventHandler } from "../types";
+import {
+  EventType,
+  type IBaseDataWithEvent,
+  type IRouteData,
+  type TEventHandler,
+} from "../types";
 import { UNKNOWN } from "../constants";
 import { event2breadcrumb } from "../utils";
 import breadcrumb from "./breadcrumb.js";
@@ -30,7 +35,11 @@ function isHashChangeEvent(value: unknown): value is HashChangeEvent {
   return value instanceof HashChangeEvent;
 }
 
-export const handleHistory: TEventHandler<IRouteData> = ({ from, to, ...rest }: IRouteData) => {
+export const handleHistory: TEventHandler<IRouteData> = ({
+  from,
+  to,
+  ...rest
+}: IRouteData) => {
   const routeChange = `${from} => ${to}`;
   const routeData: IRouteData = {
     ...rest,

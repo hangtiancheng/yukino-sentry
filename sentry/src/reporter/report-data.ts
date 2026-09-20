@@ -38,7 +38,10 @@ const BREADCRUMB_EVENT_TYPES = new Set<EventType>([
   EventType.OtherFrameworks,
 ]);
 
-function payloadToReportData<T extends TReportPayload>(id: string, payload: T): IReportData<T> {
+function payloadToReportData<T extends TReportPayload>(
+  id: string,
+  payload: T,
+): IReportData<T> {
   const { type, name, time, timestamp, message, status } = payload;
   const data: IReportData<T> = {
     type,
@@ -76,7 +79,9 @@ export function runBeforeReportHook(
   return normalizeReportHookResult(hookResult);
 }
 
-function normalizeReportHookResult(hookResult: IReportData | false): IReportData | null {
+function normalizeReportHookResult(
+  hookResult: IReportData | false,
+): IReportData | null {
   return hookResult === false ? null : hookResult;
 }
 
@@ -92,6 +97,8 @@ export function applyBeforePushHook(
   return normalizeBatchHookResult(hookResult);
 }
 
-function normalizeBatchHookResult(hookResult: readonly IReportData[] | false): IReportData[] {
+function normalizeBatchHookResult(
+  hookResult: readonly IReportData[] | false,
+): IReportData[] {
   return hookResult === false ? [] : [...hookResult];
 }

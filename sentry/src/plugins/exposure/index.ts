@@ -97,7 +97,8 @@ class ExposurePlugin extends SentryPlugin {
     const list = inputList.map((item) => exposureTargetSchema.parse(item));
     list.forEach((item) => {
       const threshold = item.threshold ?? 0.5;
-      const observer = this.ioMap.get(threshold) ?? this.initObserver(threshold);
+      const observer =
+        this.ioMap.get(threshold) ?? this.initObserver(threshold);
       this.ioMap.set(threshold, observer);
 
       if (!this.targetMap.has(item.target)) {

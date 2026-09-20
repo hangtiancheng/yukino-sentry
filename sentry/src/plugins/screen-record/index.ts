@@ -43,8 +43,11 @@ class ScreenRecordPlugin extends SentryPlugin {
 
   constructor(options: ScreenRecordPluginOptions = {}) {
     super();
-    this.durationMs = options.durationMs ?? DEFAULT_OPTIONS.screenRecordDurationMs;
-    this.eventTypes = [...(options.eventTypes ?? DEFAULT_OPTIONS.screenRecordEventTypes)];
+    this.durationMs =
+      options.durationMs ?? DEFAULT_OPTIONS.screenRecordDurationMs;
+    this.eventTypes = [
+      ...(options.eventTypes ?? DEFAULT_OPTIONS.screenRecordEventTypes),
+    ];
   }
 
   init() {

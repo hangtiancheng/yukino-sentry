@@ -98,7 +98,9 @@ describe("DataReporter offline and retry behavior", () => {
     const reporter = new DataReporter();
 
     await reporter.send(createPayload(1), true);
-    expect(localStorage.getItem(DEFAULT_OPTIONS.offlineCacheKey)).toContain("payload-1");
+    expect(localStorage.getItem(DEFAULT_OPTIONS.offlineCacheKey)).toContain(
+      "payload-1",
+    );
 
     Object.defineProperty(navigator, "onLine", {
       configurable: true,
@@ -120,7 +122,9 @@ describe("DataReporter offline and retry behavior", () => {
   it("uses configured retry interval for server recovery probes", async () => {
     vi.useFakeTimers();
     vi.spyOn(navigator, "sendBeacon").mockReturnValue(false);
-    const fetch = vi.fn(() => Promise.resolve(new Response(null, { status: 500 })));
+    const fetch = vi.fn(() =>
+      Promise.resolve(new Response(null, { status: 500 })),
+    );
     vi.stubGlobal("fetch", fetch);
     sentry.setOptions({
       ...DEFAULT_OPTIONS,
@@ -133,14 +137,17 @@ describe("DataReporter offline and retry behavior", () => {
     await Promise.resolve();
     await vi.advanceTimersByTimeAsync(50);
 
-    expect(fetch).toHaveBeenCalledWith("/api/log", expect.objectContaining({ method: "HEAD" }));
+    expect(fetch).toHaveBeenCalledWith(
+      "/api/log",
+      expect.objectContaining({ method: "HEAD" }),
+    );
   });
 
   it("backs off exponentially between server recovery probes", async () => {
     vi.useFakeTimers();
     vi.spyOn(navigator, "sendBeacon").mockReturnValue(false);
-    const fetch = vi.fn<[RequestInfo | URL, RequestInit?], Promise<Response>>(() =>
-      Promise.resolve(new Response(null, { status: 500 })),
+    const fetch = vi.fn<[RequestInfo | URL, RequestInit?], Promise<Response>>(
+      () => Promise.resolve(new Response(null, { status: 500 })),
     );
     vi.stubGlobal("fetch", fetch);
     sentry.setOptions({ ...DEFAULT_OPTIONS, dsn: "/api/log" });
@@ -149,7 +156,8 @@ describe("DataReporter offline and retry behavior", () => {
     await reporter.send(createPayload(1), true);
     await Promise.resolve();
 
-    const headProbes = () => fetch.mock.calls.filter(([, init]) => init?.method === "HEAD").length;
+    const headProbes = () =>
+      fetch.mock.calls.filter(([, init]) => init?.method === "HEAD").length;
 
     await vi.advanceTimersByTimeAsync(1000);
     expect(headProbes()).toBe(1);

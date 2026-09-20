@@ -25,12 +25,24 @@ import { generateUUID, sentryLogger, sentry } from "../utils";
 import type { Cleanup } from "../utils/decorate-prop.js";
 import { scheduleFlush } from "./flush-scheduler.js";
 import { initNetworkListener } from "./network-listener.js";
-import { clearOfflineCache, loadOfflineCache, saveOfflineCache } from "./offline-cache.js";
+import {
+  clearOfflineCache,
+  loadOfflineCache,
+  saveOfflineCache,
+} from "./offline-cache.js";
 import { isPromise } from "./promise.js";
 import { applyBeforePushHook, runBeforeReportHook } from "./report-data.js";
 import { shouldQueuePayload } from "./send-preflight.js";
-import { resetServerRecovery, scheduleServerRecovery } from "./server-recovery.js";
-import { getBodyByteLength, MAX_KEEPALIVE_BYTES, reportByFetch, sendBeacon } from "./transports.js";
+import {
+  resetServerRecovery,
+  scheduleServerRecovery,
+} from "./server-recovery.js";
+import {
+  getBodyByteLength,
+  MAX_KEEPALIVE_BYTES,
+  reportByFetch,
+  sendBeacon,
+} from "./transports.js";
 
 export class DataReporter implements IDataReporter {
   id = generateUUID();
@@ -110,7 +122,9 @@ export class DataReporter implements IDataReporter {
       const sendResult = this.sendBatch(finalSendData);
       const ok = isPromise(sendResult) ? await sendResult : sendResult;
       if (!ok) {
-        this.events = [...finalSendData, ...this.events].slice(-sentry.options.maxQueueLength);
+        this.events = [...finalSendData, ...this.events].slice(
+          -sentry.options.maxQueueLength,
+        );
         this.saveOfflineCache();
         return;
       }
@@ -136,11 +150,16 @@ export class DataReporter implements IDataReporter {
     return applyBeforePushHook(sendData);
   }
 
-  private sendBatch(finalSendData: readonly IReportData[]): Promise<boolean> | boolean {
+  private sendBatch(
+    finalSendData: readonly IReportData[],
+  ): Promise<boolean> | boolean {
     const body = JSON.stringify(finalSendData);
-    const withinKeepaliveBudget = getBodyByteLength(body) <= MAX_KEEPALIVE_BYTES;
+    const withinKeepaliveBudget =
+      getBodyByteLength(body) <= MAX_KEEPALIVE_BYTES;
     if (withinKeepaliveBudget && sendBeacon(body)) return true;
-    return reportByFetch(body, withinKeepaliveBudget, () => this.handleServerError());
+    return reportByFetch(body, withinKeepaliveBudget, () =>
+      this.handleServerError(),
+    );
   }
 
   private scheduleNextFlush(): void {
@@ -171,7 +190,11 @@ export class DataReporter implements IDataReporter {
       await this.flush();
       return;
     }
-    this.timeoutID = scheduleFlush(this.timeoutID, options.cacheWaitingTime, () => this.flush());
+    this.timeoutID = scheduleFlush(
+      this.timeoutID,
+      options.cacheWaitingTime,
+      () => this.flush(),
+    );
   }
 }
 

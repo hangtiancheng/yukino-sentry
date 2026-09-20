@@ -57,7 +57,10 @@ describe("transformHttpData", () => {
   });
 
   it("keeps the network error message for statusCode 0", () => {
-    const data = transformHttpData({ ...createHttpData(0), message: "Failed to fetch" });
+    const data = transformHttpData({
+      ...createHttpData(0),
+      message: "Failed to fetch",
+    });
 
     expect(data.status).toBe(Status.Error);
     expect(data.message).toBe("Failed to fetch");

@@ -131,38 +131,48 @@ export function splitScriptUrl(url: string): {
   }
 }
 
-export async function resolveFrame(loadMap: MapLoader, frame: RawFrame): Promise<ResolvedFrame> {
+export async function resolveFrame(
+  loadMap: MapLoader,
+  frame: RawFrame,
+): Promise<ResolvedFrame> {
   const fallback: ResolvedFrame = { resolved: false, ...frame };
   try {
     const map = await loadMap(frame.url);
     if (!sourceMapSchema.safeParse(map).success) return fallback;
 
-    return await SourceMapConsumer.with(JSON.stringify(map), null, (consumer) => {
-      // Browser line/column are 1-based; sourcemap columns are 0-based
-      const pos = consumer.originalPositionFor({
-        line: frame.line,
-        column: Math.max(0, frame.column - 1),
-      });
-      if (pos.source === null || pos.line === null) return fallback;
+    return await SourceMapConsumer.with(
+      JSON.stringify(map),
+      null,
+      (consumer) => {
+        // Browser line/column are 1-based; sourcemap columns are 0-based
+        const pos = consumer.originalPositionFor({
+          line: frame.line,
+          column: Math.max(0, frame.column - 1),
+        });
+        if (pos.source === null || pos.line === null) return fallback;
 
-      const content = consumer.sourceContentFor(pos.source, true);
-      const resolvedFrame: ResolvedFrame = {
-        ...fallback,
-        resolved: true,
-        source: pos.source,
-        originalLine: pos.line,
-        ...(pos.name !== null ? { name: pos.name } : {}),
-        ...(pos.column !== null ? { originalColumn: pos.column } : {}),
-        ...(content ? { snippet: buildSnippet(content, pos.line) } : {}),
-      };
-      return resolvedFrame;
-    });
+        const content = consumer.sourceContentFor(pos.source, true);
+        const resolvedFrame: ResolvedFrame = {
+          ...fallback,
+          resolved: true,
+          source: pos.source,
+          originalLine: pos.line,
+          ...(pos.name !== null ? { name: pos.name } : {}),
+          ...(pos.column !== null ? { originalColumn: pos.column } : {}),
+          ...(content ? { snippet: buildSnippet(content, pos.line) } : {}),
+        };
+        return resolvedFrame;
+      },
+    );
   } catch {
     return fallback;
   }
 }
 
-export async function resolveStack(loadMap: MapLoader, stack: string): Promise<ResolvedFrame[]> {
+export async function resolveStack(
+  loadMap: MapLoader,
+  stack: string,
+): Promise<ResolvedFrame[]> {
   const frames = parseStack(stack);
   const resolved: ResolvedFrame[] = [];
   for (const frame of frames) {
@@ -179,14 +189,21 @@ const frameworkExtraSchema = z.looseObject({ stack: z.string().optional() });
 
 // reportFrameworkError nests the stack inside payload.extra; payload.stack is
 // kept as a legacy fallback for older SDK payload shapes.
-function frameworkStackOf(payload: { extra?: unknown; stack?: unknown }): string | null {
+function frameworkStackOf(payload: {
+  extra?: unknown;
+  stack?: unknown;
+}): string | null {
   if (typeof payload.stack === "string") return payload.stack;
   const extra = frameworkExtraSchema.safeParse(payload.extra);
-  if (extra.success && typeof extra.data.stack === "string") return extra.data.stack;
+  if (extra.success && typeof extra.data.stack === "string")
+    return extra.data.stack;
   return null;
 }
 
-async function enrichRecord(loadMap: MapLoader, record: unknown): Promise<unknown> {
+async function enrichRecord(
+  loadMap: MapLoader,
+  record: unknown,
+): Promise<unknown> {
   const parsed = reportRecordSchema.safeParse(record);
   if (!parsed.success) return record;
   const rec = parsed.data;
@@ -209,7 +226,11 @@ async function enrichRecord(loadMap: MapLoader, record: unknown): Promise<unknow
     );
   } else if (typeof payload.extra === "string" && isStackLike(payload.extra)) {
     frames.push(...(await resolveStack(loadMap, payload.extra)));
-  } else if (rec.type === "React" || rec.type === "Vue" || rec.type === "OtherFrameworks") {
+  } else if (
+    rec.type === "React" ||
+    rec.type === "Vue" ||
+    rec.type === "OtherFrameworks"
+  ) {
     const stack = frameworkStackOf(payload);
     if (stack) frames.push(...(await resolveStack(loadMap, stack)));
   }
@@ -218,7 +239,10 @@ async function enrichRecord(loadMap: MapLoader, record: unknown): Promise<unknow
   return { ...rec, sourcemap: { frames } };
 }
 
-export async function enrichReportData(loadMap: MapLoader, records: unknown): Promise<unknown> {
+export async function enrichReportData(
+  loadMap: MapLoader,
+  records: unknown,
+): Promise<unknown> {
   if (!Array.isArray(records)) return records;
   const enriched: unknown[] = [];
   for (const record of records) {

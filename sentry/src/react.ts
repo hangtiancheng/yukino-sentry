@@ -33,7 +33,8 @@ export interface ReactErrorBoundaryProps {
    * React delivers `ErrorInfo` in `componentDidCatch`) and again once it is
    * available.
    */
-  readonly fallback?: ReactNode | ((error: Error, errorInfo?: ErrorInfo) => ReactNode);
+  readonly fallback?:
+    ReactNode | ((error: Error, errorInfo?: ErrorInfo) => ReactNode);
 }
 
 interface ReactErrorBoundaryState {

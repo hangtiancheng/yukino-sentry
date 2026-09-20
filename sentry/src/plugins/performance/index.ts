@@ -31,7 +31,10 @@ import { getNavigationTimingData } from "./navigation-timing.js";
 import { getWebVitals } from "./perf.js";
 import { supportsPerformanceEntryType } from "./performance-observer-support.js";
 import { observeResourceElementFallback } from "./resource-element-fallback.js";
-import { getInitialResourceListData, observeResourceTimings } from "./resource-timing.js";
+import {
+  getInitialResourceListData,
+  observeResourceTimings,
+} from "./resource-timing.js";
 
 class PerformancePlugin extends SentryPlugin {
   private cleanups: Cleanup[] = [];
@@ -40,7 +43,9 @@ class PerformancePlugin extends SentryPlugin {
     this.cleanups.push(this.startWebVitals());
     this.cleanups.push(this.observeLongTasks());
     this.cleanups.push(observeResourceTimings((data) => this.report(data)));
-    this.cleanups.push(observeResourceElementFallback((data) => this.report(data)));
+    this.cleanups.push(
+      observeResourceElementFallback((data) => this.report(data)),
+    );
     this.cleanups.push(
       this.onPageReady(() => {
         this.reportPageLoadTimings();
@@ -115,7 +120,8 @@ class PerformancePlugin extends SentryPlugin {
     if (
       "performance" in globalThis &&
       "measureUserAgentSpecificMemory" in globalThis.performance &&
-      typeof globalThis.performance.measureUserAgentSpecificMemory === "function"
+      typeof globalThis.performance.measureUserAgentSpecificMemory ===
+        "function"
     ) {
       const memoryData: IPerformanceData = {
         ...getBaseData(),

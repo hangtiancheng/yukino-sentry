@@ -66,7 +66,9 @@ async function startup() {
   // Initialize sourcemap resolution
   initSourcemap(cfg.getConfig().sourcemap);
   if (infoLogger && cfg.getConfig().sourcemap.enabled) {
-    infoLogger.info(`Sourcemap resolution enabled, dir: ${cfg.getConfig().sourcemap.dir}`);
+    infoLogger.info(
+      `Sourcemap resolution enabled, dir: ${cfg.getConfig().sourcemap.dir}`,
+    );
   }
 
   // Configure CORS

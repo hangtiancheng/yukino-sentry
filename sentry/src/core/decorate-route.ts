@@ -55,7 +55,12 @@ export function pubHistory(): Cleanup {
   globalThis.addEventListener("popstate", popstateListener);
 
   const historyDecorator = (oldPropsVal: History["pushState"]) => {
-    return function (this: History, data: unknown, unused: string, url?: string | URL | null) {
+    return function (
+      this: History,
+      data: unknown,
+      unused: string,
+      url?: string | URL | null,
+    ) {
       if (!url) {
         return oldPropsVal.call(this, data, unused, url);
       }
@@ -75,8 +80,16 @@ export function pubHistory(): Cleanup {
       return result;
     };
   };
-  const cleanupPushState = decorateProp(globalThis.history, "pushState", historyDecorator);
-  const cleanupReplaceState = decorateProp(globalThis.history, "replaceState", historyDecorator);
+  const cleanupPushState = decorateProp(
+    globalThis.history,
+    "pushState",
+    historyDecorator,
+  );
+  const cleanupReplaceState = decorateProp(
+    globalThis.history,
+    "replaceState",
+    historyDecorator,
+  );
   return () => {
     globalThis.removeEventListener("popstate", popstateListener);
     cleanupReplaceState();

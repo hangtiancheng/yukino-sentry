@@ -37,7 +37,9 @@ function isInViewport(element: HTMLElement): boolean {
   );
 }
 
-function hasInViewportAddition(mutationList: readonly MutationRecord[]): boolean {
+function hasInViewportAddition(
+  mutationList: readonly MutationRecord[],
+): boolean {
   for (const mutation of mutationList) {
     if (!isHTMLElement(mutation.target)) {
       continue;
@@ -75,7 +77,9 @@ export function getFirstScreenPaint(callback: Callback): Cleanup {
   let hasObservedTarget = false;
   let intersectionObserver: IntersectionObserver | null = null;
 
-  const processIntersectionEntries = (entries: readonly IntersectionObserverEntry[]) => {
+  const processIntersectionEntries = (
+    entries: readonly IntersectionObserverEntry[],
+  ) => {
     if (done || !intersectionObserver) return;
     for (const entry of entries) {
       intersectionObserver.unobserve(entry.target);
@@ -86,7 +90,9 @@ export function getFirstScreenPaint(callback: Callback): Cleanup {
   };
 
   if (typeof globalThis.IntersectionObserver === "function") {
-    intersectionObserver = new globalThis.IntersectionObserver(processIntersectionEntries);
+    intersectionObserver = new globalThis.IntersectionObserver(
+      processIntersectionEntries,
+    );
   }
 
   const processMutations = (mutationList: readonly MutationRecord[]) => {
@@ -99,7 +105,10 @@ export function getFirstScreenPaint(callback: Callback): Cleanup {
     }
     for (const mutation of mutationList) {
       for (const node of mutation.addedNodes) {
-        if (isHTMLElement(node) && !excludedElementNames.has(node.tagName.toLowerCase())) {
+        if (
+          isHTMLElement(node) &&
+          !excludedElementNames.has(node.tagName.toLowerCase())
+        ) {
           hasObservedTarget = true;
           intersectionObserver.observe(node);
         }

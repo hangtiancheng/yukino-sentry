@@ -42,10 +42,14 @@ interface NavigationTimingValues {
 }
 
 function getPaintTime(): number {
-  return globalThis.performance.getEntriesByType("paint").at(-1)?.startTime ?? 0;
+  return (
+    globalThis.performance.getEntriesByType("paint").at(-1)?.startTime ?? 0
+  );
 }
 
-function isNavigationTiming(entry: PerformanceEntry): entry is PerformanceNavigationTiming {
+function isNavigationTiming(
+  entry: PerformanceEntry,
+): entry is PerformanceNavigationTiming {
   return entry.entryType === "navigation" && "fetchStart" in entry;
 }
 
@@ -66,16 +70,28 @@ function getNavigationValues(
   return {
     paintTime: paintTime > 0 ? getSafeDuration(paintTime, fetchStart) : 0,
     domInteractive: getSafeDuration(timing.domInteractive, fetchStart),
-    domContentLoaded: getSafeDuration(timing.domContentLoadedEventEnd, fetchStart),
+    domContentLoaded: getSafeDuration(
+      timing.domContentLoadedEventEnd,
+      fetchStart,
+    ),
     loadEvent: getSafeDuration(timing.loadEventStart, fetchStart),
     firstByte: getSafeDuration(timing.responseStart, fetchStart),
-    dnsLookup: getSafeDuration(timing.domainLookupEnd, timing.domainLookupStart),
+    dnsLookup: getSafeDuration(
+      timing.domainLookupEnd,
+      timing.domainLookupStart,
+    ),
     tcpConnection: getSafeDuration(timing.connectEnd, timing.connectStart),
-    tlsHandshake: getSafeDuration(timing.connectEnd, timing.secureConnectionStart),
+    tlsHandshake: getSafeDuration(
+      timing.connectEnd,
+      timing.secureConnectionStart,
+    ),
     timeToFirstByte: getSafeDuration(timing.responseStart, timing.requestStart),
     contentTransfer: getSafeDuration(timing.responseEnd, timing.responseStart),
     domProcessing: getSafeDuration(timing.domInteractive, timing.responseEnd),
-    resourceLoad: getSafeDuration(timing.loadEventStart, timing.domContentLoadedEventEnd),
+    resourceLoad: getSafeDuration(
+      timing.loadEventStart,
+      timing.domContentLoadedEventEnd,
+    ),
     redirect: getSafeDuration(timing.redirectEnd, timing.redirectStart),
     unloadTime: getSafeDuration(timing.unloadEventEnd, timing.unloadEventStart),
     triggerPageUrl: location.href,

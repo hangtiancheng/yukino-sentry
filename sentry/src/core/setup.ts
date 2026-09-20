@@ -25,7 +25,11 @@ import { sentryLogger, sentry } from "../utils";
 import type { Cleanup } from "../utils/decorate-prop.js";
 
 import { clearSubscriptions, sub } from "./bus.js";
-import { flushCurrentPageDwell, initPageView, resetPageView } from "./pv-lifecycle.js";
+import {
+  flushCurrentPageDwell,
+  initPageView,
+  resetPageView,
+} from "./pv-lifecycle.js";
 import { startWhiteScreenCheck, stopWhiteScreenCheck } from "./white-screen.js";
 import reporter from "../reporter/index.js";
 
@@ -77,7 +81,8 @@ function setup(): Cleanup {
     {
       enabled: sentry.options.enableUnhandledRejection,
       type: EventType.UnhandledRejection,
-      subscribe: () => sub(EventType.UnhandledRejection, handleUnhandledRejection),
+      subscribe: () =>
+        sub(EventType.UnhandledRejection, handleUnhandledRejection),
       name: "UnhandledRejection",
     },
     {

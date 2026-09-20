@@ -100,7 +100,10 @@ class Logger {
     ensureDir(monthDir);
 
     // filename: sentry_20060102_150405.jsonl
-    const timestamp = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 14);
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/[-:.]/g, "")
+      .slice(0, 14);
     const filename = `${logConfig.file_prefix}_${timestamp}.jsonl`;
     const filepath = join(monthDir, filename);
 

@@ -105,14 +105,22 @@ export function handleCodeError(err: ErrorEvent): void {
     status: Status.Error,
   };
   const stack = error instanceof Error && error.stack ? error.stack : undefined;
-  const codeError: ICodeError = { ...data, column, line, ...(stack ? { extra: stack } : {}) };
+  const codeError: ICodeError = {
+    ...data,
+    column,
+    line,
+    ...(stack ? { extra: stack } : {}),
+  };
   breadcrumb.push({ ...data, userAction: event2breadcrumb(EventType.Error) });
   // Errors without a source location cannot be deduplicated meaningfully.
   if (!filename || filename === UNKNOWN) {
     batchErrorManager.push(codeError);
     return;
   }
-  reportOncePerError(`${EventType.Error}-${message}-${filename}-${line}-${column}`, () => {
-    batchErrorManager.push(codeError);
-  });
+  reportOncePerError(
+    `${EventType.Error}-${message}-${filename}-${line}-${column}`,
+    () => {
+      batchErrorManager.push(codeError);
+    },
+  );
 }

@@ -29,7 +29,10 @@ import { EventType, Status, type IHttpData } from "@/types/index.js";
 import { getBaseData, sentry } from "@/utils/index.js";
 import { findPayload, getPayloads } from "./report-payloads.js";
 
-function createHttpData(statusCode: number, serverTiming: readonly string[] = []): IHttpData {
+function createHttpData(
+  statusCode: number,
+  serverTiming: readonly string[] = [],
+): IHttpData {
   return {
     id: "http-event",
     type: EventType.Fetch,
@@ -78,7 +81,9 @@ describe("capture layer parity", () => {
 
   it("captures console.error through the error channel", async () => {
     const sendBeacon = vi.spyOn(navigator, "sendBeacon").mockReturnValue(true);
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     init({
       dsn: "/api/log",
@@ -151,7 +156,9 @@ describe("capture layer parity", () => {
 
   it("resolves Request objects to their URL and method in fetch capture", async () => {
     const sendBeacon = vi.spyOn(navigator, "sendBeacon").mockReturnValue(true);
-    const fetchMock = vi.fn(() => Promise.resolve(new Response("fail", { status: 500 })));
+    const fetchMock = vi.fn(() =>
+      Promise.resolve(new Response("fail", { status: 500 })),
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     init({
@@ -167,7 +174,9 @@ describe("capture layer parity", () => {
     });
     sendBeacon.mockClear();
 
-    await globalThis.fetch(new Request("http://localhost:3000/api/orders", { method: "PUT" }));
+    await globalThis.fetch(
+      new Request("http://localhost:3000/api/orders", { method: "PUT" }),
+    );
     await vi.waitFor(() => {
       expect(sendBeacon).toHaveBeenCalled();
     });

@@ -25,7 +25,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getFirstScreenPaint } from "@/plugins/performance/first-screen-paint.js";
 import { FakeIntersectionObserver } from "./fake-intersection-observer.js";
 
-function createMutation(target: Node, addedNodes: readonly Node[]): MutationRecord {
+function createMutation(
+  target: Node,
+  addedNodes: readonly Node[],
+): MutationRecord {
   const holder = document.createElement("div");
   holder.append(...addedNodes);
   return {
@@ -125,7 +128,10 @@ describe("first screen paint", () => {
 
   it("waits for the final intersection callback after the page becomes complete", () => {
     const onReport = vi.fn();
-    const getBoundingClientRect = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect");
+    const getBoundingClientRect = vi.spyOn(
+      HTMLElement.prototype,
+      "getBoundingClientRect",
+    );
     const target = document.createElement("div");
 
     getFirstScreenPaint(onReport);

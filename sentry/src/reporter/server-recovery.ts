@@ -76,5 +76,8 @@ function testServerAvailable(callbacks: ServerRecoveryCallbacks): void {
 }
 
 function escalateRetryDelay(): void {
-  nextRetryDelayMs = Math.min(nextRetryDelayMs * 2, sentry.options.retryIntervalMilliseconds);
+  nextRetryDelayMs = Math.min(
+    nextRetryDelayMs * 2,
+    sentry.options.retryIntervalMilliseconds,
+  );
 }

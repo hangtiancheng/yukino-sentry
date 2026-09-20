@@ -44,7 +44,9 @@ type TXhrProtoOpen = (
 const MAX_BODY_LENGTH = 8 * 1024;
 
 function truncateBody(value: string): string {
-  return value.length > MAX_BODY_LENGTH ? value.slice(0, MAX_BODY_LENGTH) : value;
+  return value.length > MAX_BODY_LENGTH
+    ? value.slice(0, MAX_BODY_LENGTH)
+    : value;
 }
 
 function isErrorStatusCode(statusCode: number): boolean {
@@ -53,26 +55,30 @@ function isErrorStatusCode(statusCode: number): boolean {
 
 export function pubXhr(): Cleanup {
   const xhrProto = XMLHttpRequest.prototype;
-  const cleanupOpen = decorateProp(xhrProto, "open", (oldPropVal: TXhrProtoOpen) => {
-    return function (
-      this: WithSentry<XMLHttpRequest, IHttpData>,
-      method: string,
-      url: string | URL,
-      async?: boolean,
-      ...rest: (string | null)[]
-    ) {
-      this.__sentry__ = {
-        ...getBaseData(),
-        name: "XMLHttpRequest",
-        type: EventType.Xhr,
-        method: method.toUpperCase(),
-        api: String(url),
-        elapsedTime: 0,
-        statusCode: 200,
+  const cleanupOpen = decorateProp(
+    xhrProto,
+    "open",
+    (oldPropVal: TXhrProtoOpen) => {
+      return function (
+        this: WithSentry<XMLHttpRequest, IHttpData>,
+        method: string,
+        url: string | URL,
+        async?: boolean,
+        ...rest: (string | null)[]
+      ) {
+        this.__sentry__ = {
+          ...getBaseData(),
+          name: "XMLHttpRequest",
+          type: EventType.Xhr,
+          method: method.toUpperCase(),
+          api: String(url),
+          elapsedTime: 0,
+          statusCode: 200,
+        };
+        return oldPropVal.call(this, method, url, async, ...rest);
       };
-      return oldPropVal.call(this, method, url, async, ...rest);
-    };
-  });
+    },
+  );
   const cleanupSend = decorateProp(xhrProto, "send", (oldPropVal) => {
     return function (
       this: WithSentry<XMLHttpRequest, IHttpData>,
@@ -93,10 +99,14 @@ export function pubXhr(): Cleanup {
             this.__sentry__.responseData = {
               responseType: this.responseType,
               response:
-                typeof this.response === "string" ? truncateBody(this.response) : this.response,
+                typeof this.response === "string"
+                  ? truncateBody(this.response)
+                  : this.response,
             };
           }
-          this.__sentry__.serverTiming = parseServerTiming(this.getResponseHeader("server-timing"));
+          this.__sentry__.serverTiming = parseServerTiming(
+            this.getResponseHeader("server-timing"),
+          );
           this.__sentry__.elapsedTime = Date.now() - startedAt;
           pub(EventType.Xhr, this.__sentry__);
         },
@@ -117,7 +127,10 @@ function getRequestUrl(input: RequestInfo | URL): string {
   return input.url;
 }
 
-function getRequestMethod(input: RequestInfo | URL, options?: RequestInit): string {
+function getRequestMethod(
+  input: RequestInfo | URL,
+  options?: RequestInit,
+): string {
   if (options?.method) return options.method.toUpperCase();
   if (typeof Request !== "undefined" && input instanceof Request) {
     return input.method.toUpperCase();
@@ -172,7 +185,8 @@ export function pubFetch(): Cleanup {
           httpData.elapsedTime = Date.now() - startedAt;
           httpData.statusCode = 0;
           httpData.requestData = { body: options?.body };
-          httpData.message = err instanceof Error ? err.message : "Network error";
+          httpData.message =
+            err instanceof Error ? err.message : "Network error";
           pub(EventType.Fetch, httpData);
           throw err;
         });
@@ -181,5 +195,8 @@ export function pubFetch(): Cleanup {
 }
 
 function shouldIgnoreRequest(method: string, api: string): boolean {
-  return (method.toUpperCase() === "POST" && api === sentry.options.dsn) || isExcludedApi(api);
+  return (
+    (method.toUpperCase() === "POST" && api === sentry.options.dsn) ||
+    isExcludedApi(api)
+  );
 }

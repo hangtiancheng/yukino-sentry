@@ -20,7 +20,10 @@
  * SOFTWARE.
  */
 
-import { MAX_WHITE_SCREEN_SAMPLE_COUNT, WHITE_SCREEN_SAMPLE_INTERVAL } from "../constants";
+import {
+  MAX_WHITE_SCREEN_SAMPLE_COUNT,
+  WHITE_SCREEN_SAMPLE_INTERVAL,
+} from "../constants";
 
 import {
   EventType,
@@ -54,7 +57,9 @@ export function stopWhiteScreenCheck(): void {
  * page stayed blank (or the skeleton never transitioned) for
  * `MAX_WHITE_SCREEN_SAMPLE_COUNT` consecutive samples.
  */
-export function startWhiteScreenCheck(onReport: TOnReportWhiteScreenData): void {
+export function startWhiteScreenCheck(
+  onReport: TOnReportWhiteScreenData,
+): void {
   const { hasSkeleton, rootCssSelectors } = sentry.options;
   let sampleCount = 0;
   const initialSelectors = new Set<string>();
@@ -79,7 +84,10 @@ export function startWhiteScreenCheck(onReport: TOnReportWhiteScreenData): void 
     let emptyPoints = 0;
     for (const yRatio of SAMPLE_Y_RATIOS) {
       for (const xRatio of SAMPLE_X_RATIOS) {
-        const elem = document.elementFromPoint(innerWidth * xRatio, innerHeight * yRatio);
+        const elem = document.elementFromPoint(
+          innerWidth * xRatio,
+          innerHeight * yRatio,
+        );
         if (!elem || isRoot(elem)) {
           emptyPoints++;
         }
@@ -89,7 +97,8 @@ export function startWhiteScreenCheck(onReport: TOnReportWhiteScreenData): void 
   };
 
   const selectorsMatchBaseline = () =>
-    Array.from(currentSelectors).sort().join(",") === Array.from(initialSelectors).sort().join(",");
+    Array.from(currentSelectors).sort().join(",") ===
+    Array.from(initialSelectors).sort().join(",");
 
   const sample = () => {
     sampleCount++;

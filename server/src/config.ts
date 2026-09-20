@@ -93,7 +93,8 @@ export class ConfigManager {
       server: {
         port: serverData.port ?? defaultConfig.server.port,
         body_limit: serverData.body_limit ?? defaultConfig.server.body_limit,
-        allowed_origins: serverData.allowed_origins ?? defaultConfig.server.allowed_origins,
+        allowed_origins:
+          serverData.allowed_origins ?? defaultConfig.server.allowed_origins,
       },
       log: {
         dir: logData.dir ?? defaultConfig.log.dir,

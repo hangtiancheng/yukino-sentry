@@ -22,14 +22,22 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { DEFAULT_OPTIONS, MAX_WHITE_SCREEN_SAMPLE_COUNT } from "@/constants/index.js";
-import { startWhiteScreenCheck, stopWhiteScreenCheck } from "@/core/white-screen.js";
+import {
+  DEFAULT_OPTIONS,
+  MAX_WHITE_SCREEN_SAMPLE_COUNT,
+} from "@/constants/index.js";
+import {
+  startWhiteScreenCheck,
+  stopWhiteScreenCheck,
+} from "@/core/white-screen.js";
 import { Status } from "@/types/index.js";
 import { sentry } from "@/utils/index.js";
 
 const SAMPLE_INTERVAL = 1000;
 
-function stubElementFromPoint(implementation: (x: number, y: number) => Element | null): void {
+function stubElementFromPoint(
+  implementation: (x: number, y: number) => Element | null,
+): void {
   Object.defineProperty(document, "elementFromPoint", {
     configurable: true,
     value: vi.fn(implementation),
@@ -59,7 +67,9 @@ describe("white screen detection", () => {
     const onReport = vi.fn();
 
     startWhiteScreenCheck(onReport);
-    vi.advanceTimersByTime(SAMPLE_INTERVAL * (MAX_WHITE_SCREEN_SAMPLE_COUNT - 1));
+    vi.advanceTimersByTime(
+      SAMPLE_INTERVAL * (MAX_WHITE_SCREEN_SAMPLE_COUNT - 1),
+    );
     expect(onReport).not.toHaveBeenCalled();
 
     vi.advanceTimersByTime(SAMPLE_INTERVAL);
@@ -83,7 +93,9 @@ describe("white screen detection", () => {
     const onReport = vi.fn();
 
     startWhiteScreenCheck(onReport);
-    vi.advanceTimersByTime(SAMPLE_INTERVAL * (MAX_WHITE_SCREEN_SAMPLE_COUNT + 2));
+    vi.advanceTimersByTime(
+      SAMPLE_INTERVAL * (MAX_WHITE_SCREEN_SAMPLE_COUNT + 2),
+    );
 
     expect(onReport).not.toHaveBeenCalled();
   });
@@ -94,11 +106,17 @@ describe("white screen detection", () => {
     startWhiteScreenCheck(vi.fn());
     vi.advanceTimersByTime(SAMPLE_INTERVAL);
 
-    const expectedPoints = [0.1, 0.26, 0.42, 0.58, 0.74, 0.9].flatMap((yRatio) =>
-      [0.1, 0.5, 0.9].map((xRatio) => [innerWidth * xRatio, innerHeight * yRatio]),
+    const expectedPoints = [0.1, 0.26, 0.42, 0.58, 0.74, 0.9].flatMap(
+      (yRatio) =>
+        [0.1, 0.5, 0.9].map((xRatio) => [
+          innerWidth * xRatio,
+          innerHeight * yRatio,
+        ]),
     );
     expect(document.elementFromPoint).toHaveBeenCalledTimes(18);
-    expect(vi.mocked(document.elementFromPoint).mock.calls).toEqual(expectedPoints);
+    expect(vi.mocked(document.elementFromPoint).mock.calls).toEqual(
+      expectedPoints,
+    );
   });
 
   it("stops sampling when content is observed in a corner", () => {
@@ -110,7 +128,9 @@ describe("white screen detection", () => {
     const onReport = vi.fn();
 
     startWhiteScreenCheck(onReport);
-    vi.advanceTimersByTime(SAMPLE_INTERVAL * (MAX_WHITE_SCREEN_SAMPLE_COUNT + 2));
+    vi.advanceTimersByTime(
+      SAMPLE_INTERVAL * (MAX_WHITE_SCREEN_SAMPLE_COUNT + 2),
+    );
 
     expect(onReport).not.toHaveBeenCalled();
     expect(document.elementFromPoint).toHaveBeenCalledTimes(18);

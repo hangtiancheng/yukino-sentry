@@ -58,7 +58,10 @@ export function init(options: InitOptions): void {
   const provided = Object.fromEntries(
     Object.entries(options).filter(([, value]) => value !== undefined),
   );
-  const parsedOptions = optionsSchema.parse({ ...DEFAULT_OPTIONS, ...provided });
+  const parsedOptions = optionsSchema.parse({
+    ...DEFAULT_OPTIONS,
+    ...provided,
+  });
   sentry.setOptions(parsedOptions);
   const { dsn } = sentry.options;
   if (sentry.options.disabled) {

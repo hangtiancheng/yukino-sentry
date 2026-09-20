@@ -22,7 +22,12 @@
 
 import { z } from "zod";
 
-import { EventType, Status, type IBreadcrumbItem, type TReportPayload } from "../types";
+import {
+  EventType,
+  Status,
+  type IBreadcrumbItem,
+  type TReportPayload,
+} from "../types";
 
 const deviceInfoSchema = z.object({
   browserName: z.string(),
