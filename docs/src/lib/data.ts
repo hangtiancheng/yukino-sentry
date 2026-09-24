@@ -46,7 +46,7 @@ export const FEATURES: readonly Feature[] = [
     id: "whiteScreenReplay",
     icon: "scan-eye",
     accent: "brand",
-    chips: ["Skeleton", "Record 3s"],
+    chips: ["Sampling", "Skeleton"],
   },
   {
     id: "offlineResilient",

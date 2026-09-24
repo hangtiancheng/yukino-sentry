@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "@yukino.js/sentry — Frontend Monitoring & Analytics",
-    "description": "A tiny browser SDK that captures errors, Web Vitals and user journeys the moment your site loads. Three lines to init, zero config to maintain."
+    "description": "A lightweight, framework-agnostic browser SDK that captures errors, performance and user behavior from page load — one init() call, reporting only to your own endpoint."
   },
   "common": {
     "language": "Language",
@@ -20,20 +20,20 @@
   "hero": {
     "badge": "v0.0.1 · Open source",
     "badgeNote": "MIT licensed",
-    "titleA": "Every error captured.",
-    "titleHighlight": "Every journey replayed.",
-    "subtitle": "A tiny browser SDK that captures errors, Web Vitals and user journeys the moment your site loads — three lines to init, zero config to maintain.",
+    "titleA": "Every error captured,",
+    "titleHighlight": "every journey replayed.",
+    "subtitle": "A lightweight browser SDK that captures errors, performance and user behavior from the moment your page loads — initialize with a single dsn, report to your own endpoint.",
     "getStarted": "Get started",
     "starGithub": "Star on GitHub",
     "quick1": "Errors · auto-captured",
     "quick2": "Vitals · LCP / INP / CLS",
-    "quick3": "Journeys · PV / clicks",
+    "quick3": "Journeys · PV / clicks / exposure",
     "stat1Value": "17+",
     "stat1Label": "event types",
-    "stat2Value": "3",
-    "stat2Label": "framework adapters",
+    "stat2Value": "4",
+    "stat2Label": "integrations",
     "stat3Value": "0",
-    "stat3Label": "config lines",
+    "stat3Label": "extra config",
     "stat4Value": "100%",
     "stat4Label": "TypeScript"
   },
@@ -41,7 +41,7 @@
     "eyebrow": "Live demo",
     "titleA": "Watch your site",
     "titleHighlight": "report itself",
-    "description": "A real session from a visitor's browser, streamed to your endpoint as it happens. Errors arrive with full context: identity, breadcrumbs, performance and replay.",
+    "description": "A real session from a visitor's browser, streamed to your endpoint as it happens. Errors arrive with everything around them: identity, breadcrumbs, device info, performance and screen replay.",
     "tabConsole": "Console",
     "tabDashboard": "Dashboard",
     "statusLive": "live",
@@ -57,7 +57,7 @@
         "prompt": "GET /dashboard · session 8f3a2c"
       }
     },
-    "caption": "One SDK call streams every event above — no instrumentation in your code.",
+    "caption": "One init() call streams every event above — no instrumentation added to your business code.",
     "vitalsTitle": "Core Web Vitals",
     "vitalsGood": "good",
     "vitalsWatch": "watch",
@@ -71,53 +71,53 @@
     "eyebrow": "Capabilities",
     "titleA": "Everything a frontend team needs,",
     "titleHighlight": "one small SDK",
-    "description": "Error capture, performance, journey analytics, offline resilience and extension points — all flowing from a single init() call.",
+    "description": "Error capture, performance metrics, behavior analytics, offline resilience and extension points — all from a single init() call, reported to your own endpoint.",
     "items": {
       "errorCapture": {
         "title": "Full error capture",
-        "description": "Uncaught exceptions, unhandled rejections, failed XHR/fetch calls and framework errors — enriched with breadcrumbs, identity and the session context around them."
+        "description": "Runtime errors, failed resource loads, unhandled rejections, console.error, failed XHR/fetch and React/Vue errors — enriched with breadcrumbs, identity and device context, deduplicated and batch-aggregated automatically, with the seconds before a failure replayed from a rolling screen record."
       },
       "journeyTracking": {
         "title": "Declarative journey tracking",
-        "description": "Page views, clicks and banner exposures via plain data-* attributes. No tracking code in your JSX."
+        "description": "Page views with dwell time, clicks and element exposure duration via yukino-sentry-* attributes — behavior analytics without touching business logic."
       },
       "webVitals": {
         "title": "Web Vitals & timing",
-        "description": "LCP, INP, CLS and resource timing collected on real visits, batched and sent on pagehide."
+        "description": "LCP, FCP, CLS, INP and TTFB plus first-screen paint, navigation and resource timing, long tasks and memory — collected from real visits via PerformanceObserver."
       },
       "whiteScreenReplay": {
         "title": "White-screen detection",
-        "description": "Skeleton checks catch blank renders, with a short screen recording attached so you see exactly what the user saw."
+        "description": "Viewport sampling detects pages that never render, including a skeleton-screen baseline mode — a blank page reports itself instead of failing silently."
       },
       "offlineResilient": {
         "title": "Built for bad networks",
-        "description": "Events queue locally when offline, batch under weak connections and retry with backoff until your endpoint confirms."
+        "description": "Events batch and flush via sendBeacon or fetch, persist to localStorage while offline with a bounded queue, and replay automatically once your endpoint recovers."
       },
       "pluginSystem": {
         "title": "Hooks & plugins",
-        "description": "beforeSend / afterSend hooks for PII scrubbing, plus first-class React and Vue adapters and a plugin API for everything else."
+        "description": "beforeSend / beforeSendBatch / afterSend / beforeBreadcrumb hooks for scrubbing, filtering and sampling; React and Vue adapters, Performance / ScreenRecord / Exposure plugins and an open plugin API."
       }
     },
-    "footnote": "All of it ships in one init() call — every module is opt-out via a single flag.",
+    "footnote": "Everything starts from one init() — each capture is one flag away from off, each plugin strictly opt-in.",
     "exploreHooks": "Browse the API"
   },
   "workflow": {
     "eyebrow": "Three steps",
     "titleA": "From install",
     "titleHighlight": "to insight",
-    "description": "No gateway, no agent, no dashboard to deploy. Point the SDK at any endpoint that accepts JSON.",
+    "description": "No gateway, no SaaS account, no agent to deploy. Point the SDK at any endpoint that accepts JSON — or run the reference server and dashboard shipped in this repo.",
     "steps": {
       "install": {
         "title": "Install",
-        "description": "One package, tree-shakeable, with ESM and CJS builds included."
+        "description": "One package with ESM, CJS and type declarations; React, Vue, Vite and webpack integrations ship as separate subpath exports."
       },
       "init": {
         "title": "Initialize",
-        "description": "Hand it a DSN and you're done — errors, vitals and journeys start flowing automatically."
+        "description": "Pass a dsn and capture starts — errors, HTTP, routing, page views and white-screen detection are on by default; vitals, replay and exposure are opt-in plugins."
       },
       "insight": {
         "title": "Insight",
-        "description": "Open your endpoint or the bundled dashboard: crashes ranked, journeys replayed, vitals tracked."
+        "description": "Open your endpoint or the reference dashboard: crashes ranked, journeys replayed, vitals tracked."
       }
     }
   },
@@ -129,8 +129,8 @@
     "tabVanilla": "Vanilla",
     "tabReact": "React",
     "tabVue": "Vue",
-    "checks1": "Zero-config auto-capture",
-    "checks2": "ESM + CJS · tree-shakeable",
+    "checks1": "Only a dsn is required",
+    "checks2": "ESM + CJS · fully typed",
     "checks3": "MIT licensed",
     "ctaTitle": "Your users already hit the bug.",
     "ctaBody": "Add the SDK, deploy, and the next crash arrives with everything you need to fix it.",
@@ -146,27 +146,27 @@
     "items": {
       "data": {
         "question": "What does the SDK send?",
-        "answer": "Only monitoring events: errors with stack traces and breadcrumbs, page views, declarative clicks and exposures, Web Vitals, and a short screen recording when white-screen is detected. Everything goes to the endpoint you set as your DSN."
+        "answer": "Only monitoring events: errors with stacks and breadcrumbs, failed HTTP requests, page views and dwell time, declarative clicks and exposures, performance metrics, white-screen events and — when a failure triggers it — a gzip-compressed screen recording. Everything goes only to the endpoint you set as your dsn."
       },
       "size": {
         "question": "How big is it?",
-        "answer": "The core bundle is a few kilobytes gzipped and fully tree-shakeable — modules you disable in init() never make it into your build."
+        "answer": "The core is a few kilobytes gzipped, with ESM, CJS and type declarations. Framework adapters, plugins and dev-server mocks live in separate subpath exports, and heavy dependencies like rrweb, pako and FingerprintJS are dynamically imported only when enabled."
       },
       "frameworks": {
         "question": "Which frameworks are supported?",
-        "answer": "Any vanilla JS app works out of the box. First-class adapters ship for React (error boundary) and Vue (global error handler), and the plugin API covers the rest."
+        "answer": "Any vanilla JS app works out of the box. React ships an error boundary, Vue 3 a global error-handler plugin, and reportFrameworkError covers everything else. Vite and webpack dev-server plugins mock the report endpoint and resolve source maps during development."
       },
       "privacy": {
         "question": "Can I control what leaves the browser?",
-        "answer": "Yes. The beforeSend, beforeSendBatch and afterSend hooks let you inspect, redact or drop any payload before it hits the network — and individual captures can be switched off with a single flag."
+        "answer": "Yes. The beforeSend, beforeSendBatch, afterSend and beforeBreadcrumb hooks let you inspect, redact or drop any payload before it hits the network; every capture has its own enable flag; ignoreErrors and excludeAPIs filter noise; sampling and fingerprint identity are configurable."
       },
       "offline": {
         "question": "What happens on flaky connections?",
-        "answer": "Events are cached in localStorage while the network is down and retried with backoff until delivered, so reports survive refreshes, background tabs and subway tunnels."
+        "answer": "Events batch in memory and persist to localStorage while offline, capped at a maximum queue length. The reporter flushes via sendBeacon or fetch, probes your dsn for recovery after failures, and replays the cache when the network returns."
       },
       "license": {
         "question": "Is it open source?",
-        "answer": "MIT. No account, no required SaaS — the SDK talks to your own endpoint, on your own infrastructure."
+        "answer": "MIT. No account, no required SaaS — the SDK talks to your own endpoint, and the repo ships a reference ingest server you can self-host."
       }
     }
   },

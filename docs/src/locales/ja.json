@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "@yukino.js/sentry — フロントエンド監視",
-    "description": "小さなブラウザ SDK が、ページ読み込みの瞬間からエラー・Web Vitals・ユーザー行動を取得。初期化は 3 行、設定はゼロ。"
+    "description": "軽量でフレームワーク非依存のブラウザ計測 SDK。エラー・パフォーマンス・ユーザー行動をページ読み込みから収集し、init() 一行で自分のエンドポイントへ送信します。"
   },
   "common": {
     "language": "言語",
@@ -20,20 +20,20 @@
   "hero": {
     "badge": "v0.0.1 · オープンソース",
     "badgeNote": "MIT ライセンス",
-    "titleA": "すべてのエラーを捉え",
+    "titleA": "すべてのエラーを捉え、",
     "titleHighlight": "すべての訪問を追う。",
-    "subtitle": "小さなブラウザ SDK が、ページ読み込みの瞬間からエラー・Web Vitals・ユーザー行動を取得します。初期化は 3 行、設定はゼロ。",
+    "subtitle": "ページ読み込みの瞬間から、エラー・パフォーマンス・ユーザー行動を収集する軽量 SDK。必要なのは dsn のみ、データは自分のエンドポイントへ直接届きます。",
     "getStarted": "はじめる",
     "starGithub": "GitHub でスター",
     "quick1": "エラー · 自動収集",
     "quick2": "計測 · LCP / INP / CLS",
-    "quick3": "行動 · PV / クリック",
+    "quick3": "行動 · PV / クリック / 露出",
     "stat1Value": "17+",
     "stat1Label": "イベント種別",
-    "stat2Value": "3",
-    "stat2Label": "フレームワーク対応",
+    "stat2Value": "4",
+    "stat2Label": "公式連携",
     "stat3Value": "0",
-    "stat3Label": "設定行",
+    "stat3Label": "追加設定",
     "stat4Value": "100%",
     "stat4Label": "TypeScript"
   },
@@ -41,7 +41,7 @@
     "eyebrow": "ライブデモ",
     "titleA": "サイトが",
     "titleHighlight": "自ら報告する様子",
-    "description": "訪問者のブラウザから、その瞬間にエンドポイントへストリーミングされる実セッション。エラーには ID・履歴・計測・リプレイがすべて添えて届きます。",
+    "description": "訪問者のブラウザで起きた実セッションを、その瞬間にエンドポイントへ送信。エラーには ID・breadcrumbs・デバイス情報・計測・画面録画がすべて添えて届きます。",
     "tabConsole": "コンソール",
     "tabDashboard": "ダッシュボード",
     "statusLive": "ライブ",
@@ -57,7 +57,7 @@
         "prompt": "GET /dashboard · セッション 8f3a2c"
       }
     },
-    "caption": "SDK を 1 行呼ぶだけで、上記のすべてがストリーミングされます。計測コードの追加は不要です。",
+    "caption": "init() を一度呼ぶだけで、上記のすべてが送信されます。ビジネスコードへの計測追加は不要です。",
     "vitalsTitle": "Core Web Vitals",
     "vitalsGood": "良好",
     "vitalsWatch": "要注意",
@@ -71,53 +71,53 @@
     "eyebrow": "機能",
     "titleA": "フロントエンドに必要なものを、",
     "titleHighlight": "ひとつの SDK に",
-    "description": "エラー収集、計測、行動分析、オフライン耐性、拡張ポイント——すべて init() の 1 行から始まります。",
+    "description": "エラー収集、パフォーマンス計測、行動分析、オフライン耐性、拡張ポイント——すべて init() の一行から始まり、データは自分のエンドポイントのみに送られます。",
     "items": {
       "errorCapture": {
         "title": "エラーを網羅収集",
-        "description": "未捕捉例外、unhandled rejection、失敗した XHR/fetch、フレームワークエラーを、breadcrumb・ID・セッション文脈つきで記録します。"
+        "description": "ランタイムエラー、リソース読み込み失敗、unhandled rejection、console.error、XHR/fetch の失敗、React/Vue のエラーを自動収集。breadcrumbs・ユーザー ID・デバイス情報を添え、重複排除とバッチ集約も自動。失敗直前の数秒はローリング画面録画で再現できます。"
       },
       "journeyTracking": {
         "title": "宣言的な行動計測",
-        "description": "ページビュー・クリック・バナー表示は data-* 属性を書くだけ。JSX に計測コードは不要です。"
+        "description": "yukino-sentry-* 属性を書くだけで、ページビューと滞在時間、クリック、要素の露出時間を宣言的に収集。ビジネスロジックは無変更です。"
       },
       "webVitals": {
         "title": "Web Vitals と計測",
-        "description": "LCP・INP・CLS・リソースタイミングを実訪問で収集し、pagehide でまとめて送信します。"
+        "description": "PerformanceObserver により、実訪問での LCP・FCP・CLS・INP・TTFB に加え、ファーストスクリーン描画、ナビゲーション/リソースタイミング、ロングタスク、メモリを収集します。"
       },
       "whiteScreenReplay": {
         "title": "ホワイトスクリーン検知",
-        "description": "スケルトン検査で真っ白な描画を検出し、直近の画面録画を添付。ユーザーの見たものをそのまま確認できます。"
+        "description": "ビューポートのサンプリングで、描画されないページを検出。スケルトン画面のベースライン比較にも対応し、白画面は黙って失敗せず自ら報告されます。"
       },
       "offlineResilient": {
         "title": "不安定な回線に強い",
-        "description": "オフライン時はローカルにキューイング、弱回線ではバッチ化、バックオフで再送。届くまで諦めません。"
+        "description": "イベントはバッチ化され sendBeacon または fetch で送信。オフライン中は localStorage に退避しキュー上限を管理、エンドポイント復旧後は自動で再送されます。"
       },
       "pluginSystem": {
         "title": "フックとプラグイン",
-        "description": "beforeSend / afterSend フックで PII を除去でき、React・Vue アダプタとプラグイン API も標準搭載です。"
+        "description": "beforeSend / beforeSendBatch / afterSend / beforeBreadcrumb フックでマスキング・絞り込み・サンプリングが可能。React・Vue アダプタ、Performance / ScreenRecord / Exposure プラグイン、オープンなプラグイン API を標準搭載。"
       }
     },
-    "footnote": "すべて init() の 1 行で有効化——各モジュールはフラグ 1 つで無効化できます。",
+    "footnote": "すべては init() の一行から。各収集はフラグ一つでオフにでき、プラグインは必要なものだけ有効化できます。",
     "exploreHooks": "API を見る"
   },
   "workflow": {
     "eyebrow": "3 ステップ",
     "titleA": "インストールから",
     "titleHighlight": "インサイトまで",
-    "description": "ゲートウェイもエージェントも、ダッシュボードのデプロイも不要。JSON を受け取れるエンドポイントがあれば十分です。",
+    "description": "ゲートウェイも SaaS アカウントも、エージェントのデプロイも不要。JSON を受け取れるエンドポイントがあれば動きます。リポジトリ同梱の参照サーバーとダッシュボードを使うこともできます。",
     "steps": {
       "install": {
         "title": "インストール",
-        "description": "1 パッケージ、ツリーシェイク可能、ESM と CJS を同梱。"
+        "description": "ESM・CJS・型定義を同梱した 1 パッケージ。React・Vue・Vite・webpack 連携はサブパスエクスポートで個別に提供され、使わない依存は混ざりません。"
       },
       "init": {
         "title": "初期化",
-        "description": "DSN を 1 行渡すだけ。エラー・計測・行動が自動で流れ始めます。"
+        "description": "dsn を渡すだけで収集開始。エラー・HTTP・ルーティング・PV・白画面検出は既定でオン。計測・録画・露出はプラグインで必要な分だけ追加します。"
       },
       "insight": {
         "title": "インサイト",
-        "description": "エンドポイントか同梱ダッシュボードを開くだけ。クラッシュの順位、行動のリプレイ、計測の推移。"
+        "description": "エンドポイントまたは参照ダッシュボードを開くだけ。クラッシュの順位付け、行動のリプレイ、計測の推移を確認できます。"
       }
     }
   },
@@ -129,8 +129,8 @@
     "tabVanilla": "Vanilla",
     "tabReact": "React",
     "tabVue": "Vue",
-    "checks1": "設定不要の自動収集",
-    "checks2": "ESM + CJS · ツリーシェイク可能",
+    "checks1": "必要なのは dsn のみ",
+    "checks2": "ESM + CJS · 完全型付け",
     "checks3": "MIT ライセンス",
     "ctaTitle": "バグは、もうユーザーの手元に。",
     "ctaBody": "SDK を追加してデプロイすれば、次のクラッシュには修正に必要なすべてが揃って届きます。",
@@ -146,27 +146,27 @@
     "items": {
       "data": {
         "question": "SDK は何を送信しますか？",
-        "answer": "監視イベントのみです。スタックトレースと breadcrumb 付きのエラー、ページビュー、宣言的クリック、表示計測、Web Vitals、そしてホワイトスクリーン検知時の短い画面録画。すべて、DSN に指定したエンドポイントへ送られます。"
+        "answer": "監視イベントのみです。スタックと breadcrumbs 付きのエラー、失敗した HTTP リクエスト、ページビューと滞在時間、宣言的クリックと露出、パフォーマンス計測、白画面イベント、そして失敗時にトリガーされる gzip 圧縮の画面録画。すべて dsn に指定したエンドポイントへだけ送られます。"
       },
       "size": {
         "question": "サイズはどのくらい？",
-        "answer": "コアバンドルは gzip で数 KB、完全にツリーシェイク可能です。init() で無効化したモジュールがビルドに含まれることはありません。"
+        "answer": "コアは gzip 後数 KB で、ESM・CJS・型定義を同梱。フレームワークアダプタ・プラグイン・開発サーバー用モックはサブパスエクスポートで分離され、rrweb・pako・FingerprintJS などの重い依存は有効時のみ動的インポートされます。"
       },
       "frameworks": {
         "question": "どのフレームワークに対応していますか？",
-        "answer": "Vanilla JS なら追加設定なしで動作します。React（エラー境界）と Vue（グローバルエラーハンドラ）の公式アダプタに加え、それ以外はプラグイン API で対応できます。"
+        "answer": "Vanilla JS はそのまま動作します。React にはエラーバウンダリ、Vue 3 にはグローバルエラーハンドラのプラグインを提供し、それ以外は reportFrameworkError で接続できます。Vite と webpack の開発サーバープラグインは、開発中にエンドポイントをモックし sourcemap を解決します。"
       },
       "privacy": {
         "question": "ブラウザから送る内容を制御できますか？",
-        "answer": "はい。beforeSend・beforeSendBatch・afterSend フックで、送信前のペイロードを検査・マスキング・破棄できます。個々の収集もフラグ 1 つでオフにできます。"
+        "answer": "はい。beforeSend・beforeSendBatch・afterSend・beforeBreadcrumb フックで、送信前のペイロードを検査・マスキング・破棄できます。各収集には個別のフラグがあり、ignoreErrors と excludeAPIs でノイズを除外。サンプリングとフィンガープリントは任意設定です。"
       },
       "offline": {
         "question": "回線が不安定なときは？",
-        "answer": "オフライン中のイベントは localStorage にキャッシュされ、バックオフ付きで再送されます。リロード・バックグラウンドタブ・地下鉄でも、レポートは失われません。"
+        "answer": "イベントはメモリ上でバッチ化され、オフライン中は localStorage に退避します(上限あり)。送信は sendBeacon または fetch を使い、失敗後は dsn への定期プローブで復旧を検知し、キャッシュを自動で再送します。"
       },
       "license": {
         "question": "オープンソースですか？",
-        "answer": "MIT です。アカウント登録も SaaS の利用も不要——SDK はあなた自身のエンドポイントと通信します。"
+        "answer": "MIT です。アカウント登録も SaaS も不要——SDK は自分のインフラ上のエンドポイントと通信します。リポジトリにはセルフホスト可能な参照取り込みサーバーも同梱されています。"
       }
     }
   },

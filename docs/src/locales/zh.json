@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "@yukino.js/sentry — 前端监控与分析",
-    "description": "轻量浏览器 SDK，实时采集异常、Web 指标与用户旅程——三行代码接入，零配置维护。"
+    "description": "轻量、框架无关的浏览器监控 SDK：从页面加载起采集异常、性能与用户行为  — 一行 init() 接入，数据只上报到你自己的端点。"
   },
   "common": {
     "language": "语言",
@@ -22,18 +22,18 @@
     "badgeNote": "MIT 许可",
     "titleA": "捕获每一个异常，",
     "titleHighlight": "还原每一段旅程。",
-    "subtitle": "轻量浏览器 SDK，实时采集异常、Web 指标与用户旅程——三行代码接入，零配置维护。",
+    "subtitle": "轻量浏览器监控 SDK，从页面加载起实时采集异常、性能与用户行为 — 只需一个 dsn 即可初始化，数据直报自有端点。",
     "getStarted": "立即开始",
     "starGithub": "在 GitHub 上 Star",
     "quick1": "异常 · 自动捕获",
     "quick2": "性能 · LCP / INP / CLS",
-    "quick3": "旅程 · PV / 点击",
+    "quick3": "行为 · PV / 点击 / 曝光",
     "stat1Value": "17+",
     "stat1Label": "事件类型",
-    "stat2Value": "3",
-    "stat2Label": "框架适配",
+    "stat2Value": "4",
+    "stat2Label": "生态集成",
     "stat3Value": "0",
-    "stat3Label": "配置行数",
+    "stat3Label": "额外配置",
     "stat4Value": "100%",
     "stat4Label": "TypeScript"
   },
@@ -41,7 +41,7 @@
     "eyebrow": "实时演示",
     "titleA": "站点实况，",
     "titleHighlight": "尽收眼底",
-    "description": "来自访客浏览器的真实会话，实时上报到你的端点。异常送达时附带完整上下文：用户身份、行为轨迹、性能数据与录屏回放。",
+    "description": "来自访客浏览器的真实会话，实时上报到你的端点。异常送达时附带完整上下文：用户身份、行为面包屑、设备信息、性能数据与录屏回放。",
     "tabConsole": "控制台",
     "tabDashboard": "仪表盘",
     "statusLive": "实时",
@@ -57,7 +57,7 @@
         "prompt": "GET /dashboard · 会话 8f3a2c"
       }
     },
-    "caption": "一次 SDK 调用即可上报以上全部事件——业务代码无需任何埋点。",
+    "caption": "一次 init() 调用即可上报以上全部事件 — 业务代码零埋点侵入。",
     "vitalsTitle": "核心 Web 指标",
     "vitalsGood": "良好",
     "vitalsWatch": "需关注",
@@ -71,53 +71,53 @@
     "eyebrow": "核心能力",
     "titleA": "前端团队所需，",
     "titleHighlight": "一个轻量 SDK 全覆盖",
-    "description": "异常捕获、性能监测、旅程分析、弱网容灾与扩展点——全部源自一行 init() 调用。",
+    "description": "异常捕获、性能监测、行为分析、弱网容灾与扩展点 — 全部源自一行 init() 调用，数据只发往你的自有端点。",
     "items": {
       "errorCapture": {
         "title": "全量异常捕获",
-        "description": "自动捕获未处理异常、Promise 拒绝、XHR/fetch 失败与框架错误，并附带行为面包屑、用户身份与会话上下文。"
+        "description": "自动捕获运行时异常、资源加载失败、Promise 拒绝、console.error、XHR/fetch 失败与 React/Vue 框架错误；附带行为面包屑、用户身份与设备上下文，自动去重与批量聚合，失败前数秒还可录屏回放。"
       },
       "journeyTracking": {
-        "title": "声明式旅程追踪",
-        "description": "通过 data-* 属性即可采集页面浏览、点击与曝光，业务代码无需编写埋点。"
+        "title": "声明式行为追踪",
+        "description": "通过 yukino-sentry-* 属性声明式采集页面浏览与停留时长、点击与元素曝光时长 — 业务逻辑零侵入。"
       },
       "webVitals": {
         "title": "Web 指标与耗时",
-        "description": "在真实访问中采集 LCP、INP、CLS 与资源耗时，批量合并，于 pagehide 时上报。"
+        "description": "基于 PerformanceObserver 在真实访问中采集 LCP、FCP、CLS、INP、TTFB，以及首屏时间、导航与资源耗时、长任务和内存占用。"
       },
       "whiteScreenReplay": {
         "title": "白屏检测",
-        "description": "骨架检测识别空白渲染，并附带短时录屏，还原用户的真实所见。"
+        "description": "视口采样检测始终未渲染的页面，支持骨架屏基线模式 — 白屏会主动上报，而不是静默失败。"
       },
       "offlineResilient": {
         "title": "为弱网而生",
-        "description": "离线时事件在本地排队，弱网下批量合并发送，并按退避策略重试，直至端点确认。"
+        "description": "事件批量合并，经 sendBeacon 或 fetch 发送；离线时持久化到 localStorage 并限制队列长度，端点恢复后自动补发。"
       },
       "pluginSystem": {
         "title": "钩子与插件",
-        "description": "beforeSend / afterSend 钩子可用于 PII 脱敏；内置 React 与 Vue 适配，其余场景可经插件 API 扩展。"
+        "description": "beforeSend / beforeSendBatch / afterSend / beforeBreadcrumb 钩子可脱敏、过滤与采样；内置 React、Vue 适配与性能、录屏、曝光插件，并提供开放的插件 API。"
       }
     },
-    "footnote": "所有能力由一行 init() 全部启用——每个模块均可通过单个开关按需关闭。",
+    "footnote": "一切始于一行 init() — 每项采集均可用单个开关关闭，插件按需启用。",
     "exploreHooks": "浏览 API"
   },
   "workflow": {
     "eyebrow": "三步上手",
     "titleA": "从安装",
     "titleHighlight": "到洞察",
-    "description": "无需网关、无需常驻进程、无需部署面板——将 SDK 指向任何能接收 JSON 的端点即可。",
+    "description": "无需网关、无需 SaaS 账户、无需部署代理 — 将 SDK 指向任何能接收 JSON 的端点即可，也可直接运行仓库内置的参考服务端与仪表盘。",
     "steps": {
       "install": {
         "title": "安装",
-        "description": "单一依赖包，支持 tree-shaking，同时提供 ESM 与 CJS 构建。"
+        "description": "单一依赖包，提供 ESM、CJS 与类型声明；React、Vue、Vite 与 webpack 集成以独立子路径导出，互不牵连。"
       },
       "init": {
         "title": "初始化",
-        "description": "传入 DSN 即完成——异常、性能与旅程数据自动开始上报。"
+        "description": "传入 dsn 即开始采集 — 异常、HTTP、路由、PV 与白屏检测默认开启；性能、录屏与曝光插件按需启用。"
       },
       "insight": {
         "title": "洞察",
-        "description": "打开你的端点或内置仪表盘：异常按频次排序，旅程可回放，指标可监控。"
+        "description": "打开你的端点或参考仪表盘：异常按频次排序，旅程可回放，指标可追踪。"
       }
     }
   },
@@ -125,12 +125,12 @@
     "eyebrow": "快速开始",
     "titleA": "一分钟内",
     "titleHighlight": "完成接入",
-    "description": "兼容任意打包器与后端——只要它能接收 POST，就能接收上报数据。",
+    "description": "兼容任意打包器与后端 — 只要它能接收 POST，就能接收上报数据。",
     "tabVanilla": "原生 JS",
     "tabReact": "React",
     "tabVue": "Vue",
-    "checks1": "零配置自动捕获",
-    "checks2": "ESM + CJS · 支持 tree-shaking",
+    "checks1": "仅需一个 dsn",
+    "checks2": "ESM + CJS · 完整类型",
     "checks3": "MIT 许可",
     "ctaTitle": "你的用户已经触发了这个异常。",
     "ctaBody": "接入 SDK 并部署，下一次崩溃上报将带齐修复所需的全部信息。",
@@ -142,31 +142,31 @@
     "titleA": "常见疑问，",
     "titleHighlight": "逐一解答",
     "bodyA": "其他问题，欢迎在",
-    "bodyB": "反馈——通常一天内回复。",
+    "bodyB": "反馈 — 通常一天内回复。",
     "items": {
       "data": {
         "question": "SDK 会发送哪些数据？",
-        "answer": "仅监控事件：异常及其堆栈与面包屑、页面浏览、声明式点击与曝光、Web 指标，以及检测到白屏时的短时录屏。全部数据只发往你配置的 DSN 端点。"
+        "answer": "仅监控事件：异常及其堆栈与面包屑、失败的 HTTP 请求、页面浏览与停留时长、声明式点击与曝光、性能指标、白屏事件，以及异常触发时经 gzip 压缩的录屏。全部数据只发往你配置的 dsn 端点。"
       },
       "size": {
         "question": "体积有多大？",
-        "answer": "核心包 gzip 后仅数 KB，且完全支持 tree-shaking——在 init() 中关闭的模块不会进入构建产物。"
+        "answer": "核心包 gzip 后仅数 KB，提供 ESM、CJS 与类型声明。框架适配、插件与开发服务器模拟为独立子路径导出；rrweb、pako、FingerprintJS 等重依赖仅在启用时动态加载。"
       },
       "frameworks": {
         "question": "支持哪些框架？",
-        "answer": "原生 JS 应用开箱即用；React（错误边界）与 Vue（全局错误处理）提供官方适配，其余框架可经插件 API 接入。"
+        "answer": "原生 JS 应用开箱即用；React 提供错误边界组件，Vue 3 提供全局错误处理插件，其他框架可调用 reportFrameworkError 接入。Vite 与 webpack 开发服务器插件可在开发期模拟上报端点并还原 sourcemap。"
       },
       "privacy": {
         "question": "能否控制哪些数据离开浏览器？",
-        "answer": "可以。beforeSend、beforeSendBatch 与 afterSend 钩子允许你在数据发出前检查、脱敏或丢弃任意负载；单项采集也可通过一个开关关闭。"
+        "answer": "可以。beforeSend、beforeSendBatch、afterSend 与 beforeBreadcrumb 钩子允许在数据发出前检查、脱敏或丢弃任意负载；每项采集均有独立开关；ignoreErrors 与 excludeAPIs 可过滤噪音；采样率与指纹身份均可配置。"
       },
       "offline": {
         "question": "网络不稳定时会怎样？",
-        "answer": "断网期间事件缓存在 localStorage 中，并按退避策略重试直至送达——页面刷新、切换后台、经过隧道，上报都不会丢失。"
+        "answer": "事件先在内存队列批量合并，离线时持久化到 localStorage 并限制最大长度；上报经 sendBeacon 或 fetch 发送，失败后定期探测 dsn 恢复情况，网络恢复自动补发缓存。"
       },
       "license": {
         "question": "是开源的吗？",
-        "answer": "MIT 许可。无需注册账户，也不强制绑定 SaaS——SDK 直接与你自有基础设施上的端点通信。"
+        "answer": "MIT 许可。无需注册账户，不强制绑定 SaaS — SDK 直连你自有基础设施上的端点，仓库还内置可自托管的参考上报服务端。"
       }
     }
   },
