@@ -211,12 +211,10 @@ export class NavbarElement extends LitElement {
 
   private navLinks() {
     return [
+      { label: t("nav.showcase"), href: "#showcase" },
       { label: t("nav.features"), href: "#features" },
-      { label: t("nav.analytics"), href: "#analytics" },
-      { label: t("nav.performance"), href: "#performance" },
-      { label: t("nav.plugins"), href: "#plugins" },
-      { label: t("nav.frameworks"), href: "#frameworks" },
-      { label: t("nav.api"), href: "#api" },
+      { label: t("nav.install"), href: "#install" },
+      { label: t("nav.faq"), href: "#faq" },
     ] as const;
   }
 
@@ -275,7 +273,7 @@ export class NavbarElement extends LitElement {
                   className={`flex w-full items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium transition ${
                     selected
                       ? "bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-200"
-                      : "text-[#3c4043] hover:bg-black/4 dark:text-slate-200 dark:hover:bg-white/6"
+                      : "text-[#3c4043] hover:bg-black/4 dark:text-[#e8eaed] dark:hover:bg-white/6"
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
@@ -357,9 +355,9 @@ export class NavbarElement extends LitElement {
             </a>
 
             <a
-              href="#quickstart"
+              href="#install"
               onClick={(event) => {
-                handleAnchorClick(event, "#quickstart");
+                handleAnchorClick(event, "#install");
               }}
               className={`group ${primaryButton} hidden px-5 py-2.5 sm:inline-flex`}
             >
@@ -396,16 +394,16 @@ export class NavbarElement extends LitElement {
                   handleAnchorClick(event, link.href);
                   this.closeMenu();
                 }}
-                className="hover:bg-brand-50 hover:text-brand-600 dark:hover:text-brand-200 block rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition dark:text-slate-200 dark:hover:bg-white/5"
+                className="hover:bg-brand-50 hover:text-brand-600 dark:hover:text-brand-200 block rounded-xl px-3 py-2.5 text-sm font-medium text-[#3c4043] transition dark:text-[#e8eaed] dark:hover:bg-white/5"
               >
                 {link.label}
               </a>
             ))}
             <div className="flex items-center gap-2 pt-2">
               <a
-                href="#quickstart"
+                href="#install"
                 onClick={(event) => {
-                  handleAnchorClick(event, "#quickstart");
+                  handleAnchorClick(event, "#install");
                   this.closeMenu();
                 }}
                 className={`${brandGradient} inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-bold text-white`}

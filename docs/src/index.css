@@ -4,11 +4,14 @@
 
 @layer base {
   code-block,
+  copy-button,
   enter-effect,
   loop-effect,
   scroll-progress,
   site-navbar,
-  frameworks-section,
+  site-showcase,
+  site-install,
+  site-faq,
   ui-reveal,
   ui-reveal-item,
   ui-reveal-list {
@@ -74,10 +77,10 @@
   --color-sky-500: #4285f4;
   --color-sky-600: #1a73e8;
 
-  --color-ink-950: #101113;
-  --color-ink-900: #17181b;
-  --color-ink-800: #202124;
-  --color-ink-700: #2b2c2f;
+  --color-ink-950: #131314;
+  --color-ink-900: #1e1f20;
+  --color-ink-800: #28292c;
+  --color-ink-700: #35363a;
 
   --shadow-glow:
     0 0 0 1px rgb(66 133 244 / 0.18), 0 18px 50px -20px rgb(26 115 232 / 0.4);

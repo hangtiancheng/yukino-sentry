@@ -1,436 +1,187 @@
 {
   "meta": {
-    "title": "Yukino Sentry — フロントエンドの可観測性を、5行で",
-    "description": "Yukino Sentryはフレームワークに依存しないブラウザ監視SDK。エラー、HTTP、Web Vitals、ページビュー、宣言的クリック、露出計測、ホワイトスクリーン検知、オフライン送信、画面録画をひとつのSDKで。"
+    "title": "@yukino.js/sentry — フロントエンド監視",
+    "description": "小さなブラウザ SDK が、ページ読み込みの瞬間からエラー・Web Vitals・ユーザー行動を取得。初期化は 3 行、設定はゼロ。"
   },
   "common": {
     "language": "言語",
     "copy": "コピー",
-    "copied": "コピーしました"
+    "copied": "コピーしました",
+    "getStarted": "はじめる",
+    "starOnGithub": "GitHub でスター"
   },
   "nav": {
+    "showcase": "ライブデモ",
     "features": "機能",
-    "analytics": "行動分析",
-    "performance": "パフォーマンス",
-    "plugins": "プラグイン",
-    "frameworks": "フレームワーク",
-    "api": "API",
-    "getStarted": "始める"
+    "install": "はじめる",
+    "faq": "FAQ",
+    "getStarted": "はじめる"
   },
   "hero": {
-    "badge": "プラグイン・オフライン送信・開発時ソースマップ",
-    "titleLine1": "速く発送し、",
-    "titleAccent": "何も見逃さない。",
-    "description": "Yukino Sentryはフレームワークに依存しない監視SDK。エラー、HTTP、Web Vitals、ページビュー、クリック、露出、ホワイトスクリーン、セッションを——わずか5行のコードで捉えます。",
-    "getStarted": "始める",
-    "starGithub": "GitHubでスター",
-    "trust1": "TypeScriptファースト",
-    "trust2": "React & Vue対応",
-    "trust3": "ツリーシェイク可能",
-    "trust4": "MITライセンス",
-    "stat1Value": "5行",
-    "stat1Label": "で完全な可観測性",
-    "stat2Value": "16",
-    "stat2Label": "収録イベント種別",
-    "stat3Value": "6",
-    "stat3Label": "ツリーシェイク可能な入口",
+    "badge": "v0.0.1 · オープンソース",
+    "badgeNote": "MIT ライセンス",
+    "titleA": "すべてのエラーを捉え",
+    "titleHighlight": "すべての訪問を追う。",
+    "subtitle": "小さなブラウザ SDK が、ページ読み込みの瞬間からエラー・Web Vitals・ユーザー行動を取得します。初期化は 3 行、設定はゼロ。",
+    "getStarted": "はじめる",
+    "starGithub": "GitHub でスター",
+    "quick1": "エラー · 自動収集",
+    "quick2": "計測 · LCP / INP / CLS",
+    "quick3": "行動 · PV / クリック",
+    "stat1Value": "17+",
+    "stat1Label": "イベント種別",
+    "stat2Value": "3",
+    "stat2Label": "フレームワーク対応",
+    "stat3Value": "0",
+    "stat3Label": "設定行",
     "stat4Value": "100%",
-    "stat4Label": "型完備の公開面",
-    "float1Title": "エラーを捕捉",
-    "float1Sub": "重複排除 · 一括送信",
-    "float2Title": "LCP 1.24s",
-    "float2Sub": "評価: 良好",
-    "float3Title": "PVを記録",
-    "float3Sub": "滞留 12.4s"
+    "stat4Label": "TypeScript"
+  },
+  "showcase": {
+    "eyebrow": "ライブデモ",
+    "titleA": "サイトが",
+    "titleHighlight": "自ら報告する様子",
+    "description": "訪問者のブラウザから、その瞬間にエンドポイントへストリーミングされる実セッション。エラーには ID・履歴・計測・リプレイがすべて添えて届きます。",
+    "tabConsole": "コンソール",
+    "tabDashboard": "ダッシュボード",
+    "statusLive": "ライブ",
+    "statusSession": "セッション",
+    "scenes": {
+      "error": {
+        "prompt": "GET /checkout · セッション 8f3a2c"
+      },
+      "journey": {
+        "prompt": "GET /pricing · セッション 8f3a2c"
+      },
+      "vitals": {
+        "prompt": "GET /dashboard · セッション 8f3a2c"
+      }
+    },
+    "caption": "SDK を 1 行呼ぶだけで、上記のすべてがストリーミングされます。計測コードの追加は不要です。",
+    "vitalsTitle": "Core Web Vitals",
+    "vitalsGood": "良好",
+    "vitalsWatch": "要注意",
+    "eventsTitle": "イベント · 直近 12 時間",
+    "eventsUnit": "件/時",
+    "errorsTitle": "頻出エラー",
+    "error1Meta": "checkout · 7 日で 42 件",
+    "error2Meta": "xhr · 7 日で 17 件"
   },
   "features": {
-    "eyebrow": "プラットフォーム",
-    "title": "ひとつのSDKで、",
-    "accent": "すべての信号を。",
-    "description": "ブラウザが語るセッションのすべて——エラー、ネットワーク、パフォーマンス、行動、信頼性——を、アプリを一切ブロックしない完全な型付きクライアントひとつで捉えます。",
+    "eyebrow": "機能",
+    "titleA": "フロントエンドに必要なものを、",
+    "titleHighlight": "ひとつの SDK に",
+    "description": "エラー収集、計測、行動分析、オフライン耐性、拡張ポイント——すべて init() の 1 行から始まります。",
     "items": {
       "errorCapture": {
-        "title": "エラー捕捉",
-        "description": "実行時エラー、console.error、リソース読み込み失敗、未処理のrejectionを自動で分類・重複排除・一括化します。",
-        "tag": "エラー"
+        "title": "エラーを網羅収集",
+        "description": "未捕捉例外、unhandled rejection、失敗した XHR/fetch、フレームワークエラーを、breadcrumb・ID・セッション文脈つきで記録します。"
       },
-      "httpCapture": {
-        "title": "HTTP捕捉",
-        "description": "XHRとfetchを計測。ステータス分類、server-timing解析、失敗時のみ8 KBの本文を取得します。",
-        "tag": "ネットワーク"
+      "journeyTracking": {
+        "title": "宣言的な行動計測",
+        "description": "ページビュー・クリック・バナー表示は data-* 属性を書くだけ。JSX に計測コードは不要です。"
       },
       "webVitals": {
-        "title": "Web Vitals",
-        "description": "LCP、FCP、CLS、INP、TTFBに加え、実際のDOM変化から測る独自のFirst Screen Paint指標。",
-        "tag": "パフォーマンス"
+        "title": "Web Vitals と計測",
+        "description": "LCP・INP・CLS・リソースタイミングを実訪問で収集し、pagehide でまとめて送信します。"
       },
-      "navigationTiming": {
-        "title": "ナビゲーションタイミング",
-        "description": "Navigation Timing APIからDNS、TLS、TTFB、DOM処理、リソース読み込み、リダイレクトを分解表示。",
-        "tag": "パフォーマンス"
-      },
-      "pageViews": {
-        "title": "ページビューと滞留",
-        "description": "PageLoadとルート変更のPVを自動計測。滞留時間はpagehideで送出するため、モバイルのセッションを失いません。",
-        "tag": "分析"
-      },
-      "declarativeClicks": {
-        "title": "宣言的クリック",
-        "description": "yukino-sentry-*属性だけでクリック計測。コード不要でパラメータ、要素パス、ビューポート座標を取得。",
-        "tag": "分析"
-      },
-      "exposure": {
-        "title": "露出計測",
-        "description": "IntersectionObserverの閾値で要素の表示時間を測定。対象ごとにカスタムパラメータを設定できます。",
-        "tag": "分析"
-      },
-      "whiteScreen": {
+      "whiteScreenReplay": {
         "title": "ホワイトスクリーン検知",
-        "description": "18点のビューポートサンプリングとスケルトンベースライン方式で、ユーザーの報告前に白画面を捉えます。",
-        "tag": "品質"
+        "description": "スケルトン検査で真っ白な描画を検出し、直近の画面録画を添付。ユーザーの見たものをそのまま確認できます。"
       },
-      "screenRecording": {
-        "title": "画面録画",
-        "description": "gzip圧縮したrrwebローリングウィンドウを重要なエラーとリクエストに添付。ヘルパー関数ひとつで復号できます。",
-        "tag": "診断"
-      },
-      "offlineReporting": {
-        "title": "オフライン送信",
-        "description": "イベントはlocalStorageに退避し、sendBeaconで送信。ネットワーク回復時は指数バックオフの生存確認で自動送信します。",
-        "tag": "信頼性"
-      },
-      "breadcrumbs": {
-        "title": "ブレッドクラム",
-        "description": "HTTP、クリック、ルート、リソース、コードイベントの有界な履歴をすべてのエラー報告に添付します。",
-        "tag": "診断"
-      },
-      "visitorIdentity": {
-        "title": "訪問者の識別",
-        "description": "匿名訪問者ID、永続デバイスID、タブ別セッションIDで、再読み込みを越えてユーザーを特定します。",
-        "tag": "識別"
-      },
-      "reporterHooks": {
-        "title": "送信フック",
-        "description": "beforeSend、beforeSendBatch、afterSendで、イベントがブラウザを離れる前に編集・フィルタ・拡張できます。",
-        "tag": "制御"
+      "offlineResilient": {
+        "title": "不安定な回線に強い",
+        "description": "オフライン時はローカルにキューイング、弱回線ではバッチ化、バックオフで再送。届くまで諦めません。"
       },
       "pluginSystem": {
-        "title": "プラグイン機構",
-        "description": "SentryPluginを実装すればコアを拡張可能。すべてツリーシェイク可能でフレームワーク非依存です。",
-        "tag": "拡張性"
+        "title": "フックとプラグイン",
+        "description": "beforeSend / afterSend フックで PII を除去でき、React・Vue アダプタとプラグイン API も標準搭載です。"
+      }
+    },
+    "footnote": "すべて init() の 1 行で有効化——各モジュールはフラグ 1 つで無効化できます。",
+    "exploreHooks": "API を見る"
+  },
+  "workflow": {
+    "eyebrow": "3 ステップ",
+    "titleA": "インストールから",
+    "titleHighlight": "インサイトまで",
+    "description": "ゲートウェイもエージェントも、ダッシュボードのデプロイも不要。JSON を受け取れるエンドポイントがあれば十分です。",
+    "steps": {
+      "install": {
+        "title": "インストール",
+        "description": "1 パッケージ、ツリーシェイク可能、ESM と CJS を同梱。"
       },
-      "reactVue": {
-        "title": "React & Vue",
-        "description": "React ErrorBoundaryとVue 3プラグインを専用サブパスで公開。余計なものはバンドルされません。",
-        "tag": "フレームワーク"
+      "init": {
+        "title": "初期化",
+        "description": "DSN を 1 行渡すだけ。エラー・計測・行動が自動で流れ始めます。"
       },
-      "devSourceMaps": {
-        "title": "開発時ソースマップ",
-        "description": "Vite・webpackの開発サーバープラグインが、報告されたスタックをインラインスニペット付きで元ソースに解決します。",
-        "tag": "DX"
+      "insight": {
+        "title": "インサイト",
+        "description": "エンドポイントか同梱ダッシュボードを開くだけ。クラッシュの順位、行動のリプレイ、計測の推移。"
       }
     }
   },
-  "developer": {
-    "eyebrow": "開発者ファースト",
-    "title": "発送する人のために、",
-    "accent": "作られています。",
-    "description": "エージェントの導入も、ダッシュボードの学習も不要。小さなクライアント、誠実なデフォルト、そして至る所に escape hatch を用意しています。",
-    "terminalOutput1": "1パッケージを追加しました（1.2s）",
-    "terminalOutput2": "監視準備完了——エージェント不要、ビルド工程不要",
-    "classify1": "コードエラー",
-    "classify2": "リソースエラー",
-    "classify3": "実行時エラー",
-    "classify4": "原因不明",
-    "classifyNote": "重複排除 · 2秒でグループ化 · 5件で一括送信",
-    "timelineTitle": "rrwebローリングウィンドウ · gzip + base64",
-    "stepCapture": "捕捉",
-    "stepQueue": "蓄積",
-    "stepBeacon": "送信",
-    "stepRecover": "回復",
-    "offlineEvents": "42件のイベント",
-    "offlineProbe": "生存確認の再試行",
-    "offlineBackoff": "バックオフ 1s → 60s",
-    "card1Title": "5行で監視を開始",
-    "card1Description": "SDKを組み込むだけ。コアはツリーシェイク可能でフレームワーク非依存、どのページでも安全にインポートできます。",
-    "card2Title": "すべての問題を自動分類",
-    "card2Description": "コード・リソース・実行時・不明のエラーがそれぞれ専用の経路を通るため、振り分け・重複排除・一括化は常に予測どおりです。",
-    "card3Title": "スタックだけでなく、セッションを見る",
-    "card3Description": "ブレッドクラムと圧縮されたrrwebウィンドウが、障害前の瞬間——クリック、ルート、リクエスト、DOM——を再生します。",
-    "card4Title": "オフラインでも流れを断たない",
-    "card4Description": "イベントはlocalStorageに永続化され、sendBeaconで送信、ネットワーク回復時は指数バックオフの生存確認で回復します。",
-    "pill1": "エラー同一性による重複排除",
-    "pill2": "有界FIFOブレッドクラム",
-    "pill3": "損失ゼロのオフラインキュー",
-    "pill4": "オンデマンド画面録画"
+  "install": {
+    "eyebrow": "はじめる",
+    "titleA": "1 分以内に",
+    "titleHighlight": "動き始める",
+    "description": "バンドラもバックエンドも問いません。POST を受け取れるなら、レポートも受け取れます。",
+    "tabVanilla": "Vanilla",
+    "tabReact": "React",
+    "tabVue": "Vue",
+    "checks1": "設定不要の自動収集",
+    "checks2": "ESM + CJS · ツリーシェイク可能",
+    "checks3": "MIT ライセンス",
+    "ctaTitle": "バグは、もうユーザーの手元に。",
+    "ctaBody": "SDK を追加してデプロイすれば、次のクラッシュには修正に必要なすべてが揃って届きます。",
+    "ctaPrimary": "はじめる",
+    "ctaSecondary": "GitHub でスター"
   },
-  "analytics": {
-    "eyebrow": "プロダクト分析",
-    "title": "クラッシュだけでなく、",
-    "accent": "行動の旅程を理解。",
-    "description": "行動シグナルはエラーデータの隣に並びます。セッションがどのページに留まったか、何がクリックされたか、プロモーションが何秒画面にあったかを確認できます。",
-    "dwellNote": "100 ms未満の滞留はノイズとして破棄します。最終ウィンドウはpagehideで送出されるため、モバイルのセッションを失いません。",
-    "exposureNote": "閾値ごとにひとつのオブザーバーを全対象で再利用。表示後に要素がビューポートを離れた時点で報告します。",
-    "exposureVisible": "表示 4.8s",
-    "clickAttrsTitle": "宣言的クリック属性",
-    "attr1Description": "明示的なイベントID。最優先。",
-    "attr2Description": "人間が読めるメッセージ。",
-    "attr3Description": "コンテナIDへのフォールバック。",
-    "attr4Description": "その他の属性はすべてパラメータになります。",
-    "card1Label": "シグナル",
-    "card1Title": "自動ページビュー",
-    "card1Description": "PageLoad、HistoryChange、HashChangeを初日から記録。それぞれURL、リファラー、開始時刻を伴います。",
-    "card2Label": "インタラクション",
-    "card2Title": "コード不要のクリック計測",
-    "card2Description": "クリックは座標、要素パス、カスタムパラメータ、解決済みイベントIDを報告——通常のクリックは課金対象になりません。",
-    "card3Label": "可視性",
-    "card3Title": "露出時間",
-    "pill1": "滞留時間の報告",
-    "pill2": "スロットル付きクリック",
-    "pill3": "閾値を理解するオブザーバー"
-  },
-  "performance": {
-    "eyebrow": "パフォーマンス",
-    "title": "実ユーザーの指標を、",
-    "accent": "現場で計測。",
-    "description": "Web Vitalsと完全なナビゲーションタイミングがエラーと並走するため、遅いリクエストとクラッシュをひとつの物語として追えます。",
-    "vitalsTitle": "Web Vitals",
-    "vitalsBadge": "すべて良好",
-    "source1Description": "ペイント、DOM、ロード、DNS、TCP、TLS、TTFB、転送、リダイレクトの内訳。",
-    "source2Description": "バッファされた全リソースのスナップショット。キャッシュと転送サイズ付き。",
-    "source3Description": "完了したリソースごとの所要時間。要素へのフォールバック付き。",
-    "source4Description": "インタラクションを阻害するメインスレッドのタスクをエントリとして報告。",
-    "source5Description": "APIが利用可能な場合のChrome限定のメモリ帰属。",
-    "ownTitle": "独自の指標も報告",
-    "ownDescription": "tracePerformanceを使えば、独自のタイミングもパフォーマンスイベントとして送信できます。",
-    "pill1": "web-vitalsによるWeb Vitals",
-    "pill2": "現場のナビゲーションタイミング",
-    "pill3": "ロングタスクの可視化",
-    "pill4": "メモリ帰属"
-  },
-  "reliability": {
-    "eyebrow": "信頼性",
-    "title": "劣悪なネットワークでも、",
-    "accent": "報告は届く。",
-    "description": "本番の監視クライアントに、データの欠落もページの阻害も許されません。Yukino Sentryは永続キューを保持し、非同期で送信し、ひとつの失敗バッチで残りを止めません。",
-    "pipe1Label": "捕捉",
-    "pipe1Caption": "ハンドラが全シグナルを正規化",
-    "pipe2Label": "蓄積",
-    "pipe2Caption": "FIFO上限付きのメモリ内バッチ",
-    "pipe3Label": "永続化",
-    "pipe3Caption": "オフライン時はlocalStorageに退避",
-    "pipe4Label": "転送",
-    "pipe4Caption": "sendBeacon ≤60KB、それ以外はfetch",
-    "pipe5Label": "回復",
-    "pipe5Caption": "バックオフ付きHEADプローブ",
-    "guarantee1Title": "有界メモリ",
-    "guarantee1Description": "ブレッドクラムとエラー重複排除セットはLRUで上限管理。長寿命のSPAでも無限に増えません。",
-    "guarantee2Title": "精密なフィルタリング",
-    "guarantee2Description": "ignoreErrorsはメッセージ部分文字列やパターン、excludeAPIsは完全URLや正規表現を扱います。",
-    "guarantee3Title": "アトミックなバッチ",
-    "guarantee3Description": "失敗したバッチはキュー先頭に戻して永続化。順序は終始保たれます。",
-    "pill1": "sendBeacon優先",
-    "pill2": "keepalive配慮のfetch",
-    "pill3": "指数回復",
-    "pill4": "localStorageミラー"
-  },
-  "plugins": {
-    "eyebrow": "プラグイン",
-    "title": "能力はオプション、",
-    "accent": "バンドル費用も任意。",
-    "description": "パフォーマンス、画面録画、露出計測の能力は@yukino.js/sentry/pluginsにあります。有効化したものだけをインポート——コアの入口は Slim のまま。",
-    "plugin1Tagline": "現場のパフォーマンスを、すぐに。",
-    "plugin1Bullet1": "web-vitalsによるLCP、FCP、CLS、INP、TTFB",
-    "plugin1Bullet2": "DOM変化から測る独自のFirst Screen Paint",
-    "plugin1Bullet3": "ナビゲーション・リソース・ロングタスク・メモリのデータ",
-    "plugin1Bullet4": "コンストラクタオプション不要、安全な機能検出",
-    "plugin2Tagline": "重要な数秒を再生する。",
-    "plugin2Bullet1": "rrwebローリングウィンドウ、gzip + base64符号化",
-    "plugin2Bullet2": "トリガーイベント種別を設定可能",
-    "plugin2Bullet3": "canvas録画とインライン画像を有効化",
-    "plugin2Bullet4": "unzipScreenRecord()でどこでも復号",
-    "plugin3Tagline": "人が実際に見たものを計測。",
-    "plugin3Bullet1": "閾値ごとに再利用するIntersectionObserver",
-    "plugin3Bullet2": "表示時間、表示回数、カスタムパラメータ",
-    "plugin3Bullet3": "一括observe / unobserveヘルパー",
-    "plugin3Bullet4": "Zodで検証される対象と閾値",
-    "byoBadge": "独自のプラグインを",
-    "extendTitle": "SDKの拡張は、",
-    "extendAccent": "ひとつのクラスで。",
-    "extendDescription": "SentryPluginを実装すれば、ライフサイクルを理解するinit()と任意のdestroy()フックを得られます。プラグインは一度登録してセットに保管され、destroy()で整理されます。",
-    "chip1": "抽象基底クラス",
-    "chip2": "レポーターインスタンスの共有"
-  },
-  "frameworks": {
-    "eyebrow": "フレームワーク",
-    "title": "重要な場所では、第一級に。",
-    "accent": "",
-    "description": "ReactとVueは専用サブパスで提供。その他のフレームワークも、同じ型完備のコアとreportFrameworkErrorで使えます。",
-    "noteVanilla": "コアの入口はフレームワーク非依存で、どこでも安全にインポートできます。フレームワークの依存がバンドルに入ることはありません。",
-    "noteReact": "境界は捕捉したレンダーエラーをコンポーネントスタック付きのReactイベントとして報告します。非同期コールバック、イベントハンドラ、SSRのエラーにはtraceError()が必要です。",
-    "noteVue": "vuePluginはapp.config.errorHandlerを包み、インスタンスとinfo文字列とともにVueエラーを報告し、その後、以前に設定されていたハンドラを呼び出します。",
-    "highlight1Title": "ひとつの境界で、完全な文脈",
-    "highlight1Body": "捕捉したReactエラーは、ErrorInfoのコンポーネントスタックをそのまま報告文脈に運びます。",
-    "highlight2Title": "鎖安全なエラーハンドラ",
-    "highlight2Body": "Vueプラグインは以前のハンドラを保持し、報告後に必ず委譲します。",
-    "highlight3Title": "その他のフレームワークも",
-    "highlight3Body": "EventType.OtherFrameworksと独自の文脈オブジェクトでreportFrameworkErrorを呼ぶだけです。",
-    "warning": "境界が捉えるのは同期のレンダーエラーのみ。非同期やイベントハンドラの失敗はtraceError()をご利用ください。"
-  },
-  "quickstart": {
-    "eyebrow": "クイックスタート",
-    "title": "ゼロから本番まで、",
-    "accent": "4ステップで。",
-    "description": "エージェント不要、設定ファイル不要、ビルドプラグイン不要。これがハッピーパスのすべてです。",
-    "step1Title": "SDKをインストール",
-    "step1Description": "パッケージはひとつ。React、Vue、Vite、webpackは使うときだけ入れるオプションのピアです。",
-    "step2Title": "一度だけ初期化",
-    "step2Description": "報告エンドポイントを指すだけ。他はすべて賢明なデフォルトに従います。",
-    "step3Title": "必要なプラグインを有効化",
-    "step3Description": "パフォーマンス、画面録画、露出計測はオプトインでツリーシェイク可能です。",
-    "step4Title": "独自のイベントを記録",
-    "step4Description": "業務イベント、タイミング、手動エラーも同じパイプラインとフックで送れます。",
-    "guardTitle": "別の場所で初期化済みですか？",
-    "guardDescription": "isInitialized()で安全に守り、destroy()で完全に解体でき、デバッグ中はglobalThis.__sentry__でその場で検査できます。"
-  },
-  "options": {
-    "eyebrow": "設定",
-    "title": "すべてのつまみに、",
-    "accent": "解説を。",
-    "description": "init()は部分的なオプションオブジェクトを受け付けます。省略した項目はデフォルトに落ち、監視をひとつも設置する前にzodが統合結果を検証します。",
-    "colOption": "オプション",
-    "colType": "型",
-    "colDefault": "デフォルト",
-    "colDescription": "説明",
-    "group1Title": "基本",
-    "group1Blurb": "プロジェクトの報告開始に必要なすべて。",
-    "group2Title": "捕捉スイッチ",
-    "group2Blurb": "init時に個々の捕捉レイヤーをオン・オフできます。",
-    "group3Title": "調整",
-    "group3Blurb": "サンプリング、一括化、再試行、検知の挙動。",
-    "group4Title": "フックと保存",
-    "group4Blurb": "報告を変換し、オフラインキューの場所を制御します。",
-    "eventTypesTitle": "イベント種別",
-    "eventTypesDescription": "すべての報告には型付きのEventTypeが付くため、下流でルーティング、サンプリング、破棄を迷いなく行えます。",
-    "rows": {
-      "dsn": "報告エンドポイント。initの成功には空でない必要があります。",
-      "projectId": "全イベントに添付されるフロントエンドプロジェクト識別子。",
-      "userId": "現在のユーザー識別子。setUserId()で更新できます。",
-      "disabled": "オプションは適用するが、リスナーと報告はすべてスキップ。",
-      "debug": "実行時にSDKの活動を整形式でコンソールへ流します。",
-      "enableError": "実行時、console.error、リソースエラーの捕捉。",
-      "enableXhr": "XMLHttpRequestのopen/sendを計測。",
-      "enableFetch": "グローバルなfetchを計測。",
-      "enableClick": "宣言的なyukino-sentry-*クリック計測。",
-      "enableUnhandledRejection": "未処理のpromise rejectionを捕捉。",
-      "enableHistory": "pushState、replaceState、popstateを捕捉。",
-      "enableHashChange": "ハッシュナビゲーションを捕捉。",
-      "enableWhiteScreen": "読み込み後にビューポートをサンプリングして白画面を検知。",
-      "enableFingerprint": "FingerprintJSで匿名訪問者IDを解決。",
-      "enableHttpPerformance": "成功したリクエストをパフォーマンスイベントとして報告。",
-      "repeatCodeError": "重複するコードエラーを、重複排除せずに報告。",
-      "tracesSampleRate": "0から1のサンプリング率。全ペイロードに適用。",
-      "maxBreadcrumbs": "ブレッドクラムバッファのFIFO容量。",
-      "cacheMaxLength": "即時フラッシュ前の最大バッチサイズ。",
-      "cacheWaitingTime": "バッチ待機窓（ミリ秒）。",
-      "maxQueueLength": "オフライン・再試行中のキュー上限。",
-      "retryIntervalMilliseconds": "サーバー回復プローブの指数バックオフ上限。",
-      "screenRecordDurationMs": "rrwebローリングウィンドウの長さ（ミリ秒）。",
-      "clickThrottleDelay": "クリック捕捉のスロットル窓。0で無効。",
-      "hasSkeleton": "サンプルをスケルトンベースラインと比較。",
-      "rootCssSelectors": "白画面検知で空とみなすセレクタ。",
-      "ignoreErrors": "報告をスキップするメッセージ部分文字列やパターン。",
-      "excludeAPIs": "HTTP捕捉から除外するURLやパターン。",
-      "beforeSend": "キュー投入前に単一イベントを変換または破棄。",
-      "beforeSendBatch": "転送前にバッチをフィルタまたは書き換え。",
-      "afterSend": "転送成功後のバッチを観察。",
-      "beforeBreadcrumb": "保存前にブレッドクラムを同期的に変換。",
-      "offlineCacheKey": "オフラインキューに使うlocalStorageのキー。"
-    },
-    "events": {
-      "error": "JavaScript実行時エラー。",
-      "fetch": "計測されたfetchリクエスト。",
-      "xhr": "計測されたXMLHttpRequest。",
-      "resource": "静的リソースの読み込み失敗。",
-      "unhandledRejection": "未処理のpromise rejection。",
-      "click": "宣言的クリックイベント。",
-      "hashChange": "ハッシュナビゲーション。",
-      "history": "ヒストリナビゲーション。",
-      "vue": "アプリが処理したVueエラー。",
-      "react": "React ErrorBoundaryのエラー。",
-      "otherFrameworks": "その他のフレームワークの手動報告。",
-      "performance": "パフォーマンス指標。",
-      "screenRecord": "圧縮されたrrwebセッションウィンドウ。",
-      "exposure": "要素の表示時間。",
-      "whiteScreen": "読み込み後に検知された白画面。",
-      "custom": "カスタム業務イベント。",
-      "pv": "ページビューと滞留時間のイベント。"
-    }
-  },
-  "api": {
-    "eyebrow": "APIリファレンス",
-    "title": "小さな表現面に、",
-    "accent": "完全な型付け。",
-    "description": "呼べるものはすべてルート入口にあります。隠れたシングルトンも、フレームワーク結合もありません——契約が明らかな関数だけです。",
+  "faq": {
+    "eyebrow": "FAQ",
+    "titleA": "よくある",
+    "titleHighlight": "ご質問",
+    "bodyA": "その他のご質問は",
+    "bodyB": "に issue をどうぞ。通常 1 日以内に返信します。",
     "items": {
-      "init": "zodでオプションを検証し、実行時設定を書き込み、有効化された捕捉レイヤーをすべて設置します。",
-      "destroy": "装飾したグローバルを復元し、プラグインを解体し、セッション状態をすべてリセットします。",
-      "isInitialized": "セットアップ完了後はtrue、destroy後はfalseを返します。",
-      "enablePlugin": "任意の数のプラグインインスタンスを初期化・登録します。",
-      "traceError": "エラーを手動で分類パイプラインの全経路に通します。",
-      "tracePerformance": "カスタムのパフォーマンス指標をOKイベントとして報告します。",
-      "traceCustomEvent": "任意の業務イベントを文脈付きで発行します。",
-      "tracePageView": "ページビューを手動記録。仮想ルートに便利です。",
-      "reportFrameworkError": "React、Vueその他のフレームワークエラーを明示的な文脈付きで報告します。",
-      "setUserId": "以降の報告に現在のユーザーIDを添付します。",
-      "setVisitorId": "バックエンドが知る訪問者IDをセッションに結び付けます。",
-      "flushOfflineCache": "永続化されたキューを読み込み、直ちに送信を試みます。",
-      "hooks": "init後にプログラムからレポートフックを登録します。",
-      "getIdentity": "anonymousId、visitorId、userIdとその存在フラグを読み取ります。"
+      "data": {
+        "question": "SDK は何を送信しますか？",
+        "answer": "監視イベントのみです。スタックトレースと breadcrumb 付きのエラー、ページビュー、宣言的クリック、表示計測、Web Vitals、そしてホワイトスクリーン検知時の短い画面録画。すべて、DSN に指定したエンドポイントへ送られます。"
+      },
+      "size": {
+        "question": "サイズはどのくらい？",
+        "answer": "コアバンドルは gzip で数 KB、完全にツリーシェイク可能です。init() で無効化したモジュールがビルドに含まれることはありません。"
+      },
+      "frameworks": {
+        "question": "どのフレームワークに対応していますか？",
+        "answer": "Vanilla JS なら追加設定なしで動作します。React（エラー境界）と Vue（グローバルエラーハンドラ）の公式アダプタに加え、それ以外はプラグイン API で対応できます。"
+      },
+      "privacy": {
+        "question": "ブラウザから送る内容を制御できますか？",
+        "answer": "はい。beforeSend・beforeSendBatch・afterSend フックで、送信前のペイロードを検査・マスキング・破棄できます。個々の収集もフラグ 1 つでオフにできます。"
+      },
+      "offline": {
+        "question": "回線が不安定なときは？",
+        "answer": "オフライン中のイベントは localStorage にキャッシュされ、バックオフ付きで再送されます。リロード・バックグラウンドタブ・地下鉄でも、レポートは失われません。"
+      },
+      "license": {
+        "question": "オープンソースですか？",
+        "answer": "MIT です。アカウント登録も SaaS の利用も不要——SDK はあなた自身のエンドポイントと通信します。"
+      }
     }
-  },
-  "integrations": {
-    "eyebrow": "開発ツール",
-    "title": "開発中から、",
-    "accent": "スタックは読める。",
-    "description": "ふたつの開発サーバープラグインが報告エンドポイントをモックして本番を守り、バンドル位置をインラインスニペット付きで元ソースへ写像し直します。",
-    "tool1Blurb": "モックエンドポイントを傍受し、時刻付きJSONLログを書き出し、メモリ上のモジュールグラフからスタックを解決します。",
-    "tool2Blurb": "assetEmittedで出力された.map資産を集め、ディスクに書き出す前にエラー記録を補強します。",
-    "sourcemapBadge": "ソースマップ解決",
-    "sourcemapTitle": "ブラウザでは圧縮され、",
-    "sourcemapAccent": "ログでは読める。",
-    "sourcemapDescription": "エラー・スタック様・フレームワークの記録には、元ファイル、行、列、シンボル名と、失敗行の前後3行のスニペットが添わります。解決の失敗は静かに終わり、生の報告を決して壊しません。",
-    "pill1": "コードエラー",
-    "pill2": "スタック文字列",
-    "pill3": "React · Vue · その他"
-  },
-  "cta": {
-    "badge": "5行で。すべての信号を。",
-    "title": "壊れるものを、",
-    "accent": "ユーザーの指摘より先に捉える。",
-    "description": "SDKを入れ、エンドポイントを指して発送。分類、一括化、再試行、セッション文脈はYukino Sentryにお任せください。",
-    "getStarted": "無料で始める",
-    "browseSource": "ソースを見る"
   },
   "footer": {
-    "description": "フレームワーク非依存のブラウザ監視SDK。エラー、ネットワーク、パフォーマンス、行動、信頼性を捉えます。小さく、型完備で、統合して楽しい作りです。",
-    "column1Title": "プロダクト",
-    "column2Title": "開発者",
-    "resourcesTitle": "リソース",
+    "description": "バグを「聞く」のではなく「見る」ための、フロントエンド監視 SDK。",
+    "productTitle": "プロダクト",
+    "linkShowcase": "ライブデモ",
     "linkFeatures": "機能",
-    "linkAnalytics": "行動分析",
-    "linkPerformance": "パフォーマンス",
-    "linkPlugins": "プラグイン",
-    "linkReliability": "信頼性",
-    "linkQuickStart": "クイックスタート",
-    "linkFrameworks": "フレームワーク",
-    "linkConfiguration": "設定",
-    "linkApi": "APIリファレンス",
-    "linkIntegrations": "統合",
-    "externalNpm": "npmパッケージ",
-    "externalIssues": "問題を報告",
-    "externalLicense": "MITライセンス",
-    "copyright": "Yukino Sentry。MITライセンスで公開。",
-    "tagline": "発送する開発者のために。"
+    "linkInstall": "はじめる",
+    "linkFaq": "FAQ",
+    "resourcesTitle": "リソース",
+    "externalNpm": "npm",
+    "externalIssues": "Issues",
+    "externalLicense": "ライセンス",
+    "copyright": "hangtiancheng. All rights reserved.",
+    "tagline": "Built with yukino.js"
   }
 }

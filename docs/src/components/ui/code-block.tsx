@@ -55,7 +55,7 @@ const TOKEN_PATTERN =
 
 function classify(token: string, rest: string): string {
   if (token.startsWith("//") || token.startsWith("#")) {
-    return "text-slate-400 dark:text-slate-500 italic";
+    return "text-[#80868b] dark:text-[#9aa0a6] italic";
   }
   if (/^[`"']/.test(token)) {
     return "text-g-green-600 dark:text-g-green-300";
@@ -72,7 +72,7 @@ function classify(token: string, rest: string): string {
   if (rest.startsWith("(")) {
     return "text-accent-600 dark:text-accent-300";
   }
-  return "text-slate-700 dark:text-slate-200";
+  return "text-[#3c4043] dark:text-[#e8eaed]";
 }
 
 function highlight(line: string): unknown[] {
@@ -139,7 +139,7 @@ export class CodeBlockElement extends LitElement {
             <span className="size-3 shrink-0 rounded-full bg-[#fbbc04]" />
             <span className="size-3 shrink-0 rounded-full bg-[#34a853]" />
             {this.filename ? (
-              <span className="ml-2 truncate font-mono text-xs text-slate-500 dark:text-slate-400">
+              <span className="ml-2 truncate font-mono text-xs text-[#5f6368] dark:text-[#9aa0a6]">
                 {this.filename}
               </span>
             ) : null}
@@ -147,7 +147,7 @@ export class CodeBlockElement extends LitElement {
               type="button"
               onClick={() => this.handleCopy()}
               aria-label={t("common.copy")}
-              className="hover:border-brand-400/60 hover:text-brand-700 ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#dadce0] bg-white px-3.5 py-2 text-xs font-medium text-slate-600 transition dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white"
+              className="hover:border-brand-400/60 hover:text-brand-700 ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#dadce0] bg-white px-3.5 py-2 text-xs font-medium text-[#3c4043] transition dark:border-white/10 dark:bg-white/5 dark:text-[#9aa0a6] dark:hover:text-white"
             >
               <Icon
                 name={this.copied ? "check" : "copy"}
@@ -162,7 +162,7 @@ export class CodeBlockElement extends LitElement {
             {lines.map((line, index) => (
               <div key={index} className="flex">
                 {this.showLineNumbers ? (
-                  <span className="text-brand-400/70 mr-4 w-6 shrink-0 text-right select-none dark:text-slate-600">
+                  <span className="text-brand-400/70 mr-4 w-6 shrink-0 text-right select-none dark:text-[#9aa0a6]">
                     {index + 1}
                   </span>
                 ) : null}

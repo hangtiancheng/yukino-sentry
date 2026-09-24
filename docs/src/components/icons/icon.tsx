@@ -20,13 +20,16 @@ import fingerprint from "lucide-static/icons/fingerprint.svg?raw";
 import gauge from "lucide-static/icons/gauge.svg?raw";
 import globe from "lucide-static/icons/globe.svg?raw";
 import layers from "lucide-static/icons/layers.svg?raw";
+import loaderCircle from "lucide-static/icons/loader-circle.svg?raw";
 import memoryStick from "lucide-static/icons/memory-stick.svg?raw";
 import menu from "lucide-static/icons/menu.svg?raw";
+import minus from "lucide-static/icons/minus.svg?raw";
 import moon from "lucide-static/icons/moon.svg?raw";
 import mousePointerClick from "lucide-static/icons/mouse-pointer-click.svg?raw";
 import network from "lucide-static/icons/network.svg?raw";
 import packageIcon from "lucide-static/icons/package.svg?raw";
 import plug from "lucide-static/icons/plug.svg?raw";
+import plus from "lucide-static/icons/plus.svg?raw";
 import puzzle from "lucide-static/icons/puzzle.svg?raw";
 import radio from "lucide-static/icons/radio.svg?raw";
 import refreshCw from "lucide-static/icons/refresh-cw.svg?raw";
@@ -36,6 +39,7 @@ import send from "lucide-static/icons/send.svg?raw";
 import server from "lucide-static/icons/server.svg?raw";
 import shieldCheck from "lucide-static/icons/shield-check.svg?raw";
 import sparkles from "lucide-static/icons/sparkles.svg?raw";
+import star from "lucide-static/icons/star.svg?raw";
 import sun from "lucide-static/icons/sun.svg?raw";
 import terminal from "lucide-static/icons/terminal.svg?raw";
 import timer from "lucide-static/icons/timer.svg?raw";
@@ -67,13 +71,16 @@ export const ICONS: Record<string, string> = {
   gauge,
   globe,
   layers,
+  "loader-circle": loaderCircle,
   "memory-stick": memoryStick,
   menu,
+  minus,
   moon,
   "mouse-pointer-click": mousePointerClick,
   network,
   package: packageIcon,
   plug,
+  plus,
   puzzle,
   radio,
   "refresh-cw": refreshCw,
@@ -83,6 +90,7 @@ export const ICONS: Record<string, string> = {
   server,
   "shield-check": shieldCheck,
   sparkles,
+  star,
   sun,
   terminal,
   timer,

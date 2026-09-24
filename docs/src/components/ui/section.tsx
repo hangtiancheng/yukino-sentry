@@ -1,60 +1,70 @@
-import { container, gradientText, heading, muted } from "@/lib/styles";
+import { cn } from "@/lib/cn";
+import {
+  container,
+  eyebrow as eyebrowClass,
+  gradientText,
+  heading,
+  muted,
+} from "@/lib/styles";
 
 export interface SectionProps {
   readonly id?: string;
-  readonly eyebrow?: string;
-  readonly title: unknown;
-  readonly accent?: unknown;
-  readonly description?: unknown;
   readonly children?: unknown;
   readonly className?: string;
-  readonly contentClassName?: string;
 }
 
-export function Section({
-  id,
-  eyebrow,
-  title,
-  accent,
-  description,
-  children,
-  className,
-  contentClassName,
-}: SectionProps) {
+export function Section({ id, children, className }: SectionProps) {
   return (
     <section
       id={id}
-      className={`scroll-mt-28 py-20 sm:py-28 ${className ?? ""}`}
+      className={cn("relative scroll-mt-20 py-16 sm:py-24", className)}
     >
-      <div className={container}>
-        <ui-reveal className="max-w-3xl">
-          {eyebrow ? (
-            <p className="text-brand-600 dark:text-brand-300 mb-3 flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase">
-              <span className="bg-brand-500 size-2 rounded-full" />
-              {eyebrow}
-            </p>
-          ) : null}
-          <h2
-            className={`text-3xl font-black tracking-tight text-balance sm:text-4xl lg:text-[2.9rem] lg:leading-[1.08] ${heading}`}
-          >
-            {title}
-            {accent ? (
-              <>
-                {" "}
-                <span className={gradientText}>{accent}</span>
-              </>
-            ) : null}
-          </h2>
-          {description ? (
-            <p className={`mt-5 text-lg leading-relaxed text-pretty ${muted}`}>
-              {description}
-            </p>
-          ) : null}
-        </ui-reveal>
-        <div className={`mt-12 sm:mt-14 ${contentClassName ?? ""}`}>
-          {children}
-        </div>
-      </div>
+      {children}
     </section>
+  );
+}
+
+export interface SectionHeaderProps {
+  readonly eyebrow: string;
+  readonly titleA: string;
+  readonly titleHighlight: string;
+  readonly description: string;
+  readonly className?: string;
+}
+
+export function SectionHeader({
+  eyebrow,
+  titleA,
+  titleHighlight,
+  description,
+}: SectionHeaderProps) {
+  return (
+    <div className={cn(container, "text-center")}>
+      <div className="mx-auto max-w-3xl">
+        <ui-reveal>
+          <span className={eyebrowClass}>{eyebrow}</span>
+        </ui-reveal>
+        <ui-reveal delay={0.05}>
+          <h2
+            className={cn(
+              "mt-5 text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl md:text-[2.6rem] md:leading-[1.1]",
+              heading,
+            )}
+          >
+            {titleA} <span className={gradientText}>{titleHighlight}</span>
+          </h2>
+        </ui-reveal>
+        <ui-reveal delay={0.1}>
+          <p
+            className={cn(
+              "mx-auto mt-5 max-w-2xl text-base leading-relaxed text-pretty sm:text-lg",
+              muted,
+            )}
+          >
+            {description}
+          </p>
+        </ui-reveal>
+      </div>
+    </div>
   );
 }

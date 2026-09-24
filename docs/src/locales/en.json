@@ -1,436 +1,187 @@
 {
   "meta": {
-    "title": "Yukino Sentry — Frontend observability, five lines away",
-    "description": "Yukino Sentry is a framework-agnostic browser monitoring SDK for errors, HTTP, Web Vitals, page views, declarative clicks, exposure tracking, white-screen detection, offline reporting and screen recordings."
+    "title": "@yukino.js/sentry — Frontend Monitoring & Analytics",
+    "description": "A tiny browser SDK that captures errors, Web Vitals and user journeys the moment your site loads. Three lines to init, zero config to maintain."
   },
   "common": {
     "language": "Language",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "getStarted": "Get started",
+    "starOnGithub": "Star on GitHub"
   },
   "nav": {
+    "showcase": "Live demo",
     "features": "Features",
-    "analytics": "Analytics",
-    "performance": "Performance",
-    "plugins": "Plugins",
-    "frameworks": "Frameworks",
-    "api": "API",
+    "install": "Get started",
+    "faq": "FAQ",
     "getStarted": "Get started"
   },
   "hero": {
-    "badge": "Plugins, offline reporting & dev-time source maps",
-    "titleLine1": "Ship fast.",
-    "titleAccent": "Miss nothing.",
-    "description": "Yukino Sentry is a framework-agnostic monitoring SDK that catches errors, HTTP, Web Vitals, page views, clicks, exposure, blank screens and sessions — from five lines of code.",
+    "badge": "v0.0.1 · Open source",
+    "badgeNote": "MIT licensed",
+    "titleA": "Every error captured.",
+    "titleHighlight": "Every journey replayed.",
+    "subtitle": "A tiny browser SDK that captures errors, Web Vitals and user journeys the moment your site loads — three lines to init, zero config to maintain.",
     "getStarted": "Get started",
     "starGithub": "Star on GitHub",
-    "trust1": "TypeScript-first",
-    "trust2": "React & Vue",
-    "trust3": "Tree-shakeable",
-    "trust4": "MIT licensed",
-    "stat1Value": "5 lines",
-    "stat1Label": "to full observability",
-    "stat2Value": "16",
-    "stat2Label": "captured event types",
-    "stat3Value": "6",
-    "stat3Label": "tree-shakeable entry points",
+    "quick1": "Errors · auto-captured",
+    "quick2": "Vitals · LCP / INP / CLS",
+    "quick3": "Journeys · PV / clicks",
+    "stat1Value": "17+",
+    "stat1Label": "event types",
+    "stat2Value": "3",
+    "stat2Label": "framework adapters",
+    "stat3Value": "0",
+    "stat3Label": "config lines",
     "stat4Value": "100%",
-    "stat4Label": "typed public surface",
-    "float1Title": "Error captured",
-    "float1Sub": "deduplicated · batched",
-    "float2Title": "LCP 1.24s",
-    "float2Sub": "rating: good",
-    "float3Title": "PV recorded",
-    "float3Sub": "dwell 12.4s"
+    "stat4Label": "TypeScript"
+  },
+  "showcase": {
+    "eyebrow": "Live demo",
+    "titleA": "Watch your site",
+    "titleHighlight": "report itself",
+    "description": "A real session from a visitor's browser, streamed to your endpoint as it happens. Errors arrive with full context: identity, breadcrumbs, performance and replay.",
+    "tabConsole": "Console",
+    "tabDashboard": "Dashboard",
+    "statusLive": "live",
+    "statusSession": "session",
+    "scenes": {
+      "error": {
+        "prompt": "GET /checkout · session 8f3a2c"
+      },
+      "journey": {
+        "prompt": "GET /pricing · session 8f3a2c"
+      },
+      "vitals": {
+        "prompt": "GET /dashboard · session 8f3a2c"
+      }
+    },
+    "caption": "One SDK call streams every event above — no instrumentation in your code.",
+    "vitalsTitle": "Core Web Vitals",
+    "vitalsGood": "good",
+    "vitalsWatch": "watch",
+    "eventsTitle": "Events · last 12h",
+    "eventsUnit": "events",
+    "errorsTitle": "Top errors",
+    "error1Meta": "checkout · 42 / 7d",
+    "error2Meta": "xhr · 17 / 7d"
   },
   "features": {
-    "eyebrow": "Platform",
-    "title": "One SDK,",
-    "accent": "every signal.",
-    "description": "Everything the browser can tell you about a session — errors, network, performance, behaviour and reliability — captured by a single, fully typed client that never blocks your app.",
+    "eyebrow": "Capabilities",
+    "titleA": "Everything a frontend team needs,",
+    "titleHighlight": "one small SDK",
+    "description": "Error capture, performance, journey analytics, offline resilience and extension points — all flowing from a single init() call.",
     "items": {
       "errorCapture": {
-        "title": "Error capture",
-        "description": "Runtime errors, console.error, resource load failures and unhandled rejections are classified, deduplicated and batched automatically.",
-        "tag": "Errors"
+        "title": "Full error capture",
+        "description": "Uncaught exceptions, unhandled rejections, failed XHR/fetch calls and framework errors — enriched with breadcrumbs, identity and the session context around them."
       },
-      "httpCapture": {
-        "title": "HTTP capture",
-        "description": "XHR and fetch are instrumented with status classification, server-timing parsing and 8 KB body capture on failures only.",
-        "tag": "Network"
+      "journeyTracking": {
+        "title": "Declarative journey tracking",
+        "description": "Page views, clicks and banner exposures via plain data-* attributes. No tracking code in your JSX."
       },
       "webVitals": {
-        "title": "Web Vitals",
-        "description": "LCP, FCP, CLS, INP and TTFB alongside a custom First Screen Paint metric measured from real DOM mutations.",
-        "tag": "Performance"
+        "title": "Web Vitals & timing",
+        "description": "LCP, INP, CLS and resource timing collected on real visits, batched and sent on pagehide."
       },
-      "navigationTiming": {
-        "title": "Navigation timing",
-        "description": "DNS, TLS, TTFB, DOM processing, resource load and redirect breakdowns from the Navigation Timing API.",
-        "tag": "Performance"
-      },
-      "pageViews": {
-        "title": "Page views & dwell",
-        "description": "Automatic PageLoad, route-change PVs and dwell time flushed on pagehide so mobile sessions are never lost.",
-        "tag": "Analytics"
-      },
-      "declarativeClicks": {
-        "title": "Declarative clicks",
-        "description": "Zero-code click tracking through yukino-sentry-* attributes with params, element path and viewport coordinates.",
-        "tag": "Analytics"
-      },
-      "exposure": {
-        "title": "Exposure tracking",
-        "description": "Measure how long any element stays visible with IntersectionObserver thresholds and custom params per target.",
-        "tag": "Analytics"
-      },
-      "whiteScreen": {
+      "whiteScreenReplay": {
         "title": "White-screen detection",
-        "description": "18-point viewport sampling plus a skeleton-screen baseline mode catches blank pages before users report them.",
-        "tag": "Quality"
+        "description": "Skeleton checks catch blank renders, with a short screen recording attached so you see exactly what the user saw."
       },
-      "screenRecording": {
-        "title": "Screen recording",
-        "description": "A gzipped rrweb rolling window is attached to the errors and requests you care about, decodable with one helper.",
-        "tag": "Diagnostics"
-      },
-      "offlineReporting": {
-        "title": "Offline reporting",
-        "description": "Events queue in localStorage, ship with sendBeacon and recover with an exponential backoff health probe.",
-        "tag": "Reliability"
-      },
-      "breadcrumbs": {
-        "title": "Breadcrumbs",
-        "description": "A bounded trail of HTTP, click, route, resource and code events attached to every error-class report.",
-        "tag": "Diagnostics"
-      },
-      "visitorIdentity": {
-        "title": "Visitor identity",
-        "description": "Anonymous visitor ids, persistent device ids and per-tab session ids resolve users across refreshes.",
-        "tag": "Identity"
-      },
-      "reporterHooks": {
-        "title": "Reporter hooks",
-        "description": "beforeSend, beforeSendBatch and afterSend let you redact, filter or enrich every event before it leaves the browser.",
-        "tag": "Control"
+      "offlineResilient": {
+        "title": "Built for bad networks",
+        "description": "Events queue locally when offline, batch under weak connections and retry with backoff until your endpoint confirms."
       },
       "pluginSystem": {
-        "title": "Plugin system",
-        "description": "Extend the core with any SentryPlugin implementation — everything is tree-shakeable and framework free.",
-        "tag": "Extensible"
+        "title": "Hooks & plugins",
+        "description": "beforeSend / afterSend hooks for PII scrubbing, plus first-class React and Vue adapters and a plugin API for everything else."
+      }
+    },
+    "footnote": "All of it ships in one init() call — every module is opt-out via a single flag.",
+    "exploreHooks": "Browse the API"
+  },
+  "workflow": {
+    "eyebrow": "Three steps",
+    "titleA": "From install",
+    "titleHighlight": "to insight",
+    "description": "No gateway, no agent, no dashboard to deploy. Point the SDK at any endpoint that accepts JSON.",
+    "steps": {
+      "install": {
+        "title": "Install",
+        "description": "One package, tree-shakeable, with ESM and CJS builds included."
       },
-      "reactVue": {
-        "title": "React & Vue",
-        "description": "A React ErrorBoundary and a Vue 3 plugin are published as dedicated subpath exports so nothing extra is bundled.",
-        "tag": "Frameworks"
+      "init": {
+        "title": "Initialize",
+        "description": "Hand it a DSN and you're done — errors, vitals and journeys start flowing automatically."
       },
-      "devSourceMaps": {
-        "title": "Dev-time source maps",
-        "description": "Vite and webpack dev-server plugins resolve reported stacks back to original source with inline snippets.",
-        "tag": "DX"
+      "insight": {
+        "title": "Insight",
+        "description": "Open your endpoint or the bundled dashboard: crashes ranked, journeys replayed, vitals tracked."
       }
     }
   },
-  "developer": {
-    "eyebrow": "Developer first",
-    "title": "Built for the people",
-    "accent": "who ship.",
-    "description": "No agents to install, no dashboards to learn. A tiny client, honest defaults and escape hatches everywhere.",
-    "terminalOutput1": "added 1 package in 1.2s",
-    "terminalOutput2": "ready to monitor — no agent, no build step",
-    "classify1": "Code error",
-    "classify2": "Resource error",
-    "classify3": "Runtime error",
-    "classify4": "Unknown reason",
-    "classifyNote": "deduplicated · grouped after 2s · batched at 5",
-    "timelineTitle": "Rolling rrweb window · gzip + base64",
-    "stepCapture": "Capture",
-    "stepQueue": "Queue",
-    "stepBeacon": "Beacon",
-    "stepRecover": "Recover",
-    "offlineEvents": "42 events",
-    "offlineProbe": "retry probe",
-    "offlineBackoff": "backoff 1s → 60s",
-    "card1Title": "Monitor in five lines",
-    "card1Description": "Drop in the SDK and you are done. The core is tree-shakeable, framework agnostic and safe to import on any page.",
-    "card2Title": "Classify every issue automatically",
-    "card2Description": "Code, resource, runtime and unknown errors each take a dedicated path, so routing, dedup and batching behave predictably.",
-    "card3Title": "See the session, not just the stack",
-    "card3Description": "Breadcrumbs and a compressed rrweb window replay the moments before a failure — clicks, routes, requests and the DOM.",
-    "card4Title": "Stay in the flow, even offline",
-    "card4Description": "Events persist to localStorage, ship with sendBeacon and recover through an exponential health probe when the network returns.",
-    "pill1": "Dedup by error identity",
-    "pill2": "Bounded FIFO breadcrumbs",
-    "pill3": "Zero-loss offline queue",
-    "pill4": "Screen record on demand"
+  "install": {
+    "eyebrow": "Get started",
+    "titleA": "Running in",
+    "titleHighlight": "under a minute",
+    "description": "Works with any bundler and any backend — if it can receive a POST, it can receive a report.",
+    "tabVanilla": "Vanilla",
+    "tabReact": "React",
+    "tabVue": "Vue",
+    "checks1": "Zero-config auto-capture",
+    "checks2": "ESM + CJS · tree-shakeable",
+    "checks3": "MIT licensed",
+    "ctaTitle": "Your users already hit the bug.",
+    "ctaBody": "Add the SDK, deploy, and the next crash arrives with everything you need to fix it.",
+    "ctaPrimary": "Get started",
+    "ctaSecondary": "Star on GitHub"
   },
-  "analytics": {
-    "eyebrow": "Product analytics",
-    "title": "Understand journeys,",
-    "accent": "not just crashes.",
-    "description": "Behavioural signals live next to your error data. See which page a session lingered on, what people clicked and how long a promotion stayed on screen.",
-    "dwellNote": "Dwell under 100 ms is dropped as noise. The final window is flushed on pagehide so mobile sessions are never lost.",
-    "exposureNote": "One observer per unique threshold, reused across every target. Reported when an element leaves the viewport after being visible.",
-    "exposureVisible": "visible 4.8s",
-    "clickAttrsTitle": "Declarative click attributes",
-    "attr1Description": "Explicit event id, first priority.",
-    "attr2Description": "Human-readable message.",
-    "attr3Description": "Container id fallback.",
-    "attr4Description": "Any other attribute becomes a param.",
-    "card1Label": "Signals",
-    "card1Title": "Automatic page views",
-    "card1Description": "PageLoad, HistoryChange and HashChange are captured from day one, each with its URL, referrer and entry time.",
-    "card2Label": "Interaction",
-    "card2Title": "Zero-code click tracking",
-    "card2Description": "Clicks report coordinates, element path, custom params and resolved event id — plain clicks stay out of your bill.",
-    "card3Label": "Visibility",
-    "card3Title": "Exposure durations",
-    "pill1": "Dwell-time reporting",
-    "pill2": "Throttled clicks",
-    "pill3": "Threshold-aware observers"
-  },
-  "performance": {
-    "eyebrow": "Performance",
-    "title": "Real user metrics,",
-    "accent": "measured in the field.",
-    "description": "Web Vitals and a full navigation timing breakdown run beside your errors, so a slow request and a crash are one story.",
-    "vitalsTitle": "Web Vitals",
-    "vitalsBadge": "all good",
-    "source1Description": "paint, DOM, load, DNS, TCP, TLS, TTFB, transfer and redirect breakdown.",
-    "source2Description": "Snapshot of every buffered resource with cache and transfer sizes.",
-    "source3Description": "Per-resource durations as they complete, with element fallback.",
-    "source4Description": "Main-thread tasks that block interaction, reported as entries.",
-    "source5Description": "Chrome-only memory attribution when the API is available.",
-    "ownTitle": "Report your own",
-    "ownDescription": "Any timing you own can be sent as a performance event with tracePerformance.",
-    "pill1": "Web Vitals via web-vitals",
-    "pill2": "Field navigation timing",
-    "pill3": "Long task visibility",
-    "pill4": "Memory attribution"
-  },
-  "reliability": {
-    "eyebrow": "Reliability",
-    "title": "Reporting that survives",
-    "accent": "bad networks.",
-    "description": "A production monitoring client cannot afford to lose data or block the page. Yukino Sentry keeps a durable queue, ships asynchronously and never lets one failed batch stall the rest.",
-    "pipe1Label": "Capture",
-    "pipe1Caption": "Handlers normalize every signal",
-    "pipe2Label": "Queue",
-    "pipe2Caption": "In-memory batch with FIFO limits",
-    "pipe3Label": "Persist",
-    "pipe3Caption": "localStorage mirror while offline",
-    "pipe4Label": "Transport",
-    "pipe4Caption": "sendBeacon ≤60KB, else fetch",
-    "pipe5Label": "Recover",
-    "pipe5Caption": "HEAD probe with backoff",
-    "guarantee1Title": "Bounded memory",
-    "guarantee1Description": "Breadcrumbs and the error-dedup set are LRU-capped, so long-lived SPAs never grow without limit.",
-    "guarantee2Title": "Precision filtering",
-    "guarantee2Description": "ignoreErrors matches message substrings or patterns; excludeAPIs uses exact URLs or regex.",
-    "guarantee3Title": "Atomic batches",
-    "guarantee3Description": "A failed batch is pushed back to the queue head and persisted, so ordering is preserved end-to-end.",
-    "pill1": "sendBeacon first",
-    "pill2": "keepalive-aware fetch",
-    "pill3": "exponential recovery",
-    "pill4": "localStorage mirror"
-  },
-  "plugins": {
-    "eyebrow": "Plugins",
-    "title": "Optional power,",
-    "accent": "opt-in bundle cost.",
-    "description": "Capabilities like performance, screen recording and exposure tracking live in @yukino.js/sentry/plugins. Import only what you enable — the core entry stays lean.",
-    "plugin1Tagline": "Field performance, out of the box.",
-    "plugin1Bullet1": "LCP, FCP, CLS, INP and TTFB from web-vitals",
-    "plugin1Bullet2": "Custom First Screen Paint from DOM mutations",
-    "plugin1Bullet3": "Navigation, resource, long-task and memory data",
-    "plugin1Bullet4": "Zero constructor options, safe capability checks",
-    "plugin2Tagline": "Replay the seconds that matter.",
-    "plugin2Bullet1": "Rolling rrweb window, gzip + base64 encoded",
-    "plugin2Bullet2": "Configurable trigger event types",
-    "plugin2Bullet3": "Canvas recording and inline images enabled",
-    "plugin2Bullet4": "Decode with unzipScreenRecord() anywhere",
-    "plugin3Tagline": "Measure what people actually see.",
-    "plugin3Bullet1": "IntersectionObserver with per-threshold reuse",
-    "plugin3Bullet2": "Visible duration, show times and custom params",
-    "plugin3Bullet3": "Batch observe and unobserve helpers",
-    "plugin3Bullet4": "Zod-validated targets and thresholds",
-    "byoBadge": "Bring your own",
-    "extendTitle": "Extend the SDK with a",
-    "extendAccent": "single class.",
-    "extendDescription": "Implement SentryPlugin and get lifecycle-aware init() and optional destroy() hooks. Plugins are registered once, stored in a set and cleaned up with destroy().",
-    "chip1": "Abstract base class",
-    "chip2": "Shared reporter instance"
-  },
-  "frameworks": {
-    "eyebrow": "Frameworks",
-    "title": "First-class where it counts.",
-    "accent": "",
-    "description": "React and Vue ship as dedicated subpath exports. Everyone else uses the same typed core with reportFrameworkError.",
-    "noteVanilla": "The core entry is framework agnostic and safe to import anywhere. No framework dependency is ever pulled into your bundle.",
-    "noteReact": "The boundary reports caught render errors as React events with the component stack. Async callbacks, event handlers and SSR errors still need traceError().",
-    "noteVue": "vuePlugin wraps app.config.errorHandler, reports Vue errors with the instance and info string, then calls any handler you had installed before.",
-    "highlight1Title": "One boundary, full context",
-    "highlight1Body": "Caught React errors carry the ErrorInfo component stack straight into the report context.",
-    "highlight2Title": "Chain-safe error handlers",
-    "highlight2Body": "The Vue plugin captures the previous handler and always delegates after reporting.",
-    "highlight3Title": "Any other framework",
-    "highlight3Body": "Call reportFrameworkError with EventType.OtherFrameworks and your own context object.",
-    "warning": "Boundaries only catch synchronous render errors. Use traceError() for async and event-handler failures."
-  },
-  "quickstart": {
-    "eyebrow": "Quick start",
-    "title": "From zero to production",
-    "accent": "in four steps.",
-    "description": "No agent, no config file, no build plugin required. This is the entire happy path.",
-    "step1Title": "Install the SDK",
-    "step1Description": "One package. React, Vue, Vite and webpack are optional peers you only install when you use them.",
-    "step2Title": "Initialize once",
-    "step2Description": "Point the SDK at your report endpoint. Everything else falls back to sensible defaults.",
-    "step3Title": "Enable the plugins you need",
-    "step3Description": "Performance, screen recording and exposure tracking are opt-in and tree-shakeable.",
-    "step4Title": "Trace your own events",
-    "step4Description": "Send business events, timings and manual errors with the same pipeline and hooks.",
-    "guardTitle": "Already initialized somewhere else?",
-    "guardDescription": "The SDK is safe to guard with isInitialized(), can be fully torn down with destroy(), and keeps globalThis.__sentry__ available for live inspection while debugging."
-  },
-  "options": {
-    "eyebrow": "Configuration",
-    "title": "Every knob,",
-    "accent": "documented.",
-    "description": "init() accepts a partial options object. Anything you omit falls back to a default, and zod validates the merged result before a single listener is installed.",
-    "colOption": "Option",
-    "colType": "Type",
-    "colDefault": "Default",
-    "colDescription": "Description",
-    "group1Title": "Essentials",
-    "group1Blurb": "Everything you need to get a project reporting.",
-    "group2Title": "Capture switches",
-    "group2Blurb": "Turn individual capture layers on or off at init time.",
-    "group3Title": "Tuning",
-    "group3Blurb": "Sampling, batching, retry and detection behaviour.",
-    "group4Title": "Hooks & storage",
-    "group4Blurb": "Transform reports and control where the offline queue lives.",
-    "eventTypesTitle": "Event types",
-    "eventTypesDescription": "Every report carries a typed EventType so you can route, sample or drop signals downstream without guessing.",
-    "rows": {
-      "dsn": "Report endpoint. Must be non-empty for init to succeed.",
-      "projectId": "Frontend project identifier attached to every event.",
-      "userId": "Current user identifier, updatable with setUserId().",
-      "disabled": "Apply options but skip all listeners and reporting.",
-      "debug": "Stream styled SDK activity to the console at runtime.",
-      "enableError": "Runtime, console.error and resource error capture.",
-      "enableXhr": "Instrument XMLHttpRequest open/send.",
-      "enableFetch": "Instrument the global fetch function.",
-      "enableClick": "Declarative yukino-sentry-* click tracking.",
-      "enableUnhandledRejection": "Capture unhandled promise rejections.",
-      "enableHistory": "Capture pushState, replaceState and popstate.",
-      "enableHashChange": "Capture hash navigation.",
-      "enableWhiteScreen": "Sample the viewport for blank pages after load.",
-      "enableFingerprint": "Resolve an anonymous visitor id with FingerprintJS.",
-      "enableHttpPerformance": "Report successful requests as performance events.",
-      "repeatCodeError": "Report duplicate code errors instead of deduplicating.",
-      "tracesSampleRate": "Sampling rate between 0 and 1 applied to every payload.",
-      "maxBreadcrumbs": "FIFO capacity of the breadcrumb buffer.",
-      "cacheMaxLength": "Maximum batch size before an immediate flush.",
-      "cacheWaitingTime": "Batch wait window in milliseconds.",
-      "maxQueueLength": "Maximum queued events while offline or retrying.",
-      "retryIntervalMilliseconds": "Cap for the exponential server-recovery probe.",
-      "screenRecordDurationMs": "Rolling rrweb window length in milliseconds.",
-      "clickThrottleDelay": "Throttle window for click capture; 0 disables it.",
-      "hasSkeleton": "Compare samples against a skeleton baseline.",
-      "rootCssSelectors": "Selectors treated as empty during white-screen detection.",
-      "ignoreErrors": "Message substrings or patterns that skip reporting.",
-      "excludeAPIs": "Exact URLs or patterns excluded from HTTP capture.",
-      "beforeSend": "Transform or drop a single event before queueing.",
-      "beforeSendBatch": "Filter or rewrite a batch before transport.",
-      "afterSend": "Observe batches after a successful transport.",
-      "beforeBreadcrumb": "Synchronously transform a breadcrumb before it is stored.",
-      "offlineCacheKey": "localStorage key used for the offline queue."
-    },
-    "events": {
-      "error": "JavaScript runtime error.",
-      "fetch": "Instrumented fetch request.",
-      "xhr": "Instrumented XMLHttpRequest.",
-      "resource": "Static resource load failure.",
-      "unhandledRejection": "Unhandled promise rejection.",
-      "click": "Declarative click event.",
-      "hashChange": "Hash navigation.",
-      "history": "History navigation.",
-      "vue": "Vue error handled by the app.",
-      "react": "React ErrorBoundary error.",
-      "otherFrameworks": "Any other framework reported manually.",
-      "performance": "Performance metric.",
-      "screenRecord": "Compressed rrweb session window.",
-      "exposure": "Element visibility duration.",
-      "whiteScreen": "Blank viewport detected after load.",
-      "custom": "Custom business event.",
-      "pv": "Page view and dwell-time event."
-    }
-  },
-  "api": {
-    "eyebrow": "API reference",
-    "title": "A small surface,",
-    "accent": "fully typed.",
-    "description": "Everything you can call lives on the root entry. No hidden singletons, no framework coupling — just functions with obvious contracts.",
+  "faq": {
+    "eyebrow": "FAQ",
+    "titleA": "Questions,",
+    "titleHighlight": "answered",
+    "bodyA": "Anything else, open an issue on",
+    "bodyB": "— we usually reply within a day.",
     "items": {
-      "init": "Validates options with zod, writes runtime config and installs every enabled capture layer.",
-      "destroy": "Restores decorated globals, tears down plugins and resets all session state.",
-      "isInitialized": "Returns true once setup has completed and false after destroy.",
-      "enablePlugin": "Initializes and registers any number of plugin instances.",
-      "traceError": "Routes an error through the full classification pipeline manually.",
-      "tracePerformance": "Report a custom performance metric as an OK event.",
-      "traceCustomEvent": "Emit an arbitrary business event with optional context.",
-      "tracePageView": "Manually record a page view, useful for virtual routes.",
-      "reportFrameworkError": "Report React, Vue or any other framework error with explicit context.",
-      "setUserId": "Attach the current user id to subsequent reports.",
-      "setVisitorId": "Bind a backend-known visitor id to the session.",
-      "flushOfflineCache": "Load the persisted queue and attempt to send it now.",
-      "hooks": "Register reporter hooks programmatically after init.",
-      "getIdentity": "Read anonymousId, visitorId, userId and their presence flags."
+      "data": {
+        "question": "What does the SDK send?",
+        "answer": "Only monitoring events: errors with stack traces and breadcrumbs, page views, declarative clicks and exposures, Web Vitals, and a short screen recording when white-screen is detected. Everything goes to the endpoint you set as your DSN."
+      },
+      "size": {
+        "question": "How big is it?",
+        "answer": "The core bundle is a few kilobytes gzipped and fully tree-shakeable — modules you disable in init() never make it into your build."
+      },
+      "frameworks": {
+        "question": "Which frameworks are supported?",
+        "answer": "Any vanilla JS app works out of the box. First-class adapters ship for React (error boundary) and Vue (global error handler), and the plugin API covers the rest."
+      },
+      "privacy": {
+        "question": "Can I control what leaves the browser?",
+        "answer": "Yes. The beforeSend, beforeSendBatch and afterSend hooks let you inspect, redact or drop any payload before it hits the network — and individual captures can be switched off with a single flag."
+      },
+      "offline": {
+        "question": "What happens on flaky connections?",
+        "answer": "Events are cached in localStorage while the network is down and retried with backoff until delivered, so reports survive refreshes, background tabs and subway tunnels."
+      },
+      "license": {
+        "question": "Is it open source?",
+        "answer": "MIT. No account, no required SaaS — the SDK talks to your own endpoint, on your own infrastructure."
+      }
     }
-  },
-  "integrations": {
-    "eyebrow": "Developer tooling",
-    "title": "Readable stacks",
-    "accent": "during development.",
-    "description": "Both dev-server plugins mock your report endpoint so nothing hits production, then map bundled positions back to the original source with inline snippets.",
-    "tool1Blurb": "Intercepts the mock endpoint, writes timestamped JSONL logs and resolves stacks from the in-memory module graph.",
-    "tool2Blurb": "Collects emitted .map assets with assetEmitted and enriches error records before writing them to disk.",
-    "sourcemapBadge": "Source map resolution",
-    "sourcemapTitle": "Minified in the browser.",
-    "sourcemapAccent": "Readable in your logs.",
-    "sourcemapDescription": "Error, stack-like and framework records are enriched with original file, line, column, symbol name and a three-line snippet on each side of the failing line. Resolution failures stay silent and never corrupt the raw report.",
-    "pill1": "Code errors",
-    "pill2": "Stack strings",
-    "pill3": "React · Vue · Other"
-  },
-  "cta": {
-    "badge": "Five lines. Every signal.",
-    "title": "Start catching what breaks",
-    "accent": "before your users tell you.",
-    "description": "Install the SDK, point it at an endpoint and ship. Yukino Sentry handles the classification, batching, retries and session context for you.",
-    "getStarted": "Get started free",
-    "browseSource": "Browse the source"
   },
   "footer": {
-    "description": "A framework-agnostic browser monitoring SDK for errors, network, performance, behaviour and reliability. Built to be small, typed and pleasant to integrate.",
-    "column1Title": "Product",
-    "column2Title": "Developers",
-    "resourcesTitle": "Resources",
+    "description": "Frontend monitoring for teams who would rather see bugs than hear about them.",
+    "productTitle": "Product",
+    "linkShowcase": "Live demo",
     "linkFeatures": "Features",
-    "linkAnalytics": "Analytics",
-    "linkPerformance": "Performance",
-    "linkPlugins": "Plugins",
-    "linkReliability": "Reliability",
-    "linkQuickStart": "Quick start",
-    "linkFrameworks": "Frameworks",
-    "linkConfiguration": "Configuration",
-    "linkApi": "API reference",
-    "linkIntegrations": "Integrations",
-    "externalNpm": "npm package",
-    "externalIssues": "Report an issue",
-    "externalLicense": "MIT License",
-    "copyright": "Yukino Sentry. Released under the MIT License.",
-    "tagline": "Made for developers who ship."
+    "linkInstall": "Get started",
+    "linkFaq": "FAQ",
+    "resourcesTitle": "Resources",
+    "externalNpm": "npm",
+    "externalIssues": "Issues",
+    "externalLicense": "License",
+    "copyright": "hangtiancheng. All rights reserved.",
+    "tagline": "Built with yukino.js"
   }
 }

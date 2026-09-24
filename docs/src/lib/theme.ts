@@ -23,7 +23,7 @@ class ThemeStore {
     root.style.colorScheme = theme;
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
-      meta.setAttribute("content", theme === "dark" ? "#101113" : "#ffffff");
+      meta.setAttribute("content", theme === "dark" ? "#131314" : "#ffffff");
     }
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);

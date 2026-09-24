@@ -10,10 +10,6 @@ declare global {
   }
 }
 
-/**
- * Reading-progress bar driven by motion's vanilla scroll tracker, plus a
- * back-to-top button that fades in once the reader is deep into the page.
- */
 @customElement("scroll-progress")
 export class ScrollProgressElement extends LitElement {
   @state() private button: "hidden" | "entering" | "shown" | "leaving" =
@@ -89,7 +85,7 @@ export class ScrollProgressElement extends LitElement {
         <div
           data-progress-bar
           aria-hidden="true"
-          className="from-brand-500 via-accent-500 to-brand-400 fixed inset-x-0 top-0 z-60 h-0.5 origin-left bg-linear-to-r"
+          className="from-brand-600 to-brand-400 fixed inset-x-0 top-0 z-60 h-0.5 origin-left bg-linear-to-r"
         />
         {this.button !== "hidden" ? (
           <button
@@ -102,7 +98,7 @@ export class ScrollProgressElement extends LitElement {
                 behavior: reducedMotion() ? "auto" : "smooth",
               });
             }}
-            className="hover:text-brand-600 dark:hover:text-brand-200 fixed right-4 bottom-4 z-50 grid size-11 place-items-center rounded-full border border-slate-900/10 bg-white/85 text-slate-700 opacity-0 shadow-lg backdrop-blur transition-colors sm:right-6 sm:bottom-6 dark:border-white/10 dark:bg-white/6 dark:text-slate-200"
+            className="hover:text-brand-600 dark:hover:text-brand-200 fixed right-4 bottom-4 z-50 grid size-11 place-items-center rounded-full border border-[#dadce0] bg-white/85 text-[#5f6368] opacity-0 shadow-lg backdrop-blur transition-colors sm:right-6 sm:bottom-6 dark:border-white/10 dark:bg-white/6 dark:text-[#9aa0a6]"
           >
             <Icon name="arrow-up" className="size-4" />
           </button>
