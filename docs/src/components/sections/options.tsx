@@ -1,5 +1,6 @@
 import { Section } from "@/components/ui/section";
 import { EVENT_TYPES, OPTION_GROUPS } from "@/lib/data";
+import { t, type MessageKey } from "@/lib/i18n";
 import {
   band,
   card,
@@ -15,30 +16,34 @@ export function Options() {
   return (
     <Section
       id="options"
-      eyebrow="Configuration"
-      title="Every knob,"
-      accent="documented."
-      description="init() accepts a partial options object. Anything you omit falls back to a default, and zod validates the merged result before a single listener is installed."
+      eyebrow={t("options.eyebrow")}
+      title={t("options.title")}
+      accent={t("options.accent")}
+      description={t("options.description")}
       className={band}
     >
       <div className="space-y-8">
         {OPTION_GROUPS.map((group) => (
-          <ui-reveal key={group.title}>
+          <ui-reveal key={group.id}>
             <div className={`${card} overflow-hidden rounded-3xl`}>
               <div className={`border-b px-6 py-5 ${line}`}>
                 <h3 className={`text-lg font-bold ${heading}`}>
-                  {group.title}
+                  {t(`options.${group.titleKey}`)}
                 </h3>
-                <p className={`mt-1 text-sm ${faint}`}>{group.blurb}</p>
+                <p className={`mt-1 text-sm ${faint}`}>
+                  {t(`options.${group.blurbKey}`)}
+                </p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full min-w-170 border-collapse text-left text-sm">
                   <thead>
                     <tr className="bg-slate-900/3 text-xs font-bold tracking-wide text-slate-500 uppercase dark:bg-white/4 dark:text-slate-400">
-                      <th className="px-6 py-3">Option</th>
-                      <th className="px-6 py-3">Type</th>
-                      <th className="px-6 py-3">Default</th>
-                      <th className="px-6 py-3">Description</th>
+                      <th className="px-6 py-3">{t("options.colOption")}</th>
+                      <th className="px-6 py-3">{t("options.colType")}</th>
+                      <th className="px-6 py-3">{t("options.colDefault")}</th>
+                      <th className="px-6 py-3">
+                        {t("options.colDescription")}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -59,7 +64,7 @@ export function Options() {
                           {row.value}
                         </td>
                         <td className={`px-6 py-3.5 align-top ${muted}`}>
-                          {row.description}
+                          {t(`options.rows.${row.name}` as MessageKey)}
                         </td>
                       </tr>
                     ))}
@@ -73,18 +78,16 @@ export function Options() {
 
       <ui-reveal className="mt-16">
         <h3 className={`text-2xl font-black tracking-tight ${heading}`}>
-          Event types
+          {t("options.eventTypesTitle")}
         </h3>
         <p className={`mt-2 max-w-2xl text-sm leading-relaxed ${muted}`}>
-          Every report carries a typed{" "}
-          <span className="font-mono text-[0.85em]">EventType</span> so you can
-          route, sample or drop signals downstream without guessing.
+          {t("options.eventTypesDescription")}
         </p>
       </ui-reveal>
 
       <ui-reveal-list className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {EVENT_TYPES.map((event) => (
-          <ui-reveal-item key={event.value}>
+          <ui-reveal-item key={event.id}>
             <div
               className={`flex items-start gap-3 rounded-2xl p-4 ${card} ${cardHover}`}
             >
@@ -98,7 +101,7 @@ export function Options() {
                   {event.label}
                 </p>
                 <p className={`mt-0.5 text-xs leading-relaxed ${faint}`}>
-                  {event.description}
+                  {t(`options.events.${event.id}`)}
                 </p>
                 <p className="mt-1 font-mono text-[10px] text-slate-400 dark:text-slate-500">
                   &quot;{event.value}&quot;

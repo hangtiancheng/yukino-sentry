@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/icon";
 import { MonoTag, Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
+import { t } from "@/lib/i18n";
 import { CLICK_HTML, EXPOSURE_CODE, PV_CODE } from "./snippets";
 import { card, faint, heading, iconTile, line, muted } from "@/lib/styles";
 
@@ -9,7 +10,7 @@ const DWELL_ROWS = [
     label: "PageLoad",
     value: "2.4s",
     width: "22%",
-    tone: "from-brand-500 to-brand-400",
+    tone: "from-brand-600 to-brand-400",
   },
   {
     label: "HistoryChange",
@@ -44,7 +45,7 @@ function AnalyticsCard({
         >
           <Icon name={icon} className="size-5" />
         </span>
-        <p className="text-brand-500/80 dark:text-brand-300/80 mt-4 text-[11px] font-bold tracking-[0.16em] uppercase">
+        <p className="text-brand-600 dark:text-brand-300/80 mt-4 text-[11px] font-bold tracking-[0.16em] uppercase">
           {label}
         </p>
         <h3 className={`mt-1 text-lg font-bold ${heading}`}>{title}</h3>
@@ -73,10 +74,7 @@ function DwellVisual() {
           </div>
         </div>
       ))}
-      <p className={`pt-1 text-xs ${faint}`}>
-        Dwell under 100&nbsp;ms is dropped as noise. The final window is flushed
-        on <MonoTag>pagehide</MonoTag> so mobile sessions are never lost.
-      </p>
+      <p className={`pt-1 text-xs ${faint}`}>{t("analytics.dwellNote")}</p>
     </div>
   );
 }
@@ -95,17 +93,14 @@ function ExposureVisual() {
             #banner
           </span>
           <span className="bg-accent-500/15 text-accent-600 dark:text-accent-300 rounded-full px-2.5 py-1 font-mono text-[11px] font-bold">
-            visible 4.8s
+            {t("analytics.exposureVisible")}
           </span>
         </div>
         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-900/10 dark:bg-white/10">
-          <div className="from-brand-500 to-accent-500 h-full w-3/4 rounded-full bg-linear-to-r" />
+          <div className="from-brand-600 to-accent-500 h-full w-3/4 rounded-full bg-linear-to-r" />
         </div>
       </div>
-      <p className={`text-xs ${faint}`}>
-        One observer per unique threshold, reused across every target. Reported
-        when an element leaves the viewport after being visible.
-      </p>
+      <p className={`text-xs ${faint}`}>{t("analytics.exposureNote")}</p>
     </div>
   );
 }
@@ -114,10 +109,10 @@ export function Analytics() {
   return (
     <Section
       id="analytics"
-      eyebrow="Product analytics"
-      title="Understand journeys,"
-      accent="not just crashes."
-      description="Behavioural signals live next to your error data. See which page a session lingered on, what people clicked and how long a promotion stayed on screen."
+      eyebrow={t("analytics.eyebrow")}
+      title={t("analytics.title")}
+      accent={t("analytics.accent")}
+      description={t("analytics.description")}
     >
       <div className="grid items-center gap-10 lg:grid-cols-2">
         <ui-reveal>
@@ -134,14 +129,14 @@ export function Analytics() {
         <ui-reveal className="lg:order-2">
           <div className={`${card} rounded-3xl p-6`}>
             <p className={`mb-4 text-sm font-bold ${heading}`}>
-              Declarative click attributes
+              {t("analytics.clickAttrsTitle")}
             </p>
             <dl className="space-y-3 text-sm">
               {[
-                ["yukino-sentry-ev", "Explicit event id, first priority."],
-                ["yukino-sentry-msg", "Human-readable message."],
-                ["yukino-sentry-view", "Container id fallback."],
-                ["yukino-sentry-*", "Any other attribute becomes a param."],
+                ["yukino-sentry-ev", t("analytics.attr1Description")],
+                ["yukino-sentry-msg", t("analytics.attr2Description")],
+                ["yukino-sentry-view", t("analytics.attr3Description")],
+                ["yukino-sentry-*", t("analytics.attr4Description")],
               ].map(([attr, description]) => (
                 <div
                   key={attr}
@@ -164,28 +159,29 @@ export function Analytics() {
       <ui-reveal-list className="mt-14 grid gap-5 lg:grid-cols-3">
         <AnalyticsCard
           icon="route"
-          label="Signals"
-          title="Automatic page views"
+          label={t("analytics.card1Label")}
+          title={t("analytics.card1Title")}
         >
           <p className={`text-sm leading-relaxed ${muted}`}>
-            <MonoTag>PageLoad</MonoTag>, <MonoTag>HistoryChange</MonoTag> and{" "}
-            <MonoTag>HashChange</MonoTag> are captured from day one, each with
-            its URL, referrer and entry time.
+            {t("analytics.card1Description")}
           </p>
         </AnalyticsCard>
 
         <AnalyticsCard
           icon="mouse-pointer-click"
-          label="Interaction"
-          title="Zero-code click tracking"
+          label={t("analytics.card2Label")}
+          title={t("analytics.card2Title")}
         >
           <p className={`text-sm leading-relaxed ${muted}`}>
-            Clicks report coordinates, element path, custom params and resolved
-            event id — plain clicks stay out of your bill.
+            {t("analytics.card2Description")}
           </p>
         </AnalyticsCard>
 
-        <AnalyticsCard icon="eye" label="Visibility" title="Exposure durations">
+        <AnalyticsCard
+          icon="eye"
+          label={t("analytics.card3Label")}
+          title={t("analytics.card3Title")}
+        >
           <ExposureVisual />
         </AnalyticsCard>
       </ui-reveal-list>
@@ -197,9 +193,9 @@ export function Analytics() {
       </ui-reveal>
 
       <ui-reveal-item className="mt-8 flex flex-wrap gap-3">
-        <Pill icon="timer">Dwell-time reporting</Pill>
-        <Pill icon="mouse-pointer-click">Throttled clicks</Pill>
-        <Pill icon="eye">Threshold-aware observers</Pill>
+        <Pill icon="timer">{t("analytics.pill1")}</Pill>
+        <Pill icon="mouse-pointer-click">{t("analytics.pill2")}</Pill>
+        <Pill icon="eye">{t("analytics.pill3")}</Pill>
       </ui-reveal-item>
     </Section>
   );

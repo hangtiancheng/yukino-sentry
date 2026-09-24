@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/icon";
 import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
+import { t } from "@/lib/i18n";
 import { VITE_CODE, WEBPACK_CODE } from "./snippets";
 import {
   card,
@@ -20,27 +21,25 @@ const RESOLVED_FRAME = `TypeError: total is undefined
     43 | }`;
 
 interface DevTool {
+  readonly id: "tool1" | "tool2";
   readonly icon: string;
   readonly name: string;
-  readonly blurb: string;
   readonly code: string;
   readonly filename: string;
 }
 
 const DEV_TOOLS: readonly DevTool[] = [
   {
+    id: "tool1",
     icon: "server",
     name: "Vite dev server",
-    blurb:
-      "Intercepts the mock endpoint, writes timestamped JSONL logs and resolves stacks from the in-memory module graph.",
     code: VITE_CODE,
     filename: "vite.config.ts",
   },
   {
+    id: "tool2",
     icon: "terminal",
     name: "webpack-dev-server",
-    blurb:
-      "Collects emitted .map assets with assetEmitted and enriches error records before writing them to disk.",
     code: WEBPACK_CODE,
     filename: "webpack.config.mjs",
   },
@@ -50,14 +49,14 @@ export function Integrations() {
   return (
     <Section
       id="integrations"
-      eyebrow="Developer tooling"
-      title="Readable stacks"
-      accent="during development."
-      description="Both dev-server plugins mock your report endpoint so nothing hits production, then map bundled positions back to the original source with inline snippets."
+      eyebrow={t("integrations.eyebrow")}
+      title={t("integrations.title")}
+      accent={t("integrations.accent")}
+      description={t("integrations.description")}
     >
       <ui-reveal-list className="grid gap-5 lg:grid-cols-2">
         {DEV_TOOLS.map((tool) => (
-          <ui-reveal-item key={tool.name} className="h-full">
+          <ui-reveal-item key={tool.id} className="h-full">
             <div className={`${card} flex h-full flex-col rounded-3xl p-6`}>
               <div className="mb-5 flex items-center gap-3">
                 <span
@@ -70,7 +69,7 @@ export function Integrations() {
                 </h3>
               </div>
               <p className={`mb-5 text-sm leading-relaxed ${muted}`}>
-                {tool.blurb}
+                {t(`integrations.${tool.id}Blurb`)}
               </p>
               <div className="mt-auto">
                 <code-block code={tool.code} filename={tool.filename} />
@@ -89,24 +88,23 @@ export function Integrations() {
               className={`${iconTileSoft} inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold`}
             >
               <Icon name="file-code" className="size-3.5" />
-              Source map resolution
+              {t("integrations.sourcemapBadge")}
             </span>
             <h3
               className={`mt-4 text-2xl font-black tracking-tight ${heading}`}
             >
-              Minified in the browser.{" "}
-              <span className={gradientText}>Readable in your logs.</span>
+              {t("integrations.sourcemapTitle")}{" "}
+              <span className={gradientText}>
+                {t("integrations.sourcemapAccent")}
+              </span>
             </h3>
             <p className={`mt-4 text-sm leading-relaxed ${muted}`}>
-              Error, stack-like and framework records are enriched with original
-              file, line, column, symbol name and a three-line snippet on each
-              side of the failing line. Resolution failures stay silent and
-              never corrupt the raw report.
+              {t("integrations.sourcemapDescription")}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Pill icon="file-code">Code errors</Pill>
-              <Pill icon="terminal">Stack strings</Pill>
-              <Pill icon="server">React · Vue · Other</Pill>
+              <Pill icon="file-code">{t("integrations.pill1")}</Pill>
+              <Pill icon="terminal">{t("integrations.pill2")}</Pill>
+              <Pill icon="server">{t("integrations.pill3")}</Pill>
             </div>
           </div>
           <code-block

@@ -11,7 +11,7 @@ export function Pill({
 }) {
   return (
     <span
-      className={`border-brand-300/60 text-brand-700 shadow-brand-500/10 dark:border-brand-400/25 dark:bg-brand-500/10 dark:text-brand-200 inline-flex items-center gap-2 rounded-full border bg-white/70 px-3.5 py-1.5 text-xs font-semibold shadow-sm backdrop-blur ${className ?? ""}`}
+      className={`text-brand-700 shadow-soft dark:border-brand-400/25 dark:bg-brand-500/10 dark:text-brand-200 inline-flex items-center gap-2 rounded-full border border-[#dadce0] bg-white/80 px-3.5 py-1.5 text-xs font-semibold backdrop-blur dark:text-slate-200 dark:shadow-none ${className ?? ""}`}
     >
       {icon ? <Icon name={icon} className="size-3.5" /> : null}
       {children}

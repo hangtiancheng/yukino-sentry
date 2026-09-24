@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/icon";
 import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
+import { t } from "@/lib/i18n";
 import { band, faint, heading, muted } from "@/lib/styles";
 
 function DevCard({
@@ -19,12 +20,12 @@ function DevCard({
   return (
     <ui-reveal-item className="h-full">
       <div
-        className={`group relative flex h-full flex-col overflow-hidden rounded-3xl border-2 ${border} dark:bg-ink-900/50 shadow-card bg-white p-5 transition duration-300 hover:-translate-y-1 sm:p-6 dark:shadow-none`}
+        className={`group relative flex h-full flex-col overflow-hidden rounded-3xl border-2 ${border} dark:bg-ink-900/50 shadow-card hover:shadow-raised bg-white p-5 transition duration-300 hover:-translate-y-1 sm:p-6 dark:shadow-none`}
       >
         <span
           className={`pointer-events-none absolute -top-24 -right-24 size-56 rounded-full ${glow} blur-3xl`}
         />
-        <div className="bg-brand-50 border-brand-200/70 shadow-brand-950/10 dark:bg-ink-950 relative mb-6 rounded-2xl border p-4 shadow-xl dark:border-white/10 dark:shadow-black/30">
+        <div className="bg-brand-50/60 dark:bg-ink-950 relative mb-6 rounded-2xl border border-[#dadce0] p-4 dark:border-white/10">
           {children}
         </div>
         <h3 className={`relative text-xl font-bold ${heading}`}>{title}</h3>
@@ -40,55 +41,55 @@ function TerminalMock() {
   return (
     <div className="font-mono text-[13px] leading-6">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <span className="text-emerald-600 dark:text-emerald-400">➜</span>
+        <span className="text-g-green-600 dark:text-g-green-300">➜</span>
         <span className="text-brand-600 dark:text-brand-300">~</span>
         <span className="text-slate-700 dark:text-slate-200">
           npm install @yukino.js/sentry
         </span>
         <span className="bg-brand-500 dark:bg-brand-400 animate-blink inline-block h-4 w-2" />
       </div>
-      <p className="mt-2 text-slate-500">added 1 package in 1.2s</p>
-      <p className="text-slate-500">
-        ready to monitor — no agent, no build step
-      </p>
+      <p className="mt-2 text-slate-500">{t("developer.terminalOutput1")}</p>
+      <p className="text-slate-500">{t("developer.terminalOutput2")}</p>
     </div>
   );
 }
 
-const CLASSIFICATION = [
-  {
-    label: "Code error",
-    kind: "code",
-    icon: "bug",
-    tone: "text-accent-500 dark:text-accent-300",
-  },
-  {
-    label: "Resource error",
-    kind: "resource",
-    icon: "globe",
-    tone: "text-amber-500 dark:text-amber-300",
-  },
-  {
-    label: "Runtime error",
-    kind: "runtime",
-    icon: "triangle-alert",
-    tone: "text-brand-500 dark:text-brand-300",
-  },
-  {
-    label: "Unknown reason",
-    kind: "unknown",
-    icon: "wifi",
-    tone: "text-sky-500 dark:text-sky-300",
-  },
-] as const;
+function classification() {
+  return [
+    {
+      label: t("developer.classify1"),
+      kind: "code",
+      icon: "bug",
+      tone: "text-accent-500 dark:text-accent-300",
+    },
+    {
+      label: t("developer.classify2"),
+      kind: "resource",
+      icon: "globe",
+      tone: "text-g-yellow-500 dark:text-g-yellow-300",
+    },
+    {
+      label: t("developer.classify3"),
+      kind: "runtime",
+      icon: "triangle-alert",
+      tone: "text-brand-500 dark:text-brand-300",
+    },
+    {
+      label: t("developer.classify4"),
+      kind: "unknown",
+      icon: "wifi",
+      tone: "text-sky-500 dark:text-sky-300",
+    },
+  ] as const;
+}
 
 function ClassificationMock() {
   return (
     <ul className="space-y-2 font-mono text-xs">
-      {CLASSIFICATION.map((item) => (
+      {classification().map((item) => (
         <li
-          key={item.label}
-          className="bg-brand-100/50 flex items-center justify-between rounded-lg px-3 py-2 dark:bg-white/5"
+          key={item.kind}
+          className="bg-brand-100/40 flex items-center justify-between rounded-lg px-3 py-2 dark:bg-white/5"
         >
           <span className="flex items-center gap-2 text-slate-700 dark:text-slate-200">
             <Icon
@@ -103,7 +104,7 @@ function ClassificationMock() {
         </li>
       ))}
       <li className="pt-1 text-[11px] text-slate-500">
-        deduplicated · grouped after 2s · batched at 5
+        {t("developer.classifyNote")}
       </li>
     </ul>
   );
@@ -120,9 +121,9 @@ function TimelineMock() {
       <div className={`flex items-center gap-2 text-xs font-semibold ${faint}`}>
         <Icon
           name="camera"
-          className="size-3.5 shrink-0 text-lime-600 dark:text-lime-300"
+          className="text-g-yellow-600 dark:text-g-yellow-300 size-3.5 shrink-0"
         />
-        Rolling rrweb window · gzip + base64
+        {t("developer.timelineTitle")}
       </div>
       <div className="flex h-14 items-end gap-1">
         {WAVEFORM.map((height, index) => (
@@ -133,7 +134,7 @@ function TimelineMock() {
             duration={0.5}
             delay={index * 0.02}
             style={{ height: `${height * 1.6}px` }}
-            className="from-brand-500/40 flex-1 origin-bottom rounded-sm bg-linear-to-t to-lime-400/80 dark:to-lime-300/80"
+            className="from-brand-500/40 to-g-yellow-400/80 dark:to-g-yellow-300/80 flex-1 origin-bottom rounded-sm bg-linear-to-t"
           />
         ))}
       </div>
@@ -164,58 +165,65 @@ function TimelineMock() {
   );
 }
 
-const QUEUE_STEPS: readonly {
+function queueSteps(): readonly {
   label: string;
   icon: string;
   tone: string;
-}[] = [
-  {
-    label: "Capture",
-    icon: "bug",
-    tone: "text-accent-500 dark:text-accent-300",
-  },
-  {
-    label: "Queue",
-    icon: "database",
-    tone: "text-brand-500 dark:text-brand-300",
-  },
-  { label: "Beacon", icon: "send", tone: "text-sky-500 dark:text-sky-300" },
-  {
-    label: "Recover",
-    icon: "refresh-cw",
-    tone: "text-lime-600 dark:text-lime-300",
-  },
-];
+}[] {
+  return [
+    {
+      label: t("developer.stepCapture"),
+      icon: "bug",
+      tone: "text-accent-500 dark:text-accent-300",
+    },
+    {
+      label: t("developer.stepQueue"),
+      icon: "database",
+      tone: "text-brand-500 dark:text-brand-300",
+    },
+    {
+      label: t("developer.stepBeacon"),
+      icon: "send",
+      tone: "text-sky-500 dark:text-sky-300",
+    },
+    {
+      label: t("developer.stepRecover"),
+      icon: "refresh-cw",
+      tone: "text-g-green-600 dark:text-g-green-300",
+    },
+  ];
+}
 
 function OfflineMock() {
+  const steps = queueSteps();
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
-        {QUEUE_STEPS.map((step, index) => (
-          <span key={step.label} className="flex items-center gap-2">
-            <span className="bg-brand-100/60 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 dark:bg-white/5 dark:text-slate-200">
+        {steps.map((step, index) => (
+          <span key={step.icon} className="flex items-center gap-2">
+            <span className="bg-brand-100/50 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 dark:bg-white/5 dark:text-slate-200">
               <Icon name={step.icon} className={`size-3.5 ${step.tone}`} />
               {step.label}
             </span>
-            {index < QUEUE_STEPS.length - 1 ? (
+            {index < steps.length - 1 ? (
               <span className="text-brand-400 dark:text-slate-600">→</span>
             ) : null}
           </span>
         ))}
       </div>
-      <div className="bg-brand-100/40 rounded-lg p-3 font-mono text-[11px] text-slate-500 dark:bg-white/5 dark:text-slate-400">
-        {/* The storage key is one unbreakable token; without break-all its
-            min-content width forces the whole card past the viewport. */}
+      <div className="bg-brand-100/30 rounded-lg p-3 font-mono text-[11px] text-slate-500 dark:bg-white/5 dark:text-slate-400">
         <p className="break-all">
-          localStorage["yukino_sentry_offline_cache"]{" "}
-          <span className="text-lime-600 dark:text-lime-300">· 42 events</span>
+          localStorage[&quot;yukino_sentry_offline_cache&quot;]{" "}
+          <span className="text-g-green-600 dark:text-g-green-300">
+            · {t("developer.offlineEvents")}
+          </span>
         </p>
         <p className="mt-1">
-          retry probe{" "}
+          {t("developer.offlineProbe")}{" "}
           <span className="text-brand-600 dark:text-brand-300">
             HEAD /api/log
           </span>{" "}
-          · backoff 1s → 60s
+          · {t("developer.offlineBackoff")}
         </p>
       </div>
     </div>
@@ -225,18 +233,18 @@ function OfflineMock() {
 export function DeveloperFirst() {
   return (
     <Section
-      eyebrow="Developer first"
-      title="Built for the people"
-      accent="who ship."
-      description="No agents to install, no dashboards to learn. A tiny client, honest defaults and escape hatches everywhere."
+      eyebrow={t("developer.eyebrow")}
+      title={t("developer.title")}
+      accent={t("developer.accent")}
+      description={t("developer.description")}
       className={band}
     >
       <ui-reveal-list className="grid gap-5 lg:grid-cols-2">
         <DevCard
           border="border-brand-400/50"
           glow="bg-brand-500/20"
-          title="Monitor in five lines"
-          description="Drop in the SDK and you are done. The core is tree-shakeable, framework agnostic and safe to import on any page."
+          title={t("developer.card1Title")}
+          description={t("developer.card1Description")}
         >
           <TerminalMock />
         </DevCard>
@@ -244,17 +252,17 @@ export function DeveloperFirst() {
         <DevCard
           border="border-accent-400/50"
           glow="bg-accent-500/20"
-          title="Classify every issue automatically"
-          description="Code, resource, runtime and unknown errors each take a dedicated path, so routing, dedup and batching behave predictably."
+          title={t("developer.card2Title")}
+          description={t("developer.card2Description")}
         >
           <ClassificationMock />
         </DevCard>
 
         <DevCard
-          border="border-lime-400/50"
-          glow="bg-lime-400/20"
-          title="See the session, not just the stack"
-          description="Breadcrumbs and a compressed rrweb window replay the moments before a failure — clicks, routes, requests and the DOM."
+          border="border-g-yellow-400/50"
+          glow="bg-g-yellow-400/20"
+          title={t("developer.card3Title")}
+          description={t("developer.card3Description")}
         >
           <TimelineMock />
         </DevCard>
@@ -262,18 +270,18 @@ export function DeveloperFirst() {
         <DevCard
           border="border-sky-400/50"
           glow="bg-sky-400/20"
-          title="Stay in the flow, even offline"
-          description="Events persist to localStorage, ship with sendBeacon and recover through an exponential health probe when the network returns."
+          title={t("developer.card4Title")}
+          description={t("developer.card4Description")}
         >
           <OfflineMock />
         </DevCard>
       </ui-reveal-list>
 
       <ui-reveal-item className="mt-8 flex flex-wrap items-center gap-3">
-        <Pill icon="bug">Dedup by error identity</Pill>
-        <Pill icon="database">Bounded FIFO breadcrumbs</Pill>
-        <Pill icon="refresh-cw">Zero-loss offline queue</Pill>
-        <Pill icon="camera">Screen record on demand</Pill>
+        <Pill icon="bug">{t("developer.pill1")}</Pill>
+        <Pill icon="database">{t("developer.pill2")}</Pill>
+        <Pill icon="refresh-cw">{t("developer.pill3")}</Pill>
+        <Pill icon="camera">{t("developer.pill4")}</Pill>
       </ui-reveal-item>
     </Section>
   );

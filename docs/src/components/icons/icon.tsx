@@ -9,6 +9,7 @@ import braces from "lucide-static/icons/braces.svg?raw";
 import bug from "lucide-static/icons/bug.svg?raw";
 import camera from "lucide-static/icons/camera.svg?raw";
 import check from "lucide-static/icons/check.svg?raw";
+import chevronDown from "lucide-static/icons/chevron-down.svg?raw";
 import component from "lucide-static/icons/component.svg?raw";
 import copy from "lucide-static/icons/copy.svg?raw";
 import database from "lucide-static/icons/database.svg?raw";
@@ -55,6 +56,7 @@ export const ICONS: Record<string, string> = {
   bug,
   camera,
   check,
+  "chevron-down": chevronDown,
   component,
   copy,
   database,

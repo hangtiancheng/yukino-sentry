@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/icon";
 import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
+import { t } from "@/lib/i18n";
 import { RELIABILITY_CODE } from "./snippets";
 import {
   card,
@@ -11,61 +12,75 @@ import {
   muted,
 } from "@/lib/styles";
 
-const PIPELINE: readonly {
+function pipeline(): readonly {
   label: string;
   caption: string;
   icon: string;
-}[] = [
-  { label: "Capture", caption: "Handlers normalize every signal", icon: "bug" },
-  {
-    label: "Queue",
-    caption: "In-memory batch with FIFO limits",
-    icon: "database",
-  },
-  {
-    label: "Persist",
-    caption: "localStorage mirror while offline",
-    icon: "layers",
-  },
-  { label: "Transport", caption: "sendBeacon ≤60KB, else fetch", icon: "send" },
-  { label: "Recover", caption: "HEAD probe with backoff", icon: "refresh-cw" },
-];
+}[] {
+  return [
+    {
+      label: t("reliability.pipe1Label"),
+      caption: t("reliability.pipe1Caption"),
+      icon: "bug",
+    },
+    {
+      label: t("reliability.pipe2Label"),
+      caption: t("reliability.pipe2Caption"),
+      icon: "database",
+    },
+    {
+      label: t("reliability.pipe3Label"),
+      caption: t("reliability.pipe3Caption"),
+      icon: "layers",
+    },
+    {
+      label: t("reliability.pipe4Label"),
+      caption: t("reliability.pipe4Caption"),
+      icon: "send",
+    },
+    {
+      label: t("reliability.pipe5Label"),
+      caption: t("reliability.pipe5Caption"),
+      icon: "refresh-cw",
+    },
+  ];
+}
 
-const GUARANTEES = [
-  {
-    icon: "shield-check",
-    title: "Bounded memory",
-    description:
-      "Breadcrumbs and the error-dedup set are LRU-capped, so long-lived SPAs never grow without limit.",
-  },
-  {
-    icon: "filter",
-    title: "Precision filtering",
-    description:
-      "ignoreErrors matches message substrings or patterns; excludeAPIs uses exact URLs or regex.",
-  },
-  {
-    icon: "layers",
-    title: "Atomic batches",
-    description:
-      "A failed batch is pushed back to the queue head and persisted, so ordering is preserved end-to-end.",
-  },
-] as const;
+function guarantees() {
+  return [
+    {
+      icon: "shield-check",
+      title: t("reliability.guarantee1Title"),
+      description: t("reliability.guarantee1Description"),
+    },
+    {
+      icon: "filter",
+      title: t("reliability.guarantee2Title"),
+      description: t("reliability.guarantee2Description"),
+    },
+    {
+      icon: "layers",
+      title: t("reliability.guarantee3Title"),
+      description: t("reliability.guarantee3Description"),
+    },
+  ];
+}
 
 export function Reliability() {
+  const steps = pipeline();
   return (
     <Section
       id="reliability"
-      eyebrow="Reliability"
-      title="Reporting that survives"
-      accent="bad networks."
-      description="A production monitoring client cannot afford to lose data or block the page. Yukino Sentry keeps a durable queue, ships asynchronously and never lets one failed batch stall the rest."
+      eyebrow={t("reliability.eyebrow")}
+      title={t("reliability.title")}
+      accent={t("reliability.accent")}
+      description={t("reliability.description")}
     >
       <ui-reveal>
         <div className={`${card} rounded-3xl p-6 sm:p-8`}>
           <div className="grid gap-6 md:grid-cols-5">
-            {PIPELINE.map((step, index) => (
-              <div key={step.label} className="relative">
+            {steps.map((step, index) => (
+              <div key={step.icon} className="relative">
                 <div className="flex items-center gap-3 md:flex-col md:items-start md:gap-3">
                   <span
                     className={`${iconTile} grid size-11 shrink-0 place-items-center rounded-xl`}
@@ -81,13 +96,13 @@ export function Reliability() {
                     </p>
                   </div>
                 </div>
-                {index < PIPELINE.length - 1 ? (
+                {index < steps.length - 1 ? (
                   <enter-effect
                     viewport
                     initial={{ scaleX: 0 }}
                     duration={0.5}
                     delay={index * 0.12}
-                    className="from-brand-400/70 to-accent-400/70 absolute top-5 -right-3 hidden h-px w-6 origin-left bg-linear-to-r md:block"
+                    className="from-brand-400/70 to-g-yellow-400/70 absolute top-5 -right-3 hidden h-px w-6 origin-left bg-linear-to-r md:block"
                   />
                 ) : null}
               </div>
@@ -98,7 +113,7 @@ export function Reliability() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <ui-reveal-list className="space-y-4">
-          {GUARANTEES.map((item) => (
+          {guarantees().map((item) => (
             <ui-reveal-item key={item.title}>
               <article className={`${card} flex gap-4 rounded-2xl p-5`}>
                 <span
@@ -123,10 +138,10 @@ export function Reliability() {
       </div>
 
       <ui-reveal-item className="mt-8 flex flex-wrap gap-3">
-        <Pill icon="send">sendBeacon first</Pill>
-        <Pill icon="layers">keepalive-aware fetch</Pill>
-        <Pill icon="refresh-cw">exponential recovery</Pill>
-        <Pill icon="database">localStorage mirror</Pill>
+        <Pill icon="send">{t("reliability.pill1")}</Pill>
+        <Pill icon="layers">{t("reliability.pill2")}</Pill>
+        <Pill icon="refresh-cw">{t("reliability.pill3")}</Pill>
+        <Pill icon="database">{t("reliability.pill4")}</Pill>
       </ui-reveal-item>
     </Section>
   );

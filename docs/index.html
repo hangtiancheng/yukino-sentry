@@ -18,9 +18,13 @@
       content="Catch errors, requests, performance, page views, clicks and sessions from a single, fully typed SDK. React and Vue first-class, zero config."
     />
     <title>Yukino Sentry — Frontend observability, five lines away</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
     <script>
-      // Applied before first paint so the correct theme class is always present.
-      // Light is the default; only an explicit stored choice enables dark.
       (function () {
         try {
           var stored = localStorage.getItem("yukino-theme");
@@ -28,10 +32,8 @@
           if (dark) document.documentElement.classList.add("dark");
           document.documentElement.style.colorScheme = dark ? "dark" : "light";
           var meta = document.querySelector('meta[name="theme-color"]');
-          if (meta) meta.setAttribute("content", dark ? "#0a0611" : "#ffffff");
-        } catch (error) {
-          /* ignore */
-        }
+          if (meta) meta.setAttribute("content", dark ? "#101113" : "#ffffff");
+        } catch (error) {}
       })();
     </script>
   </head>

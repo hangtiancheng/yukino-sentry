@@ -1,12 +1,7 @@
 @import "tailwindcss";
 
-/* Class-based dark mode so the toggle (not just the OS) is authoritative. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Custom elements default to display: inline; make them block so Tailwind
-   layout utilities passed via className behave like the divs they replace.
-   Must live in @layer base: unlayered rules outrank every @layer, so an
-   unlayered `display: block` would beat the `grid`/`flex` utilities. */
 @layer base {
   code-block,
   enter-effect,
@@ -18,16 +13,9 @@
   ui-reveal-item,
   ui-reveal-list {
     display: block;
-    /* As grid/flex items these default to min-width:auto, which lets their
-       max-content blow out the track and clip on narrow viewports (e.g. the
-       hero badge and the frameworks tab bar). Allow them to shrink to the
-       column width instead. */
     min-width: 0;
   }
 
-  /* Keyboard focus ring. focus-visible only fires for keyboard navigation, so
-     mouse/touch users never see it. outline (not box-shadow) avoids colliding
-     with the component shadows already on these elements. */
   :where(a, button, [tabindex]):focus-visible {
     outline: 2px solid var(--color-brand-500);
     outline-offset: 2px;
@@ -36,45 +24,69 @@
 
 @theme {
   --font-sans:
-    "Geist Mono", "Menlo", "Cascadia Code", "PingFang SC", "Microsoft YaHei",
-    monospace;
-  --font-mono:
-    "Geist Mono", "Menlo", "Cascadia Code", "PingFang SC", "Microsoft YaHei",
-    monospace;
+    "Google Sans Text", "Google Sans", "Roboto", "Noto Sans SC", "Noto Sans JP",
+    "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "Roboto Mono", "Geist Mono", "Menlo", "Cascadia Code", monospace;
 
-  /* Lavender purple brand scale. */
-  --color-brand-50: #f6f3ff;
-  --color-brand-100: #ede6ff;
-  --color-brand-200: #ddd0ff;
-  --color-brand-300: #c3aaff;
-  --color-brand-400: #a57dff;
-  --color-brand-500: #8952f6;
-  --color-brand-600: #7333e4;
-  --color-brand-700: #6126c4;
-  --color-brand-800: #50219f;
-  --color-brand-900: #421d80;
-  --color-brand-950: #291058;
+  --color-brand-50: #e8f0fe;
+  --color-brand-100: #d2e3fc;
+  --color-brand-200: #aecbfa;
+  --color-brand-300: #8ab4f8;
+  --color-brand-400: #669df6;
+  --color-brand-500: #4285f4;
+  --color-brand-600: #1a73e8;
+  --color-brand-700: #1967d2;
+  --color-brand-800: #185abc;
+  --color-brand-900: #174ea6;
+  --color-brand-950: #0d2b52;
 
-  /* Warm magenta accent that pairs with lavender. */
-  --color-accent-200: #fbd0ff;
-  --color-accent-300: #f4adff;
-  --color-accent-400: #ec86fb;
-  --color-accent-500: #dd5cf0;
-  --color-accent-600: #c93ad8;
+  --color-accent-200: #fad2cf;
+  --color-accent-300: #f6aea9;
+  --color-accent-400: #f28b82;
+  --color-accent-500: #ea4335;
+  --color-accent-600: #d93025;
 
-  /* Near-black surfaces used by the hero and code panels. */
-  --color-ink-950: #0a0611;
-  --color-ink-900: #110a1e;
-  --color-ink-800: #191031;
-  --color-ink-700: #241645;
+  --color-g-yellow-300: #fdd663;
+  --color-g-yellow-400: #fbbc04;
+  --color-g-yellow-500: #f9ab00;
+  --color-g-yellow-600: #e37400;
+  --color-g-green-300: #81c995;
+  --color-g-green-400: #5bb974;
+  --color-g-green-500: #34a853;
+  --color-g-green-600: #188038;
+  --color-g-green-700: #137333;
 
-  /* Brand-tinted elevation: a hairline ring plus a soft purple cast. */
+  --color-emerald-300: #81c995;
+  --color-emerald-400: #5bb974;
+  --color-emerald-500: #34a853;
+  --color-emerald-600: #188038;
+
+  --color-amber-300: #fdd663;
+  --color-amber-400: #fbbc04;
+  --color-amber-500: #f9ab00;
+
+  --color-lime-300: #fdd663;
+  --color-lime-400: #fbbc04;
+  --color-lime-600: #f9ab00;
+
+  --color-sky-300: #8ab4f8;
+  --color-sky-400: #669df6;
+  --color-sky-500: #4285f4;
+  --color-sky-600: #1a73e8;
+
+  --color-ink-950: #101113;
+  --color-ink-900: #17181b;
+  --color-ink-800: #202124;
+  --color-ink-700: #2b2c2f;
+
   --shadow-glow:
-    0 0 0 1px rgb(137 82 246 / 0.16), 0 18px 60px -18px rgb(115 51 228 / 0.45);
+    0 0 0 1px rgb(66 133 244 / 0.18), 0 18px 50px -20px rgb(26 115 232 / 0.4);
   --shadow-soft:
-    0 1px 2px rgb(41 16 88 / 0.04), 0 12px 32px -12px rgb(41 16 88 / 0.14);
+    0 1px 2px rgb(60 64 67 / 0.08), 0 1px 3px 1px rgb(60 64 67 / 0.06);
   --shadow-card:
-    0 1px 2px rgb(41 16 88 / 0.05), 0 22px 50px -26px rgb(41 16 88 / 0.25);
+    0 1px 2px rgb(60 64 67 / 0.18), 0 2px 6px 2px rgb(60 64 67 / 0.08);
+  --shadow-raised:
+    0 1px 3px rgb(60 64 67 / 0.24), 0 4px 8px 3px rgb(60 64 67 / 0.12);
 
   --animate-floaty: floaty 7s ease-in-out infinite;
   --animate-drift: drift 22s ease-in-out infinite;
@@ -115,9 +127,6 @@
   }
 }
 
-/* JS-driven animations consult reducedMotion() themselves (see
-   src/lib/motion.ts); this collapses the CSS-driven ones: drifting glows,
-   floating badges, blinking carets and hover transitions. */
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,

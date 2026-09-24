@@ -1,7 +1,7 @@
 import { Icon } from "@/components/icons/icon";
-import { MonoTag } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
 import { SpotlightCard } from "@/components/ui/spotlight";
+import { t } from "@/lib/i18n";
 import { CUSTOM_PLUGIN_CODE } from "./snippets";
 import {
   band,
@@ -16,48 +16,53 @@ import {
 } from "@/lib/styles";
 
 interface PluginCard {
+  readonly id: "plugin1" | "plugin2" | "plugin3";
   readonly icon: string;
   readonly name: string;
-  readonly tagline: string;
   readonly constructorLine: string;
-  readonly bullets: readonly string[];
+  readonly bullets: readonly [
+    "plugin1Bullet1" | "plugin2Bullet1" | "plugin3Bullet1",
+    "plugin1Bullet2" | "plugin2Bullet2" | "plugin3Bullet2",
+    "plugin1Bullet3" | "plugin2Bullet3" | "plugin3Bullet3",
+    "plugin1Bullet4" | "plugin2Bullet4" | "plugin3Bullet4",
+  ];
 }
 
 const PLUGINS: readonly PluginCard[] = [
   {
+    id: "plugin1",
     icon: "gauge",
     name: "PerformancePlugin",
-    tagline: "Field performance, out of the box.",
     constructorLine: "enablePlugin(new PerformancePlugin())",
     bullets: [
-      "LCP, FCP, CLS, INP and TTFB from web-vitals",
-      "Custom First Screen Paint from DOM mutations",
-      "Navigation, resource, long-task and memory data",
-      "Zero constructor options, safe capability checks",
+      "plugin1Bullet1",
+      "plugin1Bullet2",
+      "plugin1Bullet3",
+      "plugin1Bullet4",
     ],
   },
   {
+    id: "plugin2",
     icon: "camera",
     name: "ScreenRecordPlugin",
-    tagline: "Replay the seconds that matter.",
     constructorLine: "new ScreenRecordPlugin({ durationMs: 5000 })",
     bullets: [
-      "Rolling rrweb window, gzip + base64 encoded",
-      "Configurable trigger event types",
-      "Canvas recording and inline images enabled",
-      "Decode with unzipScreenRecord() anywhere",
+      "plugin2Bullet1",
+      "plugin2Bullet2",
+      "plugin2Bullet3",
+      "plugin2Bullet4",
     ],
   },
   {
+    id: "plugin3",
     icon: "eye",
     name: "ExposurePlugin",
-    tagline: "Measure what people actually see.",
     constructorLine: "exposure.observe({ target, threshold, params })",
     bullets: [
-      "IntersectionObserver with per-threshold reuse",
-      "Visible duration, show times and custom params",
-      "Batch observe and unobserve helpers",
-      "Zod-validated targets and thresholds",
+      "plugin3Bullet1",
+      "plugin3Bullet2",
+      "plugin3Bullet3",
+      "plugin3Bullet4",
     ],
   },
 ];
@@ -66,15 +71,15 @@ export function Plugins() {
   return (
     <Section
       id="plugins"
-      eyebrow="Plugins"
-      title="Optional power,"
-      accent="opt-in bundle cost."
-      description="Capabilities like performance, screen recording and exposure tracking live in @yukino.js/sentry/plugins. Import only what you enable — the core entry stays lean."
+      eyebrow={t("plugins.eyebrow")}
+      title={t("plugins.title")}
+      accent={t("plugins.accent")}
+      description={t("plugins.description")}
       className={band}
     >
       <ui-reveal-list className="grid gap-5 lg:grid-cols-3">
         {PLUGINS.map((plugin) => (
-          <ui-reveal-item key={plugin.name} className="h-full">
+          <ui-reveal-item key={plugin.id} className="h-full">
             <SpotlightCard
               className={`h-full rounded-3xl p-6 ${card} ${cardHover}`}
             >
@@ -87,7 +92,7 @@ export function Plugins() {
                 {plugin.name}
               </h3>
               <p className="text-brand-600 dark:text-brand-300 mt-1 text-sm font-medium">
-                {plugin.tagline}
+                {t(`plugins.${plugin.id}Tagline`)}
               </p>
               <ul className="mt-4 flex-1 space-y-2">
                 {plugin.bullets.map((bullet) => (
@@ -95,8 +100,8 @@ export function Plugins() {
                     key={bullet}
                     className={`flex gap-2 text-sm leading-relaxed ${muted}`}
                   >
-                    <span className="from-brand-500 to-accent-500 mt-1.5 size-1.5 shrink-0 rounded-full bg-linear-to-r" />
-                    {bullet}
+                    <span className="from-brand-600 to-brand-400 mt-1.5 size-1.5 shrink-0 rounded-full bg-linear-to-r" />
+                    {t(`plugins.${bullet}`)}
                   </li>
                 ))}
               </ul>
@@ -117,38 +122,35 @@ export function Plugins() {
               className={`${iconTileSoft} inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold`}
             >
               <Icon name="puzzle" className="size-3.5" />
-              Bring your own
+              {t("plugins.byoBadge")}
             </span>
             <h3
               className={`mt-4 text-2xl font-black tracking-tight sm:text-3xl ${heading}`}
             >
-              Extend the SDK with a{" "}
-              <span className={gradientText}>single class.</span>
+              {t("plugins.extendTitle")}{" "}
+              <span className={gradientText}>{t("plugins.extendAccent")}</span>
             </h3>
             <p className={`mt-4 text-base leading-relaxed ${muted}`}>
-              Implement <MonoTag>SentryPlugin</MonoTag> and get lifecycle-aware{" "}
-              <MonoTag>init()</MonoTag> and optional{" "}
-              <MonoTag>destroy()</MonoTag> hooks. Plugins are registered once,
-              stored in a set and cleaned up with <MonoTag>destroy()</MonoTag>.
+              {t("plugins.extendDescription")}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <span
-                className={`inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 dark:bg-white/5 dark:text-slate-200 ${line}`}
+                className={`inline-flex items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 dark:bg-white/5 dark:text-slate-200 ${line}`}
               >
                 <Icon
                   name="plug"
                   className="text-brand-500 dark:text-brand-300 size-4"
                 />
-                Abstract base class
+                {t("plugins.chip1")}
               </span>
               <span
-                className={`inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 dark:bg-white/5 dark:text-slate-200 ${line}`}
+                className={`inline-flex items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 dark:bg-white/5 dark:text-slate-200 ${line}`}
               >
                 <Icon
                   name="camera"
                   className="text-brand-500 dark:text-brand-300 size-4"
                 />
-                Shared reporter instance
+                {t("plugins.chip2")}
               </span>
             </div>
           </div>

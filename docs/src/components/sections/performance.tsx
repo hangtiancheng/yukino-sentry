@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons/icon";
 import { Pill } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
+import { t } from "@/lib/i18n";
 import { PERFORMANCE_CODE } from "./snippets";
 import {
   band,
@@ -55,7 +56,12 @@ interface MetricSource {
   readonly icon: string;
   readonly name: string;
   readonly source: string;
-  readonly description: string;
+  readonly key:
+    | "source1Description"
+    | "source2Description"
+    | "source3Description"
+    | "source4Description"
+    | "source5Description";
 }
 
 const METRIC_SOURCES: readonly MetricSource[] = [
@@ -63,35 +69,31 @@ const METRIC_SOURCES: readonly MetricSource[] = [
     icon: "activity",
     name: "NavigationTiming",
     source: "Navigation Timing API",
-    description:
-      "paint, DOM, load, DNS, TCP, TLS, TTFB, transfer and redirect breakdown.",
+    key: "source1Description",
   },
   {
     icon: "layers",
     name: "ResourceList",
     source: "performance.getEntriesByType",
-    description:
-      "Snapshot of every buffered resource with cache and transfer sizes.",
+    key: "source2Description",
   },
   {
     icon: "route",
     name: "ResourceTiming",
     source: "PerformanceObserver",
-    description:
-      "Per-resource durations as they complete, with element fallback.",
+    key: "source3Description",
   },
   {
     icon: "zap",
     name: "LongTask",
     source: "PerformanceObserver",
-    description:
-      "Main-thread tasks that block interaction, reported as entries.",
+    key: "source4Description",
   },
   {
     icon: "memory-stick",
     name: "Memory",
     source: "measureUserAgentSpecificMemory",
-    description: "Chrome-only memory attribution when the API is available.",
+    key: "source5Description",
   },
 ];
 
@@ -99,10 +101,10 @@ export function Performance() {
   return (
     <Section
       id="performance"
-      eyebrow="Performance"
-      title="Real user metrics,"
-      accent="measured in the field."
-      description="Web Vitals and a full navigation timing breakdown run beside your errors, so a slow request and a crash are one story."
+      eyebrow={t("performance.eyebrow")}
+      title={t("performance.title")}
+      accent={t("performance.accent")}
+      description={t("performance.description")}
       className={band}
     >
       <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
@@ -115,10 +117,12 @@ export function Performance() {
                 >
                   <Icon name="gauge" className="size-4" />
                 </span>
-                <p className={`text-sm font-bold ${heading}`}>Web Vitals</p>
+                <p className={`text-sm font-bold ${heading}`}>
+                  {t("performance.vitalsTitle")}
+                </p>
               </div>
-              <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-300">
-                all good
+              <span className="bg-g-green-500/15 text-g-green-600 dark:text-g-green-300 rounded-full px-3 py-1 text-[11px] font-bold">
+                {t("performance.vitalsBadge")}
               </span>
             </div>
             <div className="space-y-5">
@@ -144,7 +148,7 @@ export function Performance() {
                       to={{ width: vital.width }}
                       duration={0.9}
                       delay={index * 0.07}
-                      className="from-brand-500 to-accent-500 h-full rounded-full bg-linear-to-r"
+                      className="from-brand-500 to-brand-300 h-full rounded-full bg-linear-to-r"
                     />
                   </div>
                 </div>
@@ -176,37 +180,36 @@ export function Performance() {
                   {source.name}
                 </h3>
               </div>
-              <p className="text-brand-500/80 dark:text-brand-300/80 mt-3 text-[11px] font-bold tracking-wide uppercase">
+              <p className="text-brand-600 dark:text-brand-300/80 mt-3 text-[11px] font-bold tracking-wide">
                 {source.source}
               </p>
               <p className={`mt-1.5 text-sm leading-relaxed ${muted}`}>
-                {source.description}
+                {t(`performance.${source.key}`)}
               </p>
             </article>
           </ui-reveal-item>
         ))}
         <ui-reveal-item className="h-full">
-          <article className="border-brand-400/40 from-brand-500/10 to-accent-500/10 flex h-full flex-col justify-center rounded-2xl border bg-linear-to-br p-5">
+          <article className="border-brand-400/40 from-brand-500/10 to-g-yellow-400/10 flex h-full flex-col justify-center rounded-2xl border bg-linear-to-br p-5">
             <Icon
               name="timer"
               className="text-brand-600 dark:text-brand-300 size-5"
             />
             <h3 className={`mt-3 text-base font-bold ${heading}`}>
-              Report your own
+              {t("performance.ownTitle")}
             </h3>
             <p className={`mt-1.5 text-sm leading-relaxed ${muted}`}>
-              Any timing you own can be sent as a performance event with{" "}
-              <span className="font-mono text-[0.85em]">tracePerformance</span>.
+              {t("performance.ownDescription")}
             </p>
           </article>
         </ui-reveal-item>
       </ui-reveal-list>
 
       <ui-reveal-item className="mt-8 flex flex-wrap gap-3">
-        <Pill icon="gauge">Web Vitals via web-vitals</Pill>
-        <Pill icon="activity">Field navigation timing</Pill>
-        <Pill icon="zap">Long task visibility</Pill>
-        <Pill icon="memory-stick">Memory attribution</Pill>
+        <Pill icon="gauge">{t("performance.pill1")}</Pill>
+        <Pill icon="activity">{t("performance.pill2")}</Pill>
+        <Pill icon="zap">{t("performance.pill3")}</Pill>
+        <Pill icon="memory-stick">{t("performance.pill4")}</Pill>
       </ui-reveal-item>
     </Section>
   );

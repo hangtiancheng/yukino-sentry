@@ -1,5 +1,6 @@
 import { GithubIcon } from "@/components/icons/github-icon";
 import { Icon } from "@/components/icons/icon";
+import { t } from "@/lib/i18n";
 import { handleAnchorClick } from "@/lib/scroll";
 import {
   gridPattern,
@@ -17,7 +18,7 @@ export function CTA() {
           <div className="pointer-events-none absolute inset-0">
             <div className="bg-brand-500/20 dark:bg-brand-500/40 absolute -top-32 left-1/2 h-80 w-160 -translate-x-1/2 rounded-full blur-[120px]" />
             <div className="bg-accent-500/15 dark:bg-accent-500/30 absolute -bottom-24 -left-16 h-64 w-64 rounded-full blur-[110px]" />
-            <div className="bg-brand-400/15 dark:bg-brand-400/30 absolute -right-16 -bottom-24 h-64 w-64 rounded-full blur-[110px]" />
+            <div className="bg-g-yellow-400/15 dark:bg-g-yellow-400/30 absolute -right-16 -bottom-24 h-64 w-64 rounded-full blur-[110px]" />
             <div
               className={`absolute inset-0 ${gridPattern} mask-[radial-gradient(ellipse_60%_60%_at_50%_50%,black,transparent)]`}
             />
@@ -30,33 +31,31 @@ export function CTA() {
               className="border-brand-300/70 text-brand-700 dark:text-brand-200 inline-flex items-center gap-2 rounded-full border bg-white/70 px-4 py-1.5 text-xs font-bold backdrop-blur dark:border-white/15 dark:bg-white/5"
             >
               <Icon name="sparkles" className="size-3.5" />
-              Five lines. Every signal.
+              {t("cta.badge")}
             </loop-effect>
 
             <h2
               className={`mx-auto mt-6 max-w-3xl text-3xl font-black tracking-tight text-balance sm:text-5xl lg:text-6xl ${heading}`}
             >
-              Start catching what breaks
-              <span className="from-brand-600 via-brand-500 to-accent-600 dark:from-brand-300 dark:to-accent-300 block bg-linear-to-r bg-clip-text text-transparent dark:via-white">
-                before your users tell you.
+              {t("cta.title")}
+              <span className="from-brand-600 via-brand-500 to-brand-400 dark:from-brand-300 dark:to-g-yellow-300 block bg-linear-to-r bg-clip-text text-transparent dark:via-white">
+                {t("cta.accent")}
               </span>
             </h2>
 
             <p
               className={`mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-pretty ${muted}`}
             >
-              Install the SDK, point it at an endpoint and ship. Yukino Sentry
-              handles the classification, batching, retries and session context
-              for you.
+              {t("cta.description")}
             </p>
 
             <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
               <a
                 href="#quickstart"
                 onClick={(event) => handleAnchorClick(event, "#quickstart")}
-                className={`group ${primaryButton} dark:text-ink-950 dark:hover:bg-brand-100 inline-flex px-6 py-3.5 dark:bg-white dark:bg-none dark:shadow-black/30`}
+                className={`group ${primaryButton} dark:text-ink-950 dark:hover:bg-brand-100 inline-flex px-7 py-3.5 dark:bg-white dark:bg-none dark:shadow-black/30`}
               >
-                Get started free
+                {t("cta.getStarted")}
                 <Icon
                   name="arrow-right"
                   className="size-4 transition-transform group-hover:translate-x-0.5"
@@ -66,10 +65,10 @@ export function CTA() {
                 href="https://github.com/hangtiancheng/yukino-sentry"
                 target="_blank"
                 rel="noreferrer"
-                className={`${secondaryButton} inline-flex px-6 py-3.5`}
+                className={`${secondaryButton} inline-flex px-7 py-3.5`}
               >
                 <GithubIcon className="size-4" />
-                Browse the source
+                {t("cta.browseSource")}
               </a>
             </div>
 

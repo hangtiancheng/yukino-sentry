@@ -2,23 +2,24 @@ import { Icon } from "@/components/icons/icon";
 import { Section } from "@/components/ui/section";
 import { SpotlightCard } from "@/components/ui/spotlight";
 import { API_ITEMS } from "@/lib/data";
+import { t } from "@/lib/i18n";
 import { card, cardHover, heading, iconTile, muted } from "@/lib/styles";
 
 export function Api() {
   return (
     <Section
       id="api"
-      eyebrow="API reference"
-      title="A small surface,"
-      accent="fully typed."
-      description="Everything you can call lives on the root entry. No hidden singletons, no framework coupling — just functions with obvious contracts."
+      eyebrow={t("api.eyebrow")}
+      title={t("api.title")}
+      accent={t("api.accent")}
+      description={t("api.description")}
     >
       <ui-reveal-list
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
         stagger={0.05}
       >
         {API_ITEMS.map((item) => (
-          <ui-reveal-item key={item.name} className="h-full">
+          <ui-reveal-item key={item.id} className="h-full">
             <SpotlightCard
               className={`h-full rounded-2xl p-5 ${card} ${cardHover}`}
             >
@@ -36,7 +37,7 @@ export function Api() {
                 {item.signature}
               </code>
               <p className={`mt-3 text-sm leading-relaxed ${muted}`}>
-                {item.description}
+                {t(`api.items.${item.id}`)}
               </p>
             </SpotlightCard>
           </ui-reveal-item>

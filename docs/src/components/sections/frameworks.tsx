@@ -7,8 +7,8 @@ import {
 import { animate } from "motion";
 
 import { Icon } from "@/components/icons/icon";
-import { MonoTag } from "@/components/ui/pill";
 import { Section } from "@/components/ui/section";
+import { LocaleController, t } from "@/lib/i18n";
 import { EASE } from "@/lib/motion";
 import { brandGradient, card, heading, muted } from "@/lib/styles";
 import { TAB_REACT_CODE, TAB_VANILLA_CODE, TAB_VUE_CODE } from "./snippets";
@@ -27,7 +27,8 @@ interface FrameworkTab {
   readonly icon: string;
   readonly filename: string;
   readonly code: string;
-  readonly note: string;
+  readonly noteKey:
+    "frameworks.noteVanilla" | "frameworks.noteReact" | "frameworks.noteVue";
 }
 
 const TABS: readonly FrameworkTab[] = [
@@ -37,7 +38,7 @@ const TABS: readonly FrameworkTab[] = [
     icon: "boxes",
     filename: "main.ts",
     code: TAB_VANILLA_CODE,
-    note: "The core entry is framework agnostic and safe to import anywhere. No framework dependency is ever pulled into your bundle.",
+    noteKey: "frameworks.noteVanilla",
   },
   {
     key: "react",
@@ -45,7 +46,7 @@ const TABS: readonly FrameworkTab[] = [
     icon: "component",
     filename: "app.tsx",
     code: TAB_REACT_CODE,
-    note: "The boundary reports caught render errors as React events with the component stack. Async callbacks, event handlers and SSR errors still need traceError().",
+    noteKey: "frameworks.noteReact",
   },
   {
     key: "vue",
@@ -53,28 +54,32 @@ const TABS: readonly FrameworkTab[] = [
     icon: "layers",
     filename: "main.ts",
     code: TAB_VUE_CODE,
-    note: "vuePlugin wraps app.config.errorHandler, reports Vue errors with the instance and info string, then calls any handler you had installed before.",
+    noteKey: "frameworks.noteVue",
   },
 ];
 
-const HIGHLIGHTS = [
-  {
-    title: "One boundary, full context",
-    body: "Caught React errors carry the ErrorInfo component stack straight into the report context.",
-  },
-  {
-    title: "Chain-safe error handlers",
-    body: "The Vue plugin captures the previous handler and always delegates after reporting.",
-  },
-  {
-    title: "Any other framework",
-    body: "Call reportFrameworkError with EventType.OtherFrameworks and your own context object.",
-  },
-] as const;
+function highlights() {
+  return [
+    {
+      title: t("frameworks.highlight1Title"),
+      body: t("frameworks.highlight1Body"),
+    },
+    {
+      title: t("frameworks.highlight2Title"),
+      body: t("frameworks.highlight2Body"),
+    },
+    {
+      title: t("frameworks.highlight3Title"),
+      body: t("frameworks.highlight3Body"),
+    },
+  ];
+}
 
 @customElement("frameworks-section")
 export class FrameworksSectionElement extends LitElement {
   @state() private active: FrameworkKey = "react";
+
+  locale = new LocaleController(this);
 
   private indicatorRef = createRef<HTMLSpanElement>();
   private noteRef = createRef<HTMLParagraphElement>();
@@ -84,8 +89,6 @@ export class FrameworksSectionElement extends LitElement {
     return this;
   }
 
-  // The indicator tracks each tab's offsetLeft, which changes as the tab bar
-  // reflows across breakpoints; re-seat it on resize so it never goes stale.
   private handleResize = (): void => {
     this.moveIndicator(false);
   };
@@ -156,15 +159,17 @@ export class FrameworksSectionElement extends LitElement {
     return (
       <Section
         id="frameworks"
-        eyebrow="Frameworks"
-        title="First-class where it counts."
-        accent=""
-        description="React and Vue ship as dedicated subpath exports. Everyone else uses the same typed core with reportFrameworkError."
+        eyebrow={t("frameworks.eyebrow")}
+        title={t("frameworks.title")}
+        accent={t("frameworks.accent")}
+        description={t("frameworks.description")}
       >
         <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
           <ui-reveal>
             <div className="flex flex-col gap-2">
-              <div className={`${card} relative inline-flex rounded-2xl p-1.5`}>
+              <div
+                className={`${card} relative inline-flex rounded-full p-1.5`}
+              >
                 {TABS.map((tab) => {
                   const isActive = tab.key === this.active;
                   return (
@@ -173,13 +178,13 @@ export class FrameworksSectionElement extends LitElement {
                       type="button"
                       data-key={tab.key}
                       onClick={() => this.select(tab.key)}
-                      className="relative z-10 flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-xl px-2.5 py-2.5 text-xs font-bold transition sm:gap-2 sm:px-4 sm:text-sm"
+                      className="relative z-10 flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 py-2.5 text-xs font-bold transition sm:gap-2 sm:px-4 sm:text-sm"
                     >
                       <span
                         className={`flex items-center gap-2 ${
                           isActive
                             ? "text-white"
-                            : "text-slate-600 dark:text-slate-300"
+                            : "text-[#5f6368] dark:text-slate-300"
                         }`}
                       >
                         <Icon
@@ -193,7 +198,7 @@ export class FrameworksSectionElement extends LitElement {
                 })}
                 <span
                   ref={this.indicatorRef}
-                  className={`${brandGradient} shadow-brand-500/25 pointer-events-none absolute inset-y-1.5 left-0 w-0 rounded-xl shadow-lg`}
+                  className={`${brandGradient} shadow-brand-500/25 pointer-events-none absolute inset-y-1.5 left-0 w-0 rounded-full shadow-lg`}
                 />
               </div>
 
@@ -202,13 +207,13 @@ export class FrameworksSectionElement extends LitElement {
                   ref={this.noteRef}
                   className={`text-sm leading-relaxed ${muted}`}
                 >
-                  {current.note}
+                  {t(current.noteKey)}
                 </p>
               </div>
 
               <div className="mt-2 space-y-3">
-                {HIGHLIGHTS.map((item) => (
-                  <div key={item.title} className={`${card} rounded-2xl p-4`}>
+                {highlights().map((item, index) => (
+                  <div key={index} className={`${card} rounded-2xl p-4`}>
                     <p className={`text-sm font-bold ${heading}`}>
                       {item.title}
                     </p>
@@ -232,11 +237,9 @@ export class FrameworksSectionElement extends LitElement {
             <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
               <Icon
                 name="triangle-alert"
-                className="mt-0.5 size-3.5 shrink-0 text-amber-500"
+                className="text-g-yellow-500 mt-0.5 size-3.5 shrink-0"
               />
-              Boundaries only catch synchronous render errors. Use{" "}
-              <MonoTag>traceError()</MonoTag> for async and event-handler
-              failures.
+              {t("frameworks.warning")}
             </p>
           </ui-reveal>
         </div>

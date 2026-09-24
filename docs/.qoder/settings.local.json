@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /Users/hangtiancheng/github/yukino-code3/apps/docs && echo \"---\" && ls /Users/hangtiancheng/github/yukino-sentry/docs)",
+      "Read(//Users/hangtiancheng/github/yukino-code3/apps/docs/**)"
+    ]
+  }
+}

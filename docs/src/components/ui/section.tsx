@@ -29,8 +29,8 @@ export function Section({
       <div className={container}>
         <ui-reveal className="max-w-3xl">
           {eyebrow ? (
-            <p className="text-brand-600 dark:text-brand-300 mb-3 flex items-center gap-2 text-xs font-bold tracking-[0.22em] uppercase">
-              <span className="from-brand-500 to-accent-500 h-px w-8 bg-linear-to-r" />
+            <p className="text-brand-600 dark:text-brand-300 mb-3 flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase">
+              <span className="bg-brand-500 size-2 rounded-full" />
               {eyebrow}
             </p>
           ) : null}
