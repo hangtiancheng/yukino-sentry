@@ -1,0 +1,18 @@
+packages:
+  - sentry
+  - client
+  - server
+  - docs
+
+allowBuilds:
+  "@parcel/watcher": true
+  esbuild: true
+  protobufjs: true
+
+minimumReleaseAgeExclude:
+  - "@yukino.js/cache@0.0.1"
+  - "@yukino.js/lit-jsx@0.0.1"
+
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - esbuild

@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  code-block,
+  copy-button,
+  enter-effect,
+  loop-effect,
+  scroll-progress,
+  site-navbar,
+  site-showcase,
+  site-install,
+  site-faq,
+  ui-reveal,
+  ui-reveal-item,
+  ui-reveal-list {
+    display: block;
+    min-width: 0;
+  }
+
+  :where(a, button, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+}
+
+@theme {
+  --font-sans:
+    "Google Sans Text", "Google Sans", "Roboto", system-ui, sans-serif;
+  --font-mono: "Roboto Mono", "Geist Mono", "Menlo", "Cascadia Code", monospace;
+
+  --color-brand-50: #e8f0fe;
+  --color-brand-100: #d2e3fc;
+  --color-brand-200: #aecbfa;
+  --color-brand-300: #8ab4f8;
+  --color-brand-400: #669df6;
+  --color-brand-500: #4285f4;
+  --color-brand-600: #1a73e8;
+  --color-brand-700: #1967d2;
+  --color-brand-800: #185abc;
+  --color-brand-900: #174ea6;
+  --color-brand-950: #0d2b52;
+
+  --color-accent-200: #fad2cf;
+  --color-accent-300: #f6aea9;
+  --color-accent-400: #f28b82;
+  --color-accent-500: #ea4335;
+  --color-accent-600: #d93025;
+
+  --color-g-yellow-300: #fdd663;
+  --color-g-yellow-400: #fbbc04;
+  --color-g-yellow-500: #f9ab00;
+  --color-g-yellow-600: #e37400;
+  --color-g-green-300: #81c995;
+  --color-g-green-400: #5bb974;
+  --color-g-green-500: #34a853;
+  --color-g-green-600: #188038;
+  --color-g-green-700: #137333;
+
+  --color-emerald-300: #81c995;
+  --color-emerald-400: #5bb974;
+  --color-emerald-500: #34a853;
+  --color-emerald-600: #188038;
+
+  --color-amber-300: #fdd663;
+  --color-amber-400: #fbbc04;
+  --color-amber-500: #f9ab00;
+
+  --color-lime-300: #fdd663;
+  --color-lime-400: #fbbc04;
+  --color-lime-600: #f9ab00;
+
+  --color-sky-300: #8ab4f8;
+  --color-sky-400: #669df6;
+  --color-sky-500: #4285f4;
+  --color-sky-600: #1a73e8;
+
+  --color-ink-950: #131314;
+  --color-ink-900: #1e1f20;
+  --color-ink-800: #28292c;
+  --color-ink-700: #35363a;
+
+  --shadow-glow:
+    0 0 0 1px rgb(66 133 244 / 0.18), 0 18px 50px -20px rgb(26 115 232 / 0.4);
+  --shadow-soft:
+    0 1px 2px rgb(60 64 67 / 0.08), 0 1px 3px 1px rgb(60 64 67 / 0.06);
+  --shadow-card:
+    0 1px 2px rgb(60 64 67 / 0.18), 0 2px 6px 2px rgb(60 64 67 / 0.08);
+  --shadow-raised:
+    0 1px 3px rgb(60 64 67 / 0.24), 0 4px 8px 3px rgb(60 64 67 / 0.12);
+
+  --animate-floaty: floaty 7s ease-in-out infinite;
+  --animate-drift: drift 22s ease-in-out infinite;
+  --animate-blink: blink 1.1s step-end infinite;
+
+  @keyframes floaty {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    33% {
+      transform: translate3d(4%, -6%, 0) scale(1.08);
+    }
+    66% {
+      transform: translate3d(-5%, 4%, 0) scale(0.96);
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
