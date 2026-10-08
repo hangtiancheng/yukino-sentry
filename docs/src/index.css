@@ -27,8 +27,11 @@
 
 @theme {
   --font-sans:
-    "Google Sans Text", "Google Sans", "Roboto", system-ui, sans-serif;
-  --font-mono: "Roboto Mono", "Geist Mono", "Menlo", "Cascadia Code", monospace;
+    "Yukino", "Maple Mono", Menlo, "Cascadia Code", "Sarasa Gothic SC",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono:
+    "Yukino", "Maple Mono", Menlo, "Cascadia Code", "Sarasa Gothic SC",
+    "PingFang SC", "Microsoft YaHei", monospace;
 
   --color-brand-50: #e8f0fe;
   --color-brand-100: #d2e3fc;

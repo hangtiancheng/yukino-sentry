@@ -6,7 +6,8 @@ const themeColors = {
   timestamp: "#dab2ff",
 };
 
-const fontFamily = "font-family: Iosevka, Maple Mono, Menlo, Cascadia Code;";
+const fontFamily =
+  "font-family: Yukino, Maple Mono, Menlo, Cascadia Code, Sarasa Gothic SC, PingFang SC, Microsoft YaHei;";
 const getMessageStyle = (color: string) => `color: ${color}; ${fontFamily}`;
 
 const getPrefixStyle = (color: string) =>
