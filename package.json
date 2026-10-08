@@ -31,6 +31,7 @@
     "client:preview:webpack": "pnpm --filter client preview:webpack",
     "server:dev": "pnpm --filter server dev",
     "server:build": "pnpm --filter server build",
+    "git:config": "git config user.name hangtiancheng && git config user.email '161043261@qq.com'",
     "git:commit": "git add -A && git commit -m \"feat: Introduce new features\"",
     "git:push": "pnpm git:commit && git push origin main"
   },
@@ -49,7 +50,7 @@
     "typescript-eslint": "^8.71.0"
   },
   "lint-staged": {
-    "./*.{js,cjs,mjs,jsx,ts,tsx,html,css,scss,json}": [
+    "*.{json,jsonc,js,cjs,mjs,jsx,ts,cts,mts,tsx,html,vue,css,scss,md,mdx}": [
       "sh -c 'pnpm format'"
     ]
   }
