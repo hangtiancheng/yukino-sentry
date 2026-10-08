@@ -13,7 +13,7 @@
   "dependencies": {
     "@yukino.js/lit-jsx": "latest",
     "lit": "^3.3.3",
-    "lucide-static": "^1.52.0",
+    "lucide-static": "^1.53.0",
     "motion": "^13.5.1"
   },
   "devDependencies": {
