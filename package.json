@@ -1,7 +1,7 @@
 {
   "name": "yukino-sentry",
   "version": "0.0.0",
-  "packageManager": "pnpm@12.3.4",
+  "packageManager": "pnpm@12.10.1",
   "type": "module",
   "workspaces": [
     "client",
@@ -37,17 +37,17 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
-    "@types/node": "^25.9.8",
+    "@types/node": "^25.9.9",
     "concurrently": "^10.0.5",
     "eslint": "^9.39.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
     "eslint-plugin-unicorn": "^64.0.0",
-    "globals": "^17.12.0",
+    "globals": "^17.13.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.1"
   },
   "lint-staged": {
     "*.{json,jsonc,js,cjs,mjs,jsx,ts,cts,mts,tsx,html,vue,css,scss,md,mdx}": [
