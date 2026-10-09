@@ -1,8 +1,8 @@
 packages:
-  - sentry
   - client
-  - server
   - docs
+  - sentry
+  - server
 
 allowBuilds:
   "@parcel/watcher": true
@@ -10,6 +10,3 @@ allowBuilds:
   protobufjs: true
 
 minimumReleaseAge: 0
-minimumReleaseAgeExclude:
-  - "@yukino.js/cache@0.0.1"
-  - "@yukino.js/lit-jsx@0.0.1"
