@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^24.19.1",
+    "@types/node": "^24.19.2",
     "@yukino.js/sentry": "workspace:*",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
