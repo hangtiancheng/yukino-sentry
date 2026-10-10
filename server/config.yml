@@ -1,6 +1,6 @@
 server:
   port: 8088
-  body_limit: 1048576 # 1MB
+  body_limit: 1048576
   allowed_origins:
     - "http://127.0.0.1:5173"
     - "http://127.0.0.1:5174"

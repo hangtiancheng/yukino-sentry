@@ -44,7 +44,6 @@ function reportResourceError(
   rest: Omit<IBaseDataWithEvent, "extra">,
 ): void {
   const { localName } = err.target;
-  // <img>/<script> expose src, <link> exposes href — never both
   const src = err.target.src ?? "";
   const href = err.target.href ?? "";
   const resourceError: IResourceError = {
@@ -54,7 +53,6 @@ function reportResourceError(
     name: localName,
     src,
     href,
-    // Resource failures dispatch a plain Event with no message of its own
     message: `Failed to load ${localName}: ${src || href}`,
   };
   breadcrumb.push({

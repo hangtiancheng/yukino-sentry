@@ -16,7 +16,6 @@ async function startup() {
   console.log("filename__", filename__);
   console.log("dirname__", dirname__);
 
-  // Load config
   const configPath = join(dirname__, "../config.yml");
   try {
     cfg.load(configPath);
@@ -25,7 +24,6 @@ async function startup() {
     process.exit(1);
   }
 
-  // Initialize logger
   try {
     logger.init();
   } catch (error) {
@@ -38,10 +36,8 @@ async function startup() {
     infoLogger.info("Server starting...");
   }
 
-  // Initialize log read cache (LRU + single-flight)
   initLogCache();
 
-  // Initialize sourcemap resolution
   initSourcemap(cfg.getConfig().sourcemap);
   if (infoLogger && cfg.getConfig().sourcemap.enabled) {
     infoLogger.info(
@@ -49,7 +45,6 @@ async function startup() {
     );
   }
 
-  // Configure CORS
   const allowedOrigins = cfg.getConfig().server.allowed_origins;
   app.use(
     cors({
@@ -69,10 +64,8 @@ async function startup() {
     }),
   );
 
-  // Register Routes
   registerRoutes(app);
 
-  // Start server
   const port = cfg.getConfig().server.port;
   let server: ReturnType<typeof app.listen>;
   try {
@@ -87,7 +80,6 @@ async function startup() {
     process.exit(1);
   }
 
-  // Shutdown handling
   process.on("SIGINT", async () => {
     await shutdown();
   });
@@ -106,12 +98,10 @@ async function startup() {
       infoLogger.info("Shutting down...");
     }
 
-    // Close server
     if (server) {
       server.close();
     }
 
-    // Close resources
     destroyLogCache();
     destroySourcemap();
     logger.close();

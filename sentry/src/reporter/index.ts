@@ -29,7 +29,6 @@ export class DataReporter implements IDataReporter {
   private retryTimer?: ReturnType<typeof setTimeout>;
   private isOnline = true;
   private isFlushing = false;
-  // True while localStorage mirrors the queue (offline or after a failed send).
   private hasPersistedCache = false;
   private removeNetworkListener: Cleanup;
 
@@ -40,11 +39,9 @@ export class DataReporter implements IDataReporter {
       },
       flush: () => this.flush(),
     });
-    // Recover events a previous session persisted but never managed to send.
     this.loadOfflineCache();
   }
 
-  /** Clear timers and listeners, and drop queued events. */
   dispose(): void {
     if (this.timeoutID) clearTimeout(this.timeoutID);
     if (this.retryTimer) clearTimeout(this.retryTimer);
@@ -106,8 +103,6 @@ export class DataReporter implements IDataReporter {
         this.saveOfflineCache();
         return;
       }
-      // The persisted mirror only matters while sends fail; drop it so a
-      // later session cannot replay already-delivered events.
       this.clearPersistedCache();
       void sentry.options.afterSend?.(finalSendData);
       sentryLogger.success(
@@ -184,8 +179,6 @@ export function resetReporter(): void {
   resetServerRecovery();
 }
 
-// Defers singleton construction (and its listener/cache side effects) until
-// the first reporter access, after init() has applied the parsed options.
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 export default new Proxy({} as DataReporter, {
   get(_target, prop) {

@@ -59,7 +59,6 @@ describe("white screen detection", () => {
       extra: { sampleCount: MAX_WHITE_SCREEN_SAMPLE_COUNT },
     });
 
-    // Sampling stops after reporting.
     vi.advanceTimersByTime(SAMPLE_INTERVAL * 5);
     expect(onReport).toHaveBeenCalledTimes(1);
   });
@@ -134,7 +133,6 @@ describe("white screen detection", () => {
     const content = document.createElement("section");
     content.className = "content";
     let probeCount = 0;
-    // 18 probes per sample: the baseline sample sees the skeleton, later ones see content.
     stubElementFromPoint(() => (++probeCount <= 18 ? skeleton : content));
     const onReport = vi.fn();
 

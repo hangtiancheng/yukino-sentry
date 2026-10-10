@@ -1,6 +1,3 @@
-// Node-only module: consumed by the vite subpath export, never bundled into the browser SDK.
-// Resolves reported error positions using the dev server's in-memory module graph sourcemaps.
-
 import {
   enrichReportData as enrichWithLoader,
   type MapLoader,
@@ -15,7 +12,6 @@ interface MinimalModuleGraph {
   getModuleByUrl(url: string): Promise<MinimalModuleNode | undefined>;
 }
 
-/** Structural subset of ViteDevServer, compatible with both vite and vite7. */
 export interface ViteDevServerLike {
   moduleGraph: MinimalModuleGraph;
 }

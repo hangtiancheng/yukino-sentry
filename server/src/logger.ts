@@ -27,7 +27,6 @@ class Logger {
   private currentMonth = "";
   private currentDay = "";
   private currentSize = 0;
-  /** Reader-visible name ("YYYY-MM/<file>.jsonl") of the active SDK log. */
   private currentSdkLogName: string | null = null;
 
   public init(): void {
@@ -35,14 +34,12 @@ class Logger {
     ensureDir(logConfig.dir);
 
     const now = new Date();
-    this.currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
-    this.currentDay = now.toISOString().slice(0, 10); // YYYY-MM-DD
+    this.currentMonth = now.toISOString().slice(0, 7);
+    this.currentDay = now.toISOString().slice(0, 10);
 
-    // Create log directory
     const monthDir = join(logConfig.dir, this.currentMonth);
     ensureDir(monthDir);
 
-    // Setup system loggers
     const systemLogPath = join(monthDir, "system.jsonl");
     const fileStream = createWriteStream(systemLogPath, { flags: "a" });
 
@@ -68,7 +65,6 @@ class Logger {
       pino.multistream([{ stream: process.stderr }, { stream: fileStream }]),
     );
 
-    // Initialize SDK log file
     this.openSdkLogFile();
   }
 
@@ -77,7 +73,6 @@ class Logger {
     const monthDir = join(logConfig.dir, this.currentMonth);
     ensureDir(monthDir);
 
-    // filename: sentry_20060102_150405.jsonl
     const timestamp = new Date()
       .toISOString()
       .replace(/[-:.]/g, "")
@@ -108,7 +103,6 @@ class Logger {
     const nowMonth = now.toISOString().slice(0, 7);
     const nowDay = now.toISOString().slice(0, 10);
 
-    // Check month change
     if (nowMonth !== this.currentMonth) {
       this.currentMonth = nowMonth;
       this.currentDay = nowDay;
@@ -116,14 +110,12 @@ class Logger {
       return;
     }
 
-    // Check day change (if daily rotation enabled)
     if (logConfig.rotate_daily && nowDay !== this.currentDay) {
       this.currentDay = nowDay;
       this.rotate();
       return;
     }
 
-    // Check file size
     if (this.currentSize >= logConfig.max_size) {
       this.rotate();
     }
@@ -152,7 +144,6 @@ class Logger {
     return this.errorLogger;
   }
 
-  /** Name of the SDK log file currently being appended to, or null. */
   public getCurrentSdkLogName(): string | null {
     return this.currentSdkLogName;
   }
@@ -163,8 +154,6 @@ class Logger {
       this.logFile = null;
     }
     this.currentSdkLogName = null;
-
-    // Pino doesn't need explicit closing for streams
   }
 }
 

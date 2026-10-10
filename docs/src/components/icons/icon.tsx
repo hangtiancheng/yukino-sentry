@@ -102,11 +102,6 @@ export const ICONS: Record<string, string> = {
   zap,
 };
 
-/**
- * Prepares a raw lucide-static SVG string for rendering via `unsafeHTML`.
- * Strips the license comment, optionally resizes the intrinsic 24px box and
- * merges Tailwind classes into the svg's own class attribute.
- */
 export function icon(svg: string, className?: string, size?: number): string {
   let out = svg.replace(/<!--[^>]*-->\s*/g, "");
   if (size !== undefined) {

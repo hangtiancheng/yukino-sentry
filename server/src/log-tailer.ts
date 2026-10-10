@@ -1,22 +1,3 @@
-/**
- * Incremental (tail -f style) parser for the ONE jsonl file the logger is
- * currently appending to. Rotated files are immutable and served from the
- * yukino-cache group in log-reader; re-parsing the growing active file on
- * every dashboard poll is what this class eliminates: each poll only reads
- * and parses the bytes appended since the previous poll.
- *
- * Correctness notes:
- * - jsonl is append-only, so parsed state stays valid while size grows.
- * - A size DECREASE means truncation/replacement; state is rebuilt from 0.
- * - The trailing bytes after the last "\n" (a batch still being written) are
- *   kept as a raw Buffer remainder and re-joined with the next chunk, so a
- *   UTF-8 code point split across two reads decodes correctly and a partial
- *   line is never counted twice.
- * - Parsed events for the active file are held in memory until rotation
- *   adopts the next file; the file-size rotation limit (log.max_size) bounds
- *   this state.
- */
-
 import { closeSync, openSync, readSync } from "node:fs";
 
 const NEWLINE = 0x0a;
@@ -26,11 +7,6 @@ export interface TailSnapshot {
   events: unknown[];
 }
 
-/**
- * Parses one complete jsonl line, flattening batch arrays into events.
- * Returns 1 when the line is non-empty (counted), 0 otherwise. Keep in sync
- * with the full-file parser in log-reader.
- */
 export function parseJsonlLine(line: string, events: unknown[]): 0 | 1 {
   const trimmed = line.trim();
   if (trimmed === "") return 0;
@@ -38,26 +14,17 @@ export function parseJsonlLine(line: string, events: unknown[]): 0 | 1 {
     const parsed: unknown = JSON.parse(trimmed);
     if (Array.isArray(parsed)) events.push(...parsed);
     else if (parsed !== null && typeof parsed === "object") events.push(parsed);
-  } catch {
-    // Skip lines that failed to parse (e.g. truncated writes).
-  }
+  } catch {}
   return 1;
 }
 
 export class ActiveLogTailer {
   private name: string | null = null;
-  /** File offset consumed so far (parsed lines + remainder bytes). */
   private consumedUpTo = 0;
-  /** Raw bytes after the last newline (possibly a partial UTF-8 sequence). */
   private remainder: Buffer = Buffer.alloc(0);
   private lines = 0;
   private events: unknown[] = [];
 
-  /**
-   * Returns the parsed view of `name` at `size` bytes, ingesting only the
-   * appended range. Adopting a different name (rotation) or observing a
-   * shrunken file resets the state and re-reads from offset 0.
-   */
   public read(name: string, fullPath: string, size: number): TailSnapshot {
     if (this.name !== name || size < this.consumedUpTo) {
       this.resetTo(name);
@@ -100,7 +67,6 @@ export class ActiveLogTailer {
       this.remainder = Buffer.from(chunk);
       return;
     }
-    // Copy the tail so the (large) chunk buffer is not pinned until next poll.
     this.remainder = Buffer.from(chunk.subarray(lastNewline + 1));
     const complete = chunk.subarray(0, lastNewline).toString("utf-8");
     for (const line of complete.split("\n")) {

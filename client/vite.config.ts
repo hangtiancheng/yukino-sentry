@@ -1,13 +1,11 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-// import sentryPlugin from "@yukino.js/sentry/vite";
 import pageRoutes from "./plugins/vite-plugin-page-routes";
 import reactDisplayName from "./plugins/vite-plugin-react-display-name";
 import { mkdirSync, readdirSync, renameSync } from "node:fs";
 import { join, resolve } from "node:path";
 
-/** Moves all emitted .map files into <outDir>/.sourcemaps after the bundle is written. */
 function moveSourcemaps(): Plugin {
   let outDir = "dist";
   return {
@@ -40,14 +38,12 @@ function moveSourcemaps(): Plugin {
   };
 }
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     pageRoutes(),
     reactDisplayName(),
     react(),
     tailwindcss(),
-    // sentryPlugin({ dsn: "/api/log" }),
     moveSourcemaps(),
   ],
   resolve: {
@@ -56,17 +52,12 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    // Exclude from dependency pre-bundling
     exclude: ["@yukino.js/sentry"],
   },
   build: {
-    // "hidden": generate sourcemaps without appending sourceMappingURL comments to the bundle output
     sourcemap: "hidden",
   },
   server: {
-    // SDK reports (POST/HEAD /api/log), dashboard reads (/api/logs/*) and the
-    // error-seeder's /api + /static probes all go to the standalone server,
-    // matching the production topology. Run it with `pnpm server` (port 8088).
     proxy: {
       "/api": { target: "http://localhost:8088", changeOrigin: true },
       "/static": { target: "http://localhost:8088", changeOrigin: true },

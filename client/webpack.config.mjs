@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-// import { sentryPlugin } from "@yukino.js/sentry/webpack";
 import PageRoutesPlugin from "./plugins/webpack-plugin-page-routes.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -14,8 +13,6 @@ const displayNameLoader = resolve(
   "plugins/webpack-loader-react-display-name.js",
 );
 
-// Reuse the vite index.html, stripping the vite-specific module script
-// (webpack injects its own bundles via HtmlWebpackPlugin).
 const htmlTemplate = readFileSync(
   resolve(__dirname, "index.html"),
   "utf8",
@@ -24,13 +21,9 @@ const htmlTemplate = readFileSync(
 export default (env, argv) => {
   const isDev = argv.mode !== "production";
 
-  /** @type {import("webpack").Configuration} */
   const config = {
     mode: isDev ? "development" : "production",
     entry: "./src/main.tsx",
-    // dev: plain source-map so `.map` assets are emitted and the sentry plugin
-    //      can resolve reported errors against them;
-    // build: hidden-source-map keeps maps but omits the sourceMappingURL comment.
     devtool: isDev ? "source-map" : "hidden-source-map",
     output: {
       path: resolve(__dirname, "dist-webpack"),
@@ -57,8 +50,6 @@ export default (env, argv) => {
               loader: "esbuild-loader",
               options: { loader: "tsx", jsx: "automatic", target: "es2020" },
             },
-            // build-only displayName injection, runs first (right-to-left)
-            // on the raw TSX — mirrors the vite plugin's apply: "build"
             ...(isDev ? [] : [displayNameLoader]),
           ],
         },
@@ -95,7 +86,6 @@ export default (env, argv) => {
       new PageRoutesPlugin(),
       new HtmlWebpackPlugin({ templateContent: htmlTemplate }),
       new CopyWebpackPlugin({
-        // vite silently skips a missing publicDir; mirror that here
         patterns: [{ from: "public", to: ".", noErrorOnMissing: true }],
       }),
       ...(isDev
@@ -105,9 +95,6 @@ export default (env, argv) => {
               filename: "[name].[contenthash:8].css",
             }),
           ]),
-      // SDK reports go to the standalone Koa server via devServer.proxy below
-      // (matching vite.config.ts). Re-enable to mock the endpoint in-process:
-      // ...(env?.WEBPACK_SERVE ? [sentryPlugin({ dsn: "/api/log" })] : []),
     ],
   };
 
@@ -116,11 +103,6 @@ export default (env, argv) => {
       port: 5174,
       historyApiFallback: true,
       client: { overlay: false },
-      // SDK reports (POST/HEAD /api/log), dashboard reads (/api/logs/*) and
-      // the error-seeder's /api + /static probes all go to the standalone
-      // server (`pnpm server`, port 8088), matching the vite dev topology.
-      // Without this, historyApiFallback answers 200 index.html for every
-      // /api request, breaking the dashboard and silencing the 404 seeds.
       proxy: [
         {
           context: ["/api", "/static"],

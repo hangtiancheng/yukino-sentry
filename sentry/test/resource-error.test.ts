@@ -1,11 +1,3 @@
-/**
- * Resource load errors dispatch a plain `Event` (never an `ErrorEvent`) of
- * type "error" on the failed element. These tests pin the classification
- * behavior: such events must be reported as EventType.Resource — not fall
- * through to the unknown-error branch — and must not swallow other error
- * categories (code errors, promise rejections).
- */
-
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { DEFAULT_OPTIONS } from "@/constants/index.js";
@@ -25,7 +17,6 @@ function initForCapture(): ReturnType<
 }
 
 async function flushReports(): Promise<void> {
-  // pub -> handler -> reporter.send (async hook) -> flush
   for (let i = 0; i < 5; i++) {
     await Promise.resolve();
   }
@@ -59,8 +50,6 @@ describe("resource load error classification", () => {
     const img = document.createElement("img");
     img.src = "https://example.com/missing-image.png";
     document.body.appendChild(img);
-    // Real load failures fire a non-bubbling plain Event; the SDK listens on
-    // window with capture=true, which still observes it.
     img.dispatchEvent(new Event("error"));
     await flushReports();
 
@@ -130,7 +119,6 @@ describe("isIExtendedErrorEvent predicate", () => {
   });
 
   it("rejects an element error Event without src and href", () => {
-    // An <img> with no src set — nothing to report even though it is an element
     const img = document.createElement("img");
     let matched = true;
     img.addEventListener("error", (event) => {
@@ -152,7 +140,6 @@ describe("isIExtendedErrorEvent predicate", () => {
   });
 
   it("rejects code-error ErrorEvents targeting window and non-event values", () => {
-    // Code errors are ErrorEvents on window: window has no localName
     const errorEvent = new ErrorEvent("error", { message: "boom" });
     expect(isIExtendedErrorEvent(errorEvent)).toBe(false);
     expect(isIExtendedErrorEvent(new Error("boom"))).toBe(false);

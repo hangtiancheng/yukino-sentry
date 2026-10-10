@@ -1,15 +1,9 @@
-// Node-only module: consumed by the webpack subpath export, never bundled into the browser SDK.
-// Collects `.map` assets emitted by webpack (works with the in-memory dev-server file system)
-// and resolves reported error positions against them.
-
 import { type MapLoader, splitScriptUrl } from "./source-map.js";
 
 export { enrichReportData, type MapLoader } from "./source-map.js";
 
 interface AssetMapStore {
-  /** Record an emitted asset; non-`.map` files are ignored. */
   put(file: string, content: string): void;
-  /** MapLoader resolving reported script URLs against collected `.map` assets. */
   loadMap: MapLoader;
 }
 
@@ -34,7 +28,6 @@ export function createAssetMapStore(): AssetMapStore {
 
     let raw = maps.get(`${rel}.map`);
     if (raw === undefined) {
-      // publicPath prefixes are unknown here; fall back to basename matching
       const base = `${rel.split("/").pop()}.map`;
       for (const [file, content] of maps) {
         if (file === base || file.endsWith(`/${base}`)) {

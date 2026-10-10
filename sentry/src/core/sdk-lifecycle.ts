@@ -32,7 +32,6 @@ export function init(options: InitOptions): void {
     sentryLogger.info("SDK already initialized");
     return;
   }
-  // Explicitly-undefined values must not clobber defaults during the merge.
   const provided = Object.fromEntries(
     Object.entries(options).filter(([, value]) => value !== undefined),
   );

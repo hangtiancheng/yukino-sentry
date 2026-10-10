@@ -9,15 +9,8 @@ import {
 } from "node:fs";
 import { join, relative, dirname, sep } from "node:path";
 
-/**
- * Recursively scan a directory for page.tsx files.
- * @param {string} pagesDir - Absolute path to the pages directory.
- * @returns {string[]} Sorted list of absolute paths to page.tsx files.
- */
 export function scanPageFiles(pagesDir) {
-  /** @type {string[]} */
   const results = [];
-  /** @param {string} dir */
   const walk = (dir) => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       const fullPath = join(dir, entry.name);
@@ -29,23 +22,12 @@ export function scanPageFiles(pagesDir) {
   return results.sort();
 }
 
-/**
- * Derive a route path from a page file's location relative to the pages dir.
- * @param {string} pagesDir - Absolute path to the pages directory.
- * @param {string} file - Absolute path to a page.tsx file.
- * @returns {string} Route path, e.g. "/" or "/search-list".
- */
 export function toRoutePath(pagesDir, file) {
   const relDir = relative(pagesDir, dirname(file));
   if (relDir === "") return "/";
   return "/" + relDir.split(sep).join("/");
 }
 
-/**
- * Convert a route path to a PascalCase component name.
- * @param {string} routePath - Route path, e.g. "/" or "/search-list".
- * @returns {string} Component name, e.g. "Home" or "SearchList".
- */
 export function toComponentName(routePath) {
   if (routePath === "/") return "Home";
   return routePath
@@ -55,18 +37,11 @@ export function toComponentName(routePath) {
     .join("");
 }
 
-/**
- * Scan the pages directory and write a generated routes.tsx file.
- * @param {string} pagesDir - Absolute path to the pages directory.
- * @param {string} outputFile - Absolute path to the output routes.tsx file.
- */
 export function generateRoutes(pagesDir, outputFile) {
   const pageFiles = scanPageFiles(pagesDir);
   const outputDir = dirname(outputFile);
 
-  /** @type {string[]} */
   const imports = [];
-  /** @type {string[]} */
   const entries = [];
 
   for (const file of pageFiles) {

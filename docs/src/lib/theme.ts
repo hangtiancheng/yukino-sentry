@@ -27,9 +27,7 @@ class ThemeStore {
     }
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);
-    } catch {
-      /* storage may be unavailable */
-    }
+    } catch {}
     for (const listener of this.listeners) {
       listener(theme);
     }

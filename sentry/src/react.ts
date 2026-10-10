@@ -5,12 +5,6 @@ import { reportFrameworkError } from "./core/framework-error.js";
 export interface ReactErrorBoundaryProps {
   readonly children?: ReactNode;
 
-  /**
-   * Error UI. A render function may be called once with `errorInfo`
-   * undefined (the fallback renders from `getDerivedStateFromError` before
-   * React delivers `ErrorInfo` in `componentDidCatch`) and again once it is
-   * available.
-   */
   readonly fallback?:
     ReactNode | ((error: Error, errorInfo?: ErrorInfo) => ReactNode);
 }
@@ -20,15 +14,10 @@ interface ReactErrorBoundaryState {
   readonly errorInfo?: ErrorInfo;
 }
 
-/**
- * React Error Boundary that renders `fallback` and reports the caught error
- * to the SDK as an `EventType.React` event.
- */
 export class ReactErrorBoundary extends Component<
   ReactErrorBoundaryProps,
   ReactErrorBoundaryState
 > {
-  // Keeps the React 16 component stack readable.
   static displayName = "ReactErrorBoundary";
 
   override state: ReactErrorBoundaryState = {};

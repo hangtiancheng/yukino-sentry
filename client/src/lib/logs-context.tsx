@@ -1,9 +1,3 @@
-/**
- * LogsProvider polls the vite dev-server log-reader middleware
- * (/api/logs/files + /api/logs/events), validates the responses with zod and
- * shares the flattened event list with every dashboard page.
- */
-
 import {
   useCallback,
   useEffect,
@@ -32,11 +26,6 @@ async function fetchJson<T>(
   return schema.parse(await res.json());
 }
 
-/**
- * Conditional GET for the events endpoint. Sends If-None-Match with the ETag
- * of the previous poll; a 304 means nothing changed, so the caller keeps the
- * current events and skips downloading and re-validating a multi-MB body.
- */
 async function fetchEvents(
   url: string,
   etag: string | null,
@@ -54,10 +43,6 @@ async function fetchEvents(
   };
 }
 
-/**
- * Transport retries make delivery at-least-once, so the same event (same
- * payload.id) can be written to the logs twice. Keep the first occurrence.
- */
 function dedupeEvents(list: ReportEvent[]): ReportEvent[] {
   const seen = new Set<string>();
   const result: ReportEvent[] = [];
@@ -83,7 +68,6 @@ export function LogsProvider({ children }: { children: ReactNode }) {
   const [tick, setTick] = useState(0);
 
   const abortRef = useRef<AbortController | null>(null);
-  /** Last seen events ETag per file selection, for conditional polling. */
   const etagsRef = useRef(new Map<string, string>());
 
   const refresh = useCallback(() => setTick((current) => current + 1), []);

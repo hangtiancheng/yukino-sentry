@@ -4,9 +4,6 @@ import { EventType, type IReportData, type TReportPayload } from "../types";
 import { sentry } from "../utils";
 import { isPromise } from "./promise.js";
 
-// Breadcrumbs are the trail leading up to a failure, so only error-class
-// events carry them; attaching to every batched event would multiply payload
-// size for no diagnostic value.
 const BREADCRUMB_EVENT_TYPES = new Set<EventType>([
   EventType.Error,
   EventType.UnhandledRejection,

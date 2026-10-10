@@ -29,12 +29,6 @@ export function stopWhiteScreenCheck(): void {
   cancelPendingStart = null;
 }
 
-/**
- * Samples viewport points every second after page load. Sampling stops as
- * soon as real content is observed; a white screen is reported only once the
- * page stayed blank (or the skeleton never transitioned) for
- * `MAX_WHITE_SCREEN_SAMPLE_COUNT` consecutive samples.
- */
 export function startWhiteScreenCheck(
   onReport: TOnReportWhiteScreenData,
 ): void {
@@ -84,9 +78,7 @@ export function startWhiteScreenCheck(
     const isWhiteScreen = countEmptyPoints() === SAMPLE_POINT_COUNT;
 
     if (hasSkeleton) {
-      // The baseline sample records which skeleton selectors are on screen.
       if (sampleCount === 1) return;
-      // A selector change means the skeleton transitioned to real content.
       if (!selectorsMatchBaseline()) {
         stopWhiteScreenCheck();
         return;

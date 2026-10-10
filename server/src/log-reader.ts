@@ -1,27 +1,3 @@
-/**
- * Read side of the SDK log pipeline. Serves the same contract as the client
- * dev plugin (vite-plugin-log-reader) so the dashboard works unchanged:
- *
- *   GET /api/logs/files                  -> [{ name, size, mtime, lines }]
- *   GET /api/logs/events?file=<name|all> -> { files, count, events }
- *
- * logger.writeSdkLog() stores files under monthly directories, so names are
- * exposed as "<YYYY-MM>/<file_prefix>_<timestamp>.jsonl". Each jsonl line is
- * one reported batch (an array of IReportData); lines are parsed, flattened
- * into single events and sorted by timestamp ascending.
- *
- * Parse-cost strategy:
- * - The ACTIVE file (the one logger currently appends to) is served by an
- *   incremental tailer (log-tailer.ts): each poll parses only the appended
- *   bytes instead of re-reading the whole file.
- * - ROTATED files are immutable; they are parsed once and cached in a
- *   @yukino.js/cache group (LRU + single-flight). Cache keys embed size and
- *   mtime, which never change for rotated files, so entries stay hot until
- *   evicted by the byte budget.
- * - computeEventsEtag() lets the events route answer 304 from stat calls
- *   alone when nothing changed since the client's last poll.
- */
-
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
@@ -49,7 +25,6 @@ export interface LogEventsResult {
   events: unknown[];
 }
 
-/** Shape of one cached entry: the fully parsed content of one jsonl file. */
 const parsedLogFileSchema = z.object({
   lines: z.number(),
   events: z.array(z.unknown()),
@@ -76,10 +51,6 @@ export function destroyLogCache(): void {
   activeTailer.clear();
 }
 
-/**
- * Allow-list check for "<YYYY-MM>/<file_prefix>_*.jsonl" names. Rejects
- * anything else (system.jsonl, dotfiles, path traversal attempts).
- */
 function isSdkLogName(name: string): boolean {
   const segments = name.split("/");
   if (segments.length !== 2) return false;
@@ -89,17 +60,14 @@ function isSdkLogName(name: string): boolean {
   return base.startsWith(prefix) && /^[\w.-]+\.jsonl$/.test(base);
 }
 
-/** Resolves a validated log name inside the log dir, or null when invalid. */
 function safeLogPath(name: string): string | null {
   if (!isSdkLogName(name)) return null;
   const logsDir = cfg.getConfig().log.dir;
   const fullPath = resolve(logsDir, name);
-  // Defense in depth: the resolved path must stay inside the log dir.
   if (!fullPath.startsWith(resolve(logsDir) + "/")) return null;
   return fullPath;
 }
 
-/** Parses one jsonl file, flattening each line's batch array into events. */
 function parseLogFile(fullPath: string): ParsedLogFile {
   const events: unknown[] = [];
   let lines = 0;
@@ -122,7 +90,6 @@ interface LogFileStat {
   mtime: number;
 }
 
-/** Stat-only walk of the log tree; performs no reads and no parsing. */
 function listLogFileStats(): LogFileStat[] {
   const logsDir = cfg.getConfig().log.dir;
   if (!existsSync(logsDir)) return [];
@@ -145,12 +112,6 @@ function listLogFileStats(): LogFileStat[] {
   return files;
 }
 
-/**
- * Loads one file's parsed content. The active file goes through the
- * incremental tailer; rotated (immutable) files go through the cache group,
- * whose size/mtime-versioned key stays constant, so they parse at most once
- * (single-flight de-duplicates concurrent dashboard polls).
- */
 async function loadParsedFile(entry: LogFileStat): Promise<ParsedLogFile> {
   if (entry.name === logger.getCurrentSdkLogName()) {
     try {
@@ -160,9 +121,7 @@ async function loadParsedFile(entry: LogFileStat): Promise<ParsedLogFile> {
         entry.size,
       );
       return { lines: snapshot.lines, events: snapshot.events };
-    } catch {
-      // Fall through to the full-parse paths below.
-    }
+    } catch {}
   }
 
   if (!logGroup) return parseLogFile(entry.fullPath);
@@ -197,7 +156,6 @@ function timestampOf(value: unknown): number {
   return parsed.success ? parsed.data.timestamp : 0;
 }
 
-/** Stats the file set served for `file`, or null for an invalid name. */
 function statRequestedFiles(
   file: string,
 ): { names: string[]; entries: LogFileStat[] } | null {
@@ -218,17 +176,10 @@ function statRequestedFiles(
       ],
     };
   } catch {
-    // Valid name that does not exist (yet): served as an empty result.
     return { names: [file], entries: [] };
   }
 }
 
-/**
- * Cheap change detector for the events endpoint: an opaque hash over the
- * name/size/mtime of every file the request would read. Any append or
- * rotation changes the tag; computing it costs only stat calls. Returns null
- * when the requested file name is invalid.
- */
 export function computeEventsEtag(file: string): string | null {
   const requested = statRequestedFiles(file);
   if (requested === null) return null;
@@ -239,7 +190,6 @@ export function computeEventsEtag(file: string): string | null {
   return `"${hash}"`;
 }
 
-/** Returns null when the requested file name is not a valid SDK log name. */
 export async function readEvents(
   file: string,
 ): Promise<LogEventsResult | null> {

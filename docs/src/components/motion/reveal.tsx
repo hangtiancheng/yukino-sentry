@@ -114,8 +114,6 @@ export class RevealItemElement extends LitElement {
   }
 
   protected override firstUpdated(): void {
-    // Items inside a ui-reveal-list are staggered by their parent; standalone
-    // items would otherwise never be animated and stay invisible.
     if (this.closest("ui-reveal-list")) {
       return;
     }

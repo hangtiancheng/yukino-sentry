@@ -10,10 +10,6 @@ declare global {
   }
 }
 
-/**
- * Infinite ambient animation (blob drift, cursor blink, floating icons).
- * Disabled when the user prefers reduced motion.
- */
 @customElement("loop-effect")
 export class LoopEffectElement extends LitElement {
   @property({ attribute: false })

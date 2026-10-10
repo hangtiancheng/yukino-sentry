@@ -2,21 +2,21 @@ import { existsSync, readFileSync } from "node:fs";
 import yaml from "yaml";
 
 export interface ServerConfig {
-  port: number; // Default: 8088
-  body_limit: number; // Default: 1048576 (1MB)
+  port: number;
+  body_limit: number;
   allowed_origins: string[];
 }
 
 export interface LogConfig {
-  dir: string; // Default: ./logs
-  max_size: number; // Default: 104857600 (100MB)
-  file_prefix: string; // Default: sentry
-  rotate_daily: boolean; // Default: true
+  dir: string;
+  max_size: number;
+  file_prefix: string;
+  rotate_daily: boolean;
 }
 
 export interface SourcemapConfig {
-  enabled: boolean; // Default: false
-  dir: string; // Default: ../client/dist/.sourcemaps
+  enabled: boolean;
+  dir: string;
 }
 
 export interface Config {
@@ -28,12 +28,12 @@ export interface Config {
 const defaultConfig: Config = {
   server: {
     port: 8088,
-    body_limit: 1048576, // 1MB
+    body_limit: 1048576,
     allowed_origins: ["*"],
   },
   log: {
     dir: "./logs",
-    max_size: 104857600, // 100MB
+    max_size: 104857600,
     file_prefix: "sentry",
     rotate_daily: true,
   },

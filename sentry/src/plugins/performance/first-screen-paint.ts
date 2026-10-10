@@ -38,11 +38,6 @@ function hasInViewportAddition(
   return false;
 }
 
-/**
- * Tracks the timestamp of the latest in-viewport DOM addition and resolves it
- * as the First Screen Paint once the document is complete. Returns a cleanup
- * that cancels observation if the plugin is destroyed before resolution.
- */
 export function getFirstScreenPaint(callback: Callback): Cleanup {
   if (typeof globalThis.MutationObserver !== "function") {
     callback(0);
@@ -112,8 +107,6 @@ export function getFirstScreenPaint(callback: Callback): Cleanup {
     processMutations(mutationObserver.takeRecords());
     mutationObserver.disconnect();
     if (intersectionObserver && hasObservedTarget) {
-      // Intersection records are computed after animation-frame callbacks, so
-      // finalize on the following frame and drain records before disconnecting.
       requestId = requestAnimationFrame(finish);
       return;
     }

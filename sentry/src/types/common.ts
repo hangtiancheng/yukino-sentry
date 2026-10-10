@@ -97,7 +97,6 @@ export type IPerformanceData =
 export interface ICodeError extends IReportPayload {
   line: number;
   column: number;
-  // Stack trace of the underlying Error, when the ErrorEvent carried one.
   extra?: string;
 }
 
@@ -166,12 +165,6 @@ export interface IDataReporter {
   flushOfflineCache(): Promise<void>;
 }
 
-/**
- * Resource load failures (img/script/link/...) dispatch a plain `Event`
- * (not an `ErrorEvent`) whose target is the failed element. `<img>` and
- * `<script>` expose `src`, `<link>` exposes `href` — never both, so both
- * fields are optional and at least one is present on a real resource error.
- */
 export interface IExtendedErrorEvent extends Event {
   target: EventTarget & {
     src?: string;

@@ -1,7 +1,3 @@
-// Mirrors the strategy of Sentry's `htmlTreeAsString`: nearest levels carry
-// nearly all identification value, so cap traversal height and drop whole
-// selectors (never cut one in half) once the output budget is exhausted.
-
 const MAX_TRAVERSE_HEIGHT = 5;
 const MAX_OUTPUT_LENGTH = 128;
 const SEPARATOR = " > ";
@@ -22,11 +18,6 @@ function elementToSelector(element: HTMLElement): string {
   return selector;
 }
 
-/**
- * Renders an element and its ancestors as a CSS-selector-like path, e.g.
- * `body > div#app > button.btn.primary` — nearest 5 levels, capped at 128
- * characters (the clicked element itself is always kept).
- */
 function dom2str(target: HTMLElement): string {
   try {
     const path: string[] = [];

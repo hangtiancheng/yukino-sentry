@@ -36,8 +36,6 @@ const sentryStyles: SentryStyles = {
   },
 };
 
-// Captured before init() decorates console.error, so SDK debug output never
-// re-enters the error capture pipeline.
 const nativeConsoleError = console.error.bind(console);
 
 const DEFAULT_PREFIX = "@yukino.js/sentry";
@@ -91,11 +89,6 @@ export const sentryLogger = {
   info(
     message: string,
     data?: unknown,
-    /**
-     * Restricts the `console.table` output to the listed property keys when
-     * `data` is an array of objects. Omit it to render every column.
-     * Ignored for non-array `data`.
-     */
     tableColumns?: string[],
     prefix = DEFAULT_PREFIX,
   ) {
@@ -107,11 +100,6 @@ export const sentryLogger = {
   success(
     message: string,
     data?: unknown,
-    /**
-     * Optional elapsed time (in milliseconds) for the operation being logged.
-     * When provided, an extra `Time cost {duration}ms` line is rendered inside
-     * the group — typically used to measure batch-report flush latency.
-     */
     duration?: number,
     prefix = DEFAULT_PREFIX,
   ) {

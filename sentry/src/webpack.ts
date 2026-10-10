@@ -1,5 +1,3 @@
-// pnpm add -D webpack webpack-dev-server
-
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Compiler, WebpackPluginInstance } from "webpack";
 import type DevServer from "webpack-dev-server";
@@ -21,28 +19,6 @@ export interface ISentryWebpackPluginOptions {
   dsn?: string;
 }
 
-/**
- * Connect/express-style middleware that mocks the sentry report endpoint
- * during webpack-dev-server development. Mount it manually inside the
- * `setupMiddlewares` option of webpack-dev-server.
- *
- * @example
- * ```ts
- * import { sentryMiddleware } from "@yukino.js/sentry/webpack";
- *
- * export default {
- *   devServer: {
- *     setupMiddlewares(middlewares) {
- *       middlewares.unshift({
- *         name: "sentry-mock",
- *         middleware: sentryMiddleware({ dsn: "/api/log" }),
- *       });
- *       return middlewares;
- *     },
- *   },
- * };
- * ```
- */
 export function sentryMiddleware(
   options: ISentryWebpackPluginOptions = {},
 ): SentryDevMiddleware {
@@ -53,21 +29,6 @@ export function sentryMiddleware(
   return createMockMiddleware(options.dsn ?? DEFAULT_MOCK_DSN, fileStream);
 }
 
-/**
- * Webpack plugin that automatically wires the sentry log-collection middleware
- * into webpack-dev-server. It only takes effect when
- * `compiler.options.devServer` exists, so production builds remain untouched.
- *
- * @example
- * ```ts
- * import { sentryPlugin } from "@yukino.js/sentry/webpack";
- *
- * export default {
- *   plugins: [sentryPlugin({ dsn: "/api/log" })],
- *   devServer: { ... },
- * };
- * ```
- */
 export class SentryWebpackPlugin implements WebpackPluginInstance {
   private readonly dsn: string | undefined;
 
@@ -88,8 +49,6 @@ export class SentryWebpackPlugin implements WebpackPluginInstance {
       (records) => enrichReportData(mapStore.loadMap, records),
     );
 
-    // Collect emitted `.map` assets (fires for the in-memory dev-server file
-    // system too) so reported errors can be resolved back to original sources.
     compiler.hooks.assetEmitted.tap(
       "SentryWebpackPlugin",
       (file, { content }) => {
@@ -106,11 +65,6 @@ export class SentryWebpackPlugin implements WebpackPluginInstance {
     const userSetup = devServer.setupMiddlewares;
     devServer.setupMiddlewares = (middlewares, dev) => {
       const list = userSetup ? userSetup(middlewares, dev) : middlewares;
-      // NOTE: do NOT pass `path` here. webpack-dev-server's
-      // `{ name, path, middleware }` form delegates to `app.use(path, middleware)`,
-      // which strips the `path` prefix from `req.url` before the middleware runs.
-      // The middleware below relies on `req.url === url` to identify the report
-      // endpoint, so the prefix must stay.
       const sentryEntry: DevServer.Middleware = {
         name: "sentry-mock",
         middleware,

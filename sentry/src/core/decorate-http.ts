@@ -17,8 +17,6 @@ type TXhrProtoOpen = (
   ...rest: (string | null)[]
 ) => void;
 
-// Request/response bodies are only captured for failed requests and truncated
-// so a single error can never blow up report payloads.
 const MAX_BODY_LENGTH = 8 * 1024;
 
 function truncateBody(value: string): string {
@@ -142,8 +140,6 @@ export function pubFetch(): Cleanup {
           httpData.serverTiming = getServerTimingFromHeaders(res.headers);
           if (isErrorStatusCode(res.status)) {
             httpData.requestData = { body: options?.body };
-            // Read the body from a clone in the background so the caller's
-            // response stream is untouched and never delayed.
             res
               .clone()
               .text()

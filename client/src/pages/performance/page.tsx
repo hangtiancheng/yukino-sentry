@@ -79,7 +79,6 @@ const NAVIGATION_FIELDS: Array<{ key: keyof NavigationExtra; label: string }> =
     { key: "resourceLoad", label: "Resource Load" },
   ];
 
-/** Cumulative page-load milestones (measured from fetchStart). */
 const NAVIGATION_MILESTONES: Array<{
   key: keyof NavigationExtra;
   label: string;
@@ -95,7 +94,6 @@ const NAVIGATION_MILESTONES: Array<{
 
 const memorySchema = z.object({ bytes: z.number() });
 
-/** Latest performance.measureUserAgentSpecificMemory result, if any. */
 function latestMemoryBytes(events: ReportEvent[]): number | null {
   for (let index = events.length - 1; index >= 0; index -= 1) {
     const event = events[index];

@@ -105,7 +105,6 @@ export function observeResourceTimings(onReport: ResourceReporter): Cleanup {
         onReport(createResourceTimingData(entry));
       });
   });
-  // buffered: false 只监听新 entry
   observer.observe({ entryTypes: ["resource"], buffered: false });
   return () => {
     observer.disconnect();

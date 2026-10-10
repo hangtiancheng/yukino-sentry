@@ -78,12 +78,6 @@ function applyInitial(
   }
 }
 
-/**
- * Mount-time entrance animation: applies the `initial` keyframes immediately
- * (no flash of the final state), then animates to their identity values
- * merged with any explicit `to` overrides. With `viewport`, playback waits
- * for the element to scroll into view.
- */
 @customElement("enter-effect")
 export class EnterEffectElement extends LitElement {
   @property({ attribute: false }) initial: Record<string, KeyframeValue> = {};

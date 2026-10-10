@@ -52,7 +52,6 @@ function stackOf(event: ReportEvent): string | null {
   if (!payload) return null;
   if (typeof payload.stack === "string") return payload.stack;
   if (typeof payload.extra === "string") return payload.extra;
-  // reportFrameworkError (React/Vue/OtherFrameworks) nests it in extra.stack
   const extra = stackExtraSchema.safeParse(payload.extra);
   if (extra.success) return extra.data.stack;
   return null;

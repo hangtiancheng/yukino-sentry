@@ -1,5 +1,3 @@
-// crypto.randomUUID is only exposed in secure contexts, so plain-http pages
-// need the getRandomValues-based v4 fallback to keep the SDK functional.
 export function generateUUID(): string {
   const cryptoObj = globalThis.crypto;
   if (cryptoObj && typeof cryptoObj.randomUUID === "function") {

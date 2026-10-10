@@ -4,11 +4,11 @@ const trackPrefix = "yukino-sentry-";
 const reservedKeys = new Set(["msg", "ev", "view"]);
 
 interface DeclarativeClickData {
-  readonly ev: string; // yukino-sentry-ev
-  readonly msg: string; // yukino-sentry-msg
-  readonly triggerPageUrl: string; // yukino-sentry-view
-  readonly x: number; // yukino-sentry-view
-  readonly y: number; // yukino-sentry-view
+  readonly ev: string;
+  readonly msg: string;
+  readonly triggerPageUrl: string;
+  readonly x: number;
+  readonly y: number;
   readonly params: Readonly<Record<string, string | null>>;
   readonly elementPath: string;
   readonly triggerTime: number;

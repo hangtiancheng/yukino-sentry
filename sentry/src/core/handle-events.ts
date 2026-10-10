@@ -16,7 +16,6 @@ import { handleCodeError } from "./handle-code-error.js";
 import { handleError } from "./handle-error.js";
 
 function extractRejectionReason(extra: unknown): unknown {
-  // PromiseRejectionEvent carries the actual rejection value in `reason`.
   if (extra instanceof Event && "reason" in extra) {
     return Reflect.get(extra, "reason");
   }
@@ -28,8 +27,6 @@ export const handleUnhandledRejection: TEventHandler<IBaseDataWithEvent> = (
 ) => {
   const reason = extractRejectionReason(data.extra);
   sentryLogger.error("Unhandled rejection captured", reason);
-  // Only ErrorEvent reasons carry filename/line/column and can be treated as
-  // code errors; every other rejection reason goes through the generic pipeline.
   if (isErrorEvent(reason)) {
     handleCodeError(reason);
     return;

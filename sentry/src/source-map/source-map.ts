@@ -1,6 +1,3 @@
-// Node-only module: shared sourcemap resolution core for the vite/webpack
-// dev-server integrations, never bundled into the browser SDK.
-
 import { SourceMapConsumer } from "source-map";
 import { z } from "zod";
 
@@ -30,7 +27,6 @@ export interface ResolvedFrame {
   snippet?: SnippetLine[];
 }
 
-/** Loads the raw sourcemap object for a reported script URL, or null when unavailable. */
 export type MapLoader = (url: string) => Promise<unknown>;
 
 const sourceMapSchema = z.object({
@@ -89,7 +85,6 @@ function buildSnippet(content: string, line: number): SnippetLine[] {
   return snippet;
 }
 
-/** Splits a reported script URL into pathname and search, tolerating non-URL inputs. */
 export function splitScriptUrl(url: string): {
   pathname: string;
   search: string;
@@ -122,7 +117,6 @@ export async function resolveFrame(
       JSON.stringify(map),
       null,
       (consumer) => {
-        // Browser line/column are 1-based; sourcemap columns are 0-based
         const pos = consumer.originalPositionFor({
           line: frame.line,
           column: Math.max(0, frame.column - 1),
@@ -165,8 +159,6 @@ function isStackLike(value: string): boolean {
 
 const frameworkExtraSchema = z.looseObject({ stack: z.string().optional() });
 
-// reportFrameworkError nests the stack inside payload.extra; payload.stack is
-// kept as a legacy fallback for older SDK payload shapes.
 function frameworkStackOf(payload: {
   extra?: unknown;
   stack?: unknown;

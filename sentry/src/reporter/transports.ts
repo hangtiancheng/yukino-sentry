@@ -1,8 +1,5 @@
 import { sentryLogger, sentry } from "../utils";
 
-// Chromium rejects keepalive fetches (and sendBeacon payloads) over the
-// ~64KB in-flight budget, so large batches (e.g. screen recordings) must
-// fall back to a plain fetch or they would fail forever and stall the queue.
 export const MAX_KEEPALIVE_BYTES = 60 * 1024;
 
 export function getBodyByteLength(body: string): number {

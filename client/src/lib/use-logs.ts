@@ -1,8 +1,3 @@
-/**
- * Context definition and consumer hook live in this component-free module so
- * logs-context.tsx only exports the provider component (react-refresh rule).
- */
-
 import { createContext, useContext } from "react";
 import type { LogFileInfo, ReportEvent } from "./log-types";
 

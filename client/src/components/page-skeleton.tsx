@@ -1,9 +1,3 @@
-/**
- * Placeholder layout shown while the first /api/logs fetch is in flight, so
- * pages never flash empty charts before data arrives. Mirrors the common page
- * structure: stat card row, two chart cards, one table card.
- */
-
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 

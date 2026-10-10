@@ -26,12 +26,7 @@ export function registerRoutes(app: Koa) {
   const router = new Router();
 
   router.post("/api/log", async (ctx) => {
-    // Swallow premature-close errors: the SDK may abort the request (page
-    // navigation, HMR reload) before we finish writing the response. The log
-    // data is already consumed at that point, so the error is harmless.
-    ctx.res.on("error", () => {
-      /** noop */
-    });
+    ctx.res.on("error", () => {});
 
     let body: Buffer;
     try {
@@ -69,8 +64,6 @@ export function registerRoutes(app: Koa) {
       return;
     }
 
-    // 204 No Content: nothing to write back, so a client disconnect can never
-    // trigger ERR_STREAM_PREMATURE_CLOSE on the response stream.
     ctx.status = 204;
   });
 
@@ -85,8 +78,6 @@ export function registerRoutes(app: Koa) {
     ctx.body = status;
   });
 
-  // The SDK probes dsn recovery with HEAD requests; acknowledge them without
-  // touching the log pipeline.
   router.head("/api/log", (ctx) => {
     ctx.status = 204;
   });
@@ -100,16 +91,12 @@ export function registerRoutes(app: Koa) {
     const raw = ctx.query.file;
     const file = typeof raw === "string" && raw !== "" ? raw : "all";
 
-    // Stat-based change detector: when nothing was appended or rotated since
-    // the client's last poll, answer 304 without parsing or serializing.
     const etag = computeEventsEtag(file);
     if (etag === null) {
       ctx.status = 400;
       ctx.body = { code: 400, message: "invalid file name" };
       return;
     }
-    // no-cache (not no-store): the browser may store the body but must
-    // revalidate with If-None-Match on every request.
     ctx.set("Cache-Control", "no-cache");
     ctx.set("ETag", etag);
     const ifNoneMatch = ctx.request.header["if-none-match"];
@@ -140,7 +127,6 @@ export function registerRoutes(app: Koa) {
 async function checkDiskSpace() {
   const logDir = cfg.getConfig().log.dir;
 
-  // Check if log directory is accessible
   if (!existsSync(logDir)) {
     return { status: "error", error: `Directory not found: ${logDir}` };
   }
@@ -149,7 +135,6 @@ async function checkDiskSpace() {
     return { status: "error", error: "Log path is not a directory" };
   }
 
-  // Create temp file to check if writable
   const testFile = join(logDir, ".health_check");
   try {
     writeFileSync(testFile, "");

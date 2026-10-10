@@ -90,7 +90,6 @@ export function handleCodeError(err: ErrorEvent): void {
     ...(stack ? { extra: stack } : {}),
   };
   breadcrumb.push({ ...data, userAction: event2breadcrumb(EventType.Error) });
-  // Errors without a source location cannot be deduplicated meaningfully.
   if (!filename || filename === UNKNOWN) {
     batchErrorManager.push(codeError);
     return;

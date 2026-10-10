@@ -1,10 +1,3 @@
-/**
- * Zod schemas (and inferred types) mirroring the wire format produced by
- * @yukino.js/sentry: each jsonl line is an IReportData[] batch, optionally
- * enriched with `sourcemap.frames` by the vite dev-server plugin. Field-level
- * `.catch()` keeps a single malformed event from failing a whole response.
- */
-
 import { z } from "zod";
 
 export const deviceInfoSchema = z.object({
@@ -65,23 +58,18 @@ export const longTaskSchema = z.looseObject({
   duration: z.number().catch(0),
 });
 
-/** Loose union of all SDK payload variants; unknown keys pass through. */
 export const eventPayloadSchema = z.looseObject({
   id: z.string().optional().catch(undefined),
   deviceId: z.string().optional().catch(undefined),
   sessionId: z.string().optional().catch(undefined),
-  /** ICodeError */
   line: z.number().optional().catch(undefined),
   column: z.number().optional().catch(undefined),
-  /** IHttpData */
   method: z.string().optional().catch(undefined),
   api: z.string().optional().catch(undefined),
   elapsedTime: z.number().optional().catch(undefined),
   statusCode: z.number().optional().catch(undefined),
-  /** IResourceError */
   src: z.string().optional().catch(undefined),
   href: z.string().optional().catch(undefined),
-  /** Performance metric */
   value: z.number().optional().catch(undefined),
   rating: z
     .enum(["good", "needs-improvement", "poor"])
@@ -89,20 +77,15 @@ export const eventPayloadSchema = z.looseObject({
     .catch(undefined),
   resourceList: z.array(resourceTimingSchema).optional().catch(undefined),
   longTasks: z.array(longTaskSchema).optional().catch(undefined),
-  /** IRouteData */
   from: z.string().optional().catch(undefined),
   to: z.string().optional().catch(undefined),
-  /** IBatchErrorData */
   batchError: z.boolean().optional().catch(undefined),
   batchErrorLength: z.number().optional().catch(undefined),
   batchErrorLastHappenTime: z.number().optional().catch(undefined),
-  /** React/Vue framework errors */
   stack: z.string().optional().catch(undefined),
-  /** ScreenRecord */
   event: z.string().optional().catch(undefined),
   events: z.string().optional().catch(undefined),
   eventCount: z.number().optional().catch(undefined),
-  /** PV / Click / Exposure / errors — extra can be a stack string or object */
   extra: z.unknown().optional(),
 });
 

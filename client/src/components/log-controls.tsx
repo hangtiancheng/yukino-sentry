@@ -1,5 +1,3 @@
-/** Header controls: jsonl file picker, auto-refresh cadence, manual refresh. */
-
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

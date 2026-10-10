@@ -1,6 +1,3 @@
-// Node-only module: mock report endpoint shared by the vite and webpack
-// dev-server integrations, never bundled into the browser SDK.
-
 import { Buffer } from "node:buffer";
 import { join } from "node:path";
 import {
@@ -12,7 +9,6 @@ import {
 
 export const DEFAULT_MOCK_DSN = "/sentry";
 
-/** Structural request/response shapes satisfied by both connect and express. */
 export interface MockRequest {
   url?: string | undefined;
   method?: string | undefined;
@@ -31,7 +27,6 @@ export type MockMiddleware = (
   next: () => void,
 ) => void;
 
-/** Optional per-batch transform, e.g. sourcemap enrichment of error records. */
 export type ReportEnricher = (records: unknown) => Promise<unknown>;
 
 export interface LogStreamHandle {

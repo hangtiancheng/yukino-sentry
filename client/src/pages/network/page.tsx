@@ -57,7 +57,6 @@ const httpPerfExtraSchema = z.object({
   statusCode: z.number().optional().catch(undefined),
 });
 
-/** One HTTP request, normalized from either a failure or a success report. */
 interface RequestRow {
   key: string;
   timestamp: number;

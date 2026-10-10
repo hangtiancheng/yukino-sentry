@@ -93,7 +93,7 @@ describe("DataReporter offline and retry behavior", () => {
       .map((call) => String(call[1]))
       .filter((body) => body.includes("payload-1"));
     expect(bodies).toHaveLength(1);
-    expect(bodies[0]?.split("payload-1")).toHaveLength(2); // exactly one occurrence
+    expect(bodies[0]?.split("payload-1")).toHaveLength(2);
     expect(localStorage.getItem(DEFAULT_OPTIONS.offlineCacheKey)).toBeNull();
   });
 

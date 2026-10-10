@@ -1,6 +1,5 @@
 import { MAX_BREADCRUMBS } from "../constants";
 
-/** Bounded FIFO buffer that keeps the most recent `capacity` items. */
 export class BoundedList<T> {
   public capacity: number;
   private items: T[] = [];
@@ -25,7 +24,6 @@ export class BoundedList<T> {
   }
 }
 
-/** Insertion-ordered set that evicts its oldest entry once over capacity. */
 export class BoundedSet<T> {
   private map = new Map<T, true>();
   private readonly capacity: number;

@@ -1,7 +1,3 @@
-// npm view vite versions
-// pnpm add -D vite7@npm:vite@7
-// pnpm add -D vite
-
 import { type Plugin } from "vite";
 import {
   closeLogStream,

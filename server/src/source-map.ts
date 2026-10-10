@@ -122,7 +122,6 @@ export async function resolveFrame(frame: RawFrame): Promise<ResolvedFrame> {
     const consumer = await getConsumer(name);
     if (!consumer) return fallback;
 
-    // Browser line/column are 1-based; sourcemap columns are 0-based
     const pos = consumer.originalPositionFor({
       line: frame.line,
       column: Math.max(0, frame.column - 1),
@@ -202,7 +201,6 @@ const frameworkStackRecordSchema = z.object({
     z.literal("OtherFrameworks"),
   ]),
   payload: z.object({
-    // Legacy SDK shape kept as fallback; current SDKs nest the stack in extra.
     stack: z.string().optional(),
     extra: z.looseObject({ stack: z.string().optional() }).optional(),
   }),

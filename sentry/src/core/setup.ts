@@ -84,7 +84,6 @@ function setup(): Cleanup {
 
   initPageView();
 
-  // pagehide fires reliably on mobile where beforeunload does not.
   const pageHideHandler = () => {
     flushCurrentPageDwell(true);
   };

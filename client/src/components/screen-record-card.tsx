@@ -1,10 +1,3 @@
-/**
- * Screen recording replay: lists ScreenRecord reports (rrweb events gzipped
- * and base64-encoded by the SDK) and replays a selected one with the raw
- * rrweb Replayer, scaled to fit the card. Decoding uses the SDK's async
- * unzipScreenRecord, which loads pako on demand.
- */
-
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Replayer } from "@rrweb/replay";
 import "@rrweb/replay/dist/style.css";
@@ -37,19 +30,16 @@ type ReplayEvents = ConstructorParameters<typeof Replayer>[0];
 const MAX_RECORDINGS = 10;
 const MAX_PLAYER_HEIGHT = 360;
 
-/** rrweb Meta event (type 4) carries the recorded viewport size. */
 const metaEventSchema = z.object({
   type: z.literal(4),
   data: z.object({ width: z.number(), height: z.number() }),
 });
 
-/** Minimal structural shape of an rrweb eventWithTime entry. */
 const replayEventSchema = z.looseObject({
   type: z.number(),
   timestamp: z.number(),
 });
 
-/** Zod-validated guard so decoded payloads need no type assertion. */
 function isReplayEvents(value: unknown): value is ReplayEvents {
   return (
     Array.isArray(value) &&
@@ -62,7 +52,6 @@ function recordKey(event: ReportEvent, index: number): string {
   return event.payload?.id ?? `${event.timestamp}-${index}`;
 }
 
-/** The SDK stores the gzipped rrweb window at payload.event (singular). */
 function rawRecordOf(event: ReportEvent): string | undefined {
   const payload = event.payload;
   if (typeof payload?.event === "string" && payload.event !== "")
@@ -72,7 +61,6 @@ function rawRecordOf(event: ReportEvent): string | undefined {
   return undefined;
 }
 
-/** Base64 length approximates the compressed payload size (4 chars ≈ 3 bytes). */
 function payloadSizeOf(event: ReportEvent): number {
   const raw = rawRecordOf(event);
   return typeof raw === "string" ? Math.round((raw.length * 3) / 4) : 0;
@@ -96,9 +84,6 @@ export function ScreenRecordCard({ events }: { events: ReportEvent[] }) {
     recordings.find(
       (event, index) => recordKey(event, index) === selectedKey,
     ) ?? null;
-  // The base64 payload string is identical across polls even though the
-  // surrounding event objects are re-fetched, so memos keyed on it are stable
-  // and the player is not torn down on every auto-refresh.
   const selectedRaw = selected ? (rawRecordOf(selected) ?? null) : null;
 
   interface DecodeState {
@@ -112,14 +97,10 @@ export function ScreenRecordCard({ events }: { events: ReportEvent[] }) {
     events: null,
     failed: false,
   });
-  // Reset derived decode state when the selection changes (React's documented
-  // adjust-state-during-render pattern), so stale replays never flash.
   if (decodeState.raw !== selectedRaw) {
     setDecodeState({ raw: selectedRaw, events: null, failed: false });
   }
 
-  // Decodes the selected recording; unzipScreenRecord is async because it
-  // loads pako on demand.
   useEffect(() => {
     if (selectedRaw === null) return;
     let cancelled = false;
@@ -145,14 +126,11 @@ export function ScreenRecordCard({ events }: { events: ReportEvent[] }) {
       ? "Unable to decode this recording (needs at least 2 rrweb events)"
       : null;
 
-  // Synchronizes the rrweb Replayer (an external DOM system) with the
-  // selected recording.
   useEffect(() => {
     if (!replayEvents) return;
     const container = containerRef.current;
     if (!container) return;
 
-    // Scale the recorded viewport down to the card width.
     const meta = replayEvents
       .map((event) => metaEventSchema.safeParse(event))
       .find((parsed) => parsed.success)?.data;
@@ -184,9 +162,6 @@ export function ScreenRecordCard({ events }: { events: ReportEvent[] }) {
         wrapper.style.top = "0";
       }
     } catch {
-      // rrweb throws when the window lacks a full snapshot. The container is
-      // the external system this effect manages, so report the failure there
-      // instead of setState (which would cascade a re-render).
       container.replaceChildren();
       container.textContent =
         "Unable to replay this recording (no full snapshot in window)";
@@ -199,9 +174,7 @@ export function ScreenRecordCard({ events }: { events: ReportEvent[] }) {
         try {
           replayer.pause();
           replayer.destroy();
-        } catch {
-          // best-effort teardown
-        }
+        } catch {}
       }
       container.replaceChildren();
       container.style.height = "";

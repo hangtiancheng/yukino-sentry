@@ -9,8 +9,6 @@ interface ServerRecoveryCallbacks {
 
 const BASE_RETRY_MS = 1000;
 
-// Delay for the next probe; each failed probe doubles it, capped at the
-// configured retryIntervalMilliseconds. Reset on recovery or reporter teardown.
 let nextRetryDelayMs = BASE_RETRY_MS;
 
 export function resetServerRecovery(): void {

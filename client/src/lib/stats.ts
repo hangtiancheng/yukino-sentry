@@ -1,5 +1,3 @@
-/** Pure aggregation helpers shared by the dashboard pages. */
-
 import type { ReportEvent } from "./log-types";
 
 export type EventCategory =
@@ -24,7 +22,6 @@ const BEHAVIOR_TYPES = new Set([
   "Event hashchange",
 ]);
 
-/** Successful HTTP requests reported as Performance events ("HTTP GET" ...). */
 export function isHttpPerfEvent(event: ReportEvent): boolean {
   return event.type === "Performance" && event.name.startsWith("HTTP ");
 }
@@ -50,12 +47,10 @@ export const CATEGORY_LABELS: Record<EventCategory, string> = {
   other: "Other",
 };
 
-/** JS/framework/resource errors (excludes HTTP failures). */
 export function isErrorEvent(event: ReportEvent): boolean {
   return categoryOf(event) === "error";
 }
 
-/** HTTP request events (Fetch/XHR). */
 export function isHttpEvent(event: ReportEvent): boolean {
   return categoryOf(event) === "http" && HTTP_TYPES.has(event.type);
 }
@@ -64,15 +59,10 @@ export function isFailedHttp(event: ReportEvent): boolean {
   return isHttpEvent(event) && event.status === "Error";
 }
 
-/**
- * Any HTTP request report: failures arrive as fetch/XHR events, successes as
- * Performance events named "HTTP <method>" (requires enableHttpPerformance).
- */
 export function isHttpRequestEvent(event: ReportEvent): boolean {
   return isHttpEvent(event) || isHttpPerfEvent(event);
 }
 
-/** True page-view records; excludes PageDwell dwell-time reports. */
 export function isPageViewEvent(event: ReportEvent): boolean {
   return event.type === "PV" && event.name !== "PageDwell";
 }
@@ -93,12 +83,6 @@ const MAX_TIMELINE_POINTS = 60;
 
 const DAY_MS = 24 * 60 * 60_000;
 
-/**
- * Sanity window for charted timestamps. SDK events are stamped with
- * Date.now(), so anything before the SDK existed or (beyond clock skew) in
- * the future is garbage input; a single such outlier would stretch the whole
- * time axis into uselessness.
- */
 const MIN_SANE_TIMESTAMP = Date.UTC(2020, 0, 1);
 const MAX_CLOCK_SKEW_MS = 2 * 60_000;
 
@@ -123,13 +107,6 @@ export function formatBucketLabel(
   return `${month}-${day} ${hh}:${mm}`;
 }
 
-/**
- * Buckets events into a fixed-step timeline (step grows with the time range
- * so the chart never exceeds MAX_TIMELINE_POINTS points), counting events
- * per category in each bucket. Gaps are zero-filled so area charts stay
- * continuous. Events with insane timestamps are excluded; labels carry the
- * date once the range spans more than a day.
- */
 export function buildTimeline(events: ReportEvent[]): TimelinePoint[] {
   const now = Date.now();
   const stamps = events
@@ -233,7 +210,6 @@ export interface VitalSummary {
 
 const VITAL_NAMES = ["LCP", "FCP", "CLS", "INP", "TTFB", "FSP"] as const;
 
-/** Latest reported value per Web Vital metric. */
 export function latestVitals(events: ReportEvent[]): VitalSummary[] {
   const latest = new Map<string, VitalSummary>();
   for (const event of events) {
@@ -289,7 +265,6 @@ export function formatDateTime(timestamp: number): string {
   return `${month}-${day} ${formatClock(timestamp)}`;
 }
 
-/** Strips origin from same-page URLs to keep tables compact. */
 export function shortUrl(url: string | undefined, max = 60): string {
   if (!url) return "-";
   let short = url;
@@ -299,9 +274,7 @@ export function shortUrl(url: string | undefined, max = 60): string {
     if (parsed.origin !== globalThis.location?.origin) {
       short = parsed.host + short;
     }
-  } catch {
-    // keep original string
-  }
+  } catch {}
   if (short.length > max) short = short.slice(0, max - 1) + "…";
   return short;
 }

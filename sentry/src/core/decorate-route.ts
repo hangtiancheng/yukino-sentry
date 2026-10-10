@@ -44,7 +44,6 @@ export function pubHistory(): Cleanup {
       }
       const from = latestHref;
       const to = normalizeRouteUrl(url);
-      // Apply the navigation first so handlers observe the destination href
       const result = oldPropsVal.call(this, data, unused, url);
       if (from !== to) {
         latestHref = to;

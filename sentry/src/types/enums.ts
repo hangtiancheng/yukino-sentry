@@ -1,15 +1,9 @@
 export enum BreadcrumbType {
-  // Network request.
   Http = "Http",
-  // User click.
   Click = "Click",
-  // Route navigation.
   Route = "Route",
-  // Resource loading.
   Resource = "Resource",
-  // Code error.
   CodeError = "Code Error",
-  // Custom event.
   Custom = "Custom",
 }
 
