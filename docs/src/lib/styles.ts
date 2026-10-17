@@ -18,7 +18,7 @@ export const cardHover =
 export const glass = "bg-white/80 backdrop-blur-xl dark:bg-[#131314]/80";
 
 export const gradientText =
-  "from-[#4285f4] via-[#9b72cb] to-[#d96570] dark:from-[#8ab4f8] dark:via-[#c58af9] dark:to-[#f28b82] bg-linear-to-r bg-clip-text text-transparent";
+  "from-[#4285f4] via-[#9b72cb] to-[#d96570] dark:from-[#8ab4f8] dark:via-[#c58af9] dark:to-[#f28b82] bg-linear-to-r bg-clip-text text-transparent pb-[0.15em] -mb-[0.15em]";
 
 export const brandGradient = "from-brand-600 to-brand-500 bg-linear-to-r";
 
