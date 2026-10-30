@@ -5,7 +5,7 @@
   "type": "module",
   "workspaces": [
     "client",
-    "yukino.js",
+    "docs",
     "sentry",
     "server"
   ],
