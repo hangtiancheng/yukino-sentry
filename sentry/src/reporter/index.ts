@@ -78,7 +78,7 @@ export class DataReporter implements IDataReporter {
     });
   }
 
-  private async flush(): Promise<void> {
+  async flush(): Promise<void> {
     if (this.events.length === 0 || this.isFlushing) return;
     this.isFlushing = true;
     try {

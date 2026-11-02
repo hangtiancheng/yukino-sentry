@@ -80,3 +80,7 @@ export function afterSend(hook: AfterSendHook): void {
 export async function flushOfflineCache(): Promise<void> {
   await reporter.flushOfflineCache();
 }
+
+export async function flush(): Promise<void> {
+  await reporter.flush();
+}

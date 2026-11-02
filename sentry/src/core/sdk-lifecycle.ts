@@ -10,56 +10,84 @@ import setup from "./setup.js";
 import { destroyBatchErrorManager } from "./handle-code-error.js";
 import { resetReporter } from "../reporter/index.js";
 
-let cleanupSetup: Cleanup | null = null;
-
-export function isInitialized(): boolean {
-  return cleanupSetup !== null;
+export interface SdkLifecycleHooks {
+  setup: () => Cleanup;
+  onInitialized?: () => void;
 }
 
-export function destroy(): void {
-  destroyPlugins();
-  cleanupSetup?.();
-  cleanupSetup = null;
-  destroyBatchErrorManager();
-  resetReporter();
-  breadcrumb.clear();
-  sentry.codeErrors.clear();
-  sentry.shouldScreenRecord = false;
+export interface SdkLifecycle {
+  init: (options: InitOptions) => void;
+  destroy: () => void;
+  isInitialized: () => boolean;
+  enablePlugin: (...plugins: SentryPlugin[]) => void;
 }
 
-export function init(options: InitOptions): void {
-  if (isInitialized()) {
-    sentryLogger.info("SDK already initialized");
-    return;
+export function createSdkLifecycle(hooks: SdkLifecycleHooks): SdkLifecycle {
+  let cleanupSetup: Cleanup | null = null;
+
+  function isInitialized(): boolean {
+    return cleanupSetup !== null;
   }
-  const provided = Object.fromEntries(
-    Object.entries(options).filter(([, value]) => value !== undefined),
-  );
-  const parsedOptions = optionsSchema.parse({
-    ...DEFAULT_OPTIONS,
-    ...provided,
-  });
-  sentry.setOptions(parsedOptions);
-  const { dsn } = sentry.options;
-  if (sentry.options.disabled) {
-    sentryLogger.info("SDK disabled by options");
-    return;
+
+  function destroy(): void {
+    destroyPlugins();
+    cleanupSetup?.();
+    cleanupSetup = null;
+    destroyBatchErrorManager();
+    resetReporter();
+    breadcrumb.clear();
+    sentry.codeErrors.clear();
+    sentry.shouldScreenRecord = false;
   }
-  if (dsn === "") {
-    sentryLogger.error("Initialization failed: DSN is empty");
-    return;
+
+  function init(options: InitOptions): void {
+    if (isInitialized()) {
+      sentryLogger.info("SDK already initialized");
+      return;
+    }
+    const provided = Object.fromEntries(
+      Object.entries(options).filter(([, value]) => value !== undefined),
+    );
+    const parsedOptions = optionsSchema.parse({
+      ...DEFAULT_OPTIONS,
+      ...provided,
+    });
+    sentry.setOptions(parsedOptions);
+    const { dsn } = sentry.options;
+    if (sentry.options.disabled) {
+      sentryLogger.info("SDK disabled by options");
+      return;
+    }
+    if (dsn === "") {
+      sentryLogger.error("Initialization failed: DSN is empty");
+      return;
+    }
+    sentryLogger.info("SDK initialized", {
+      options: sentry.options,
+    });
+    breadcrumb.capacity = sentry.options.maxBreadcrumbs;
+    cleanupSetup = hooks.setup();
+    hooks.onInitialized?.();
   }
-  sentryLogger.info("SDK initialized", {
-    options: sentry.options,
-  });
-  breadcrumb.capacity = sentry.options.maxBreadcrumbs;
-  cleanupSetup = setup();
-  void initIdentity();
+
+  function enablePlugin(...plugins: SentryPlugin[]): void {
+    for (const plugin of plugins) {
+      plugin.init();
+      registerPlugin(plugin);
+    }
+  }
+
+  return { init, destroy, isInitialized, enablePlugin };
 }
 
-export function enablePlugin(...plugins: SentryPlugin[]): void {
-  for (const plugin of plugins) {
-    plugin.init();
-    registerPlugin(plugin);
-  }
-}
+const browserLifecycle = createSdkLifecycle({
+  setup,
+  onInitialized: () => {
+    void initIdentity();
+  },
+});
+
+export const init = browserLifecycle.init;
+export const destroy = browserLifecycle.destroy;
+export const isInitialized = browserLifecycle.isInitialized;
+export const enablePlugin = browserLifecycle.enablePlugin;

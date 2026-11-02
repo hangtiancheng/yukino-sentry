@@ -3,6 +3,7 @@
 `@yukino.js/sentry` is a browser monitoring and analytics SDK for page views, declarative clicks, runtime errors, resource errors, HTTP requests, performance metrics, exposure tracking, white-screen detection, offline reporting, and screen record context.
 
 The core entry is framework agnostic. React and Vue integrations are published as dedicated subpath exports so non-framework users do not load framework dependencies.
+A dedicated `@yukino.js/sentry/node` entry brings the same reporting pipeline to Node.js services, modeled after `@sentry/node`.
 
 ## Installation
 
@@ -31,6 +32,7 @@ import {
 } from "@yukino.js/sentry/plugins";
 import { ReactErrorBoundary } from "@yukino.js/sentry/react";
 import { vuePlugin } from "@yukino.js/sentry/vue";
+import { init as initNode, traceError, flush } from "@yukino.js/sentry/node";
 ```
 
 Each public export provides ESM, CJS, and TypeScript declaration files.
@@ -688,6 +690,56 @@ app.mount("#app");
 ```
 
 The plugin installs `app.config.errorHandler`, reports `Vue` events, and then calls the previous error handler if one existed.
+
+## Node.js SDK
+
+`@yukino.js/sentry/node` brings the same reporting pipeline to Node.js services, modeled after `@sentry/node`: `init` installs process-level capture automatically, manual APIs mirror the browser entry, and there are no browser-only dependencies.
+
+```ts
+import { init, traceError, flush } from "@yukino.js/sentry/node";
+
+init({
+  dsn: "http://127.0.0.1:3000/api/log",
+  projectId: "node-service",
+});
+
+try {
+  await runJob();
+} catch (error) {
+  traceError(error);
+  await flush();
+}
+```
+
+`dsn` must be an absolute URL — Node.js cannot resolve relative endpoints like `/api/log`, and `init` warns when the dsn is not absolute.
+
+### Automatic Capture
+
+| Capture              | Enabled by                 | Behavior                                                                                                                            |
+| -------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Uncaught exceptions  | `enableError`              | Reports the error, flushes pending events (up to 2 seconds), then logs and exits with code 1.                                       |
+| Unhandled rejections | `enableUnhandledRejection` | Reports the rejection reason, then applies `unhandledRejectionMode`.                                                                |
+| Outbound `fetch`     | `enableFetch`              | Decorates global `fetch` (Node 18+). Requests with status >= 400 or network failures are reported; all requests become breadcrumbs. |
+
+### Node-Specific Init Options
+
+`init` accepts all core `InitOptions` (browser-only switches such as `enableClick` or `enableWhiteScreen` are ignored) plus:
+
+| Option                    | Type                           | Default    | Description                                                                                                                                            |
+| ------------------------- | ------------------------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `exitOnUncaughtException` | `boolean`                      | `true`     | Exit with code 1 after an uncaught exception is reported. Set `false` to keep the process alive.                                                       |
+| `unhandledRejectionMode`  | `"strict" \| "warn" \| "none"` | `"strict"` | `"strict"` rethrows the reason after reporting so Node's default crash behavior applies; `"warn"` logs a warning and continues; `"none"` only reports. |
+
+### Available APIs
+
+`init`, `destroy`, `isInitialized`, `enablePlugin`, `setUserId`, `setVisitorId`, `getIdentity`, `beforeSend`, `beforeSendBatch`, `afterSend`, `flush`, `flushOfflineCache`, `traceError`, `tracePerformance`, `traceCustomEvent`, `reportFrameworkError`, all shared types and enums (`EventType`, `Status`, `BreadcrumbType`, `SentryPlugin`, hook types), and the `NodeInitOptions` type. `tracePageView` is browser-only and not exported.
+
+### Node Runtime Notes
+
+- Call `flush()` before intentional exits (script end, `SIGTERM` handlers); batch timers are unref'd and never keep a process alive on their own.
+- Crash paths (`uncaughtException`, strict-mode rejections) keep the event loop alive until the report is flushed or a 2-second timeout elapses.
+- Device and session ids are stable per process (in-memory) instead of `localStorage`-backed, and the offline cache is disabled; failed batches stay in the in-memory queue (capped by `maxQueueLength`) with exponential-backoff retries.
+- Reported events carry an empty `url` because Node.js events have no page URL.
 
 ## Vite Dev-Server Plugin
 

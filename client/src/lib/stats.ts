@@ -274,7 +274,9 @@ export function shortUrl(url: string | undefined, max = 60): string {
     if (parsed.origin !== globalThis.location?.origin) {
       short = parsed.host + short;
     }
-  } catch {}
+  } catch {
+    // keep the raw url when parsing fails
+  }
   if (short.length > max) short = short.slice(0, max - 1) + "…";
   return short;
 }

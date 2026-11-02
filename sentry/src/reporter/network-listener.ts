@@ -1,4 +1,4 @@
-import { sentryLogger } from "../utils";
+import { noop, sentryLogger } from "../utils";
 import type { Cleanup } from "../utils/decorate-prop.js";
 
 interface NetworkListenerCallbacks {
@@ -9,7 +9,11 @@ interface NetworkListenerCallbacks {
 export function initNetworkListener(
   callbacks: NetworkListenerCallbacks,
 ): Cleanup {
-  callbacks.setOnline(navigator.onLine !== false);
+  const online = typeof navigator === "undefined" || navigator.onLine !== false;
+  callbacks.setOnline(online);
+  if (typeof globalThis.addEventListener !== "function") {
+    return noop;
+  }
   const onOnline = () => {
     callbacks.setOnline(true);
     sentryLogger.info("Network is back online, flushing cache");

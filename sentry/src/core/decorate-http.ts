@@ -4,6 +4,7 @@ import {
   getBaseData,
   getServerTimingFromHeaders,
   isExcludedApi,
+  noop,
   parseServerTiming,
   sentry,
 } from "../utils";
@@ -115,6 +116,9 @@ function getRequestMethod(
 }
 
 export function pubFetch(): Cleanup {
+  if (typeof globalThis.fetch !== "function") {
+    return noop;
+  }
   return decorateProp(globalThis, "fetch", (oldPropVal) => {
     return function (input: RequestInfo | URL, options?: RequestInit) {
       const api = getRequestUrl(input);

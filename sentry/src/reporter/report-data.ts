@@ -26,7 +26,7 @@ function payloadToReportData<T extends TReportPayload>(
     message,
     status,
     id,
-    url: location.href,
+    url: globalThis.location?.href ?? "",
     userId: sentry.options.userId,
     anonymousId: sentry.options.anonymousId,
     visitorId: sentry.options.visitorId,

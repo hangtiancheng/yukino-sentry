@@ -51,6 +51,7 @@ export default defineConfig([
   {
     input: {
       index: "./src/index.ts",
+      "node/index": "./src/node/index.ts",
       react: "./src/react.ts",
       vue: "./src/vue.ts",
       vite: "./src/vite.ts",
@@ -93,6 +94,7 @@ export default defineConfig([
   {
     input: {
       index: "./src/index.ts",
+      "node/index": "./src/node/index.ts",
       react: "./src/react.ts",
       vue: "./src/vue.ts",
       vite: "./src/vite.ts",

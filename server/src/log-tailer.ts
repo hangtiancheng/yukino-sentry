@@ -14,7 +14,9 @@ export function parseJsonlLine(line: string, events: unknown[]): 0 | 1 {
     const parsed: unknown = JSON.parse(trimmed);
     if (Array.isArray(parsed)) events.push(...parsed);
     else if (parsed !== null && typeof parsed === "object") events.push(parsed);
-  } catch {}
+  } catch {
+    // ignore malformed lines
+  }
   return 1;
 }
 

@@ -162,6 +162,7 @@ export interface IReportData<
 
 export interface IDataReporter {
   send(payload: TReportPayload, immediate?: boolean): Promise<void>;
+  flush(): Promise<void>;
   flushOfflineCache(): Promise<void>;
 }
 

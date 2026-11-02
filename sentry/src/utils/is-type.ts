@@ -10,7 +10,7 @@ function isError(err: unknown): err is Error {
 }
 
 function isErrorEvent(err: unknown): err is ErrorEvent {
-  return err instanceof ErrorEvent;
+  return typeof ErrorEvent !== "undefined" && err instanceof ErrorEvent;
 }
 
 const resourceTargetSchema = z.union([

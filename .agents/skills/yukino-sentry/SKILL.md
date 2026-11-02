@@ -1,7 +1,8 @@
 ---
 name: yukino-sentry
 description: >-
-  Integration guide for @yukino.js/sentry, a browser monitoring and analytics SDK.
+  Integration guide for @yukino.js/sentry, a browser monitoring and analytics SDK
+  with a Node.js server SDK entry.
   Use this skill whenever the user mentions @yukino.js/sentry, yukino-sentry, frontend monitoring,
   frontend error tracking, browser performance monitoring, declarative click tracking,
   exposure tracking, white-screen detection, screen recording, Web Vitals, PV/dwell-time,
@@ -10,7 +11,9 @@ description: >-
   about yukino-sentry-* attributes, ReactErrorBoundary from this SDK, vuePlugin, the Vite
   dev-server mock plugin (sentryPlugin), the webpack dev-server mock plugin
   (SentryWebpackPlugin / sentryMiddleware), the backend ingest server, or dev-time source
-  map resolution of reported errors. Even if the user simply says "add monitoring" or
+  map resolution of reported errors. Also trigger for the Node.js server SDK
+  (@yukino.js/sentry/node): Node.js error tracking, uncaughtException / unhandledRejection
+  capture, or server-side reporting. Even if the user simply says "add monitoring" or
   "add tracking" in a frontend context, consult this skill first.
 ---
 
@@ -20,18 +23,19 @@ Guide for `@yukino.js/sentry` (npm package `@yukino.js/sentry`, version `0.0.1`)
 
 ## Package Exports
 
-Six entry points, each published as ESM, CJS, and TypeScript declarations (`sentry/package.json` `exports`):
+Seven entry points, each published as ESM, CJS, and TypeScript declarations (`sentry/package.json` `exports`):
 
 | Subpath                     | Purpose                                                                                                            |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `@yukino.js/sentry`         | Core SDK, all types, enums, and the `SentryPlugin` base class                                                      |
+| `@yukino.js/sentry/node`    | Node.js server SDK: `init` with process-level crash capture, manual trace APIs, `flush`, identity, and hooks       |
 | `@yukino.js/sentry/plugins` | `PerformancePlugin`, `ScreenRecordPlugin`, `ExposurePlugin`, `unzipScreenRecord`, `ScreenRecordPluginOptions` type |
 | `@yukino.js/sentry/react`   | `ReactErrorBoundary` component                                                                                     |
 | `@yukino.js/sentry/vue`     | Vue 3 plugin `vuePlugin`                                                                                           |
 | `@yukino.js/sentry/vite`    | Vite dev-server mock plugin with source map resolution (`sentryPlugin`)                                            |
 | `@yukino.js/sentry/webpack` | Webpack dev-server mock plugin (`sentryPlugin` / `SentryWebpackPlugin` / `sentryMiddleware`)                       |
 
-The core entry re-exports everything from `sentry/src/types` (`export * from "./types"` in `sentry/src/index.ts`), so `EventType`, `Status`, `BreadcrumbType`, the abstract `SentryPlugin` class, the hook types (`BeforeSendHook`, `BeforeSendBatchHook`, `AfterSendHook`, `BeforeBreadcrumbHook`), and all `I*`/`T*` types import directly from `@yukino.js/sentry`. `sentry/src/index.ts` itself exports: `init`, `destroy`, `isInitialized`, `enablePlugin`, `setUserId`, `setVisitorId`, `getIdentity`, `beforeSend`, `beforeSendBatch`, `afterSend`, `flushOfflineCache`, `traceError`, `tracePerformance`, `traceCustomEvent`, `tracePageView`, `reportFrameworkError`, and the `InitOptions` type.
+The core entry re-exports everything from `sentry/src/types` (`export * from "./types"` in `sentry/src/index.ts`), so `EventType`, `Status`, `BreadcrumbType`, the abstract `SentryPlugin` class, the hook types (`BeforeSendHook`, `BeforeSendBatchHook`, `AfterSendHook`, `BeforeBreadcrumbHook`), and all `I*`/`T*` types import directly from `@yukino.js/sentry`. `sentry/src/index.ts` itself exports: `init`, `destroy`, `isInitialized`, `enablePlugin`, `setUserId`, `setVisitorId`, `getIdentity`, `beforeSend`, `beforeSendBatch`, `afterSend`, `flush`, `flushOfflineCache`, `traceError`, `tracePerformance`, `traceCustomEvent`, `tracePageView`, `reportFrameworkError`, and the `InitOptions` type.
 
 ## Installation
 
@@ -399,6 +403,24 @@ createApp(App)
 ```
 
 `vuePlugin` is a Vue `Plugin` (`sentry/src/vue.ts`) that captures the existing `app.config.errorHandler`, installs one that reports `EventType.Vue` via `reportFrameworkError` with `context: { vueInstance, info }` and chains the previous handler if any, then calls `init(options)`. It accepts the same `InitOptions` as `init()`.
+
+## Node.js SDK
+
+Server-side entry modeled after `@sentry/node` (`sentry/src/node/index.ts`; capture setup in `sentry/src/node/setup.ts`). Shares the core reporter pipeline, zod options schema, hooks, breadcrumb buffer, and event bus with the browser SDK; contains no DOM capture. Requires Node 18+ (global `fetch`); `dsn` must be an absolute URL (`init` prints a `console.warn` otherwise, since Node cannot resolve relative endpoints).
+
+```ts
+import { init, traceError, flush } from "@yukino.js/sentry/node";
+
+init({ dsn: "http://127.0.0.1:3000/api/log", projectId: "node-service" });
+traceError(new Error("job failed"));
+await flush();
+```
+
+- `init` installs: `process.on("uncaughtException")` when `enableError`, `process.on("unhandledRejection")` when `enableUnhandledRejection`, and global `fetch` decoration when `enableFetch` (reuses `pubFetch` from `sentry/src/core/decorate-http.ts`, so status >= 400 or network-failed requests report as `fetch` events and all requests become breadcrumbs; `enableHttpPerformance` also reports successful requests). Browser-only switches (`enableClick`, `enableWhiteScreen`, screen record, etc.) are ignored.
+- `NodeInitOptions` = `InitOptions` plus `exitOnUncaughtException?: boolean` (default `true`) and `unhandledRejectionMode?: "strict" | "warn" | "none"` (default `"strict"`). Uncaught exception flow: report, flush with a 2s cap (`CRASH_FLUSH_TIMEOUT_MS`, ref'd timers so a bare process survives until delivery), `console.error`, `process.exit(1)`; `exitOnUncaughtException: false` skips the exit. Strict rejection flow: report, flush, then rethrow the reason in `setTimeout(0)` so Node's default crash semantics apply (error dedup prevents a second report); `"warn"` logs `console.warn` and continues; `"none"` only reports.
+- Exports: `init`, `destroy`, `isInitialized`, `enablePlugin`, `setUserId`, `setVisitorId`, `getIdentity`, `beforeSend`, `beforeSendBatch`, `afterSend`, `flush`, `flushOfflineCache`, `traceError`, `tracePerformance`, `traceCustomEvent`, `reportFrameworkError`, `export * from "../types"`, plus the `NodeInitOptions`, `UnhandledRejectionMode`, and `InitOptions` types. No `tracePageView`.
+- Lifecycle: `sentry/src/core/sdk-lifecycle.ts` exports a `createSdkLifecycle({ setup, onInitialized })` factory; the browser entry binds `core/setup.ts` plus `initIdentity`, the node entry binds `node/setup.ts` (no fingerprint identity).
+- Node adaptations in shared modules: `isBrowserRuntime()` (`sentry/src/utils/runtime.ts`, `typeof window !== "undefined"`) gates `sentry/src/utils/session.ts` (stable in-memory device/session ids per process) and `sentry/src/reporter/offline-cache.ts` (no-op outside browsers); `sentry/src/reporter/network-listener.ts` guards `navigator` and `globalThis.addEventListener` (always online in Node); `sentry/src/reporter/report-data.ts` sets the event `url` via `globalThis.location?.href ?? ""` (empty string in Node); `DataReporter.flush()` is public and exposed as `flush()` from both entries via `sentry/src/core/api.ts`.
 
 ## Vite Dev-Server Plugin
 

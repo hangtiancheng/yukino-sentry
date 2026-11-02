@@ -121,7 +121,9 @@ async function loadParsedFile(entry: LogFileStat): Promise<ParsedLogFile> {
         entry.size,
       );
       return { lines: snapshot.lines, events: snapshot.events };
-    } catch {}
+    } catch {
+      // fall through to parsing the file from disk
+    }
   }
 
   if (!logGroup) return parseLogFile(entry.fullPath);

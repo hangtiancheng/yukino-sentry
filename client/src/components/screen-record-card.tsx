@@ -174,7 +174,9 @@ export function ScreenRecordCard({ events }: { events: ReportEvent[] }) {
         try {
           replayer.pause();
           replayer.destroy();
-        } catch {}
+        } catch {
+          // the replayer may already be destroyed
+        }
       }
       container.replaceChildren();
       container.style.height = "";

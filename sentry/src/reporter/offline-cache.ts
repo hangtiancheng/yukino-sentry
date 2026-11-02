@@ -1,8 +1,9 @@
 import type { IReportData } from "../types";
-import { sentryLogger, sentry } from "../utils";
+import { isBrowserRuntime, sentryLogger, sentry } from "../utils";
 import { reportDataListSchema } from "./report-data-schema.js";
 
 export function loadOfflineCache(): IReportData[] {
+  if (!isBrowserRuntime()) return [];
   try {
     const cache = localStorage.getItem(sentry.options.offlineCacheKey);
     if (!cache) return [];
@@ -18,6 +19,7 @@ export function loadOfflineCache(): IReportData[] {
 }
 
 export function saveOfflineCache(events: readonly IReportData[]): void {
+  if (!isBrowserRuntime()) return;
   try {
     localStorage.setItem(
       sentry.options.offlineCacheKey,
@@ -29,6 +31,7 @@ export function saveOfflineCache(events: readonly IReportData[]): void {
 }
 
 export function clearOfflineCache(): void {
+  if (!isBrowserRuntime()) return;
   try {
     localStorage.removeItem(sentry.options.offlineCacheKey);
   } catch {

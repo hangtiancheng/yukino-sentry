@@ -1,7 +1,13 @@
 import { afterEach, vi } from "vitest";
 import { JSDOM } from "jsdom";
 
-if (!globalThis.localStorage) {
+function hasGlobalStorage(): boolean {
+  return Boolean(
+    Object.getOwnPropertyDescriptor(globalThis, "localStorage")?.value,
+  );
+}
+
+if (typeof window !== "undefined" && !hasGlobalStorage()) {
   const dom = new JSDOM("", { url: "http://localhost" });
   Object.defineProperty(globalThis, "localStorage", {
     configurable: true,
@@ -43,7 +49,9 @@ Object.defineProperty(globalThis, "cancelIdleCallback", {
 });
 
 afterEach(() => {
-  localStorage.clear();
+  if (typeof window !== "undefined") {
+    localStorage.clear();
+  }
   vi.clearAllMocks();
   vi.useRealTimers();
 });
