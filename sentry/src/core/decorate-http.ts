@@ -174,7 +174,8 @@ export function pubFetch(): Cleanup {
 
 function shouldIgnoreRequest(method: string, api: string): boolean {
   return (
-    (method.toUpperCase() === "POST" && api === sentry.options.dsn) ||
+    (["POST", "HEAD"].includes(method.toUpperCase()) &&
+      api === sentry.options.dsn) ||
     isExcludedApi(api)
   );
 }

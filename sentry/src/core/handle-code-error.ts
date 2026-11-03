@@ -30,7 +30,9 @@ class BatchErrorManager {
     this.cacheError = [];
   }
 
-  private flush(): void {
+  public flush(): void {
+    if (this.timeoutID) clearTimeout(this.timeoutID);
+    this.timeoutID = undefined;
     if (this.cacheError.length === 0) return;
     const groups = new Map<string, TReportPayload[]>();
     for (const err of this.cacheError) {
@@ -70,6 +72,10 @@ const batchErrorManager = new BatchErrorManager();
 
 export function destroyBatchErrorManager(): void {
   batchErrorManager.destroy();
+}
+
+export function flushBatchErrors(): void {
+  batchErrorManager.flush();
 }
 
 export function handleCodeError(err: ErrorEvent): void {

@@ -3,11 +3,9 @@ import { getBaseData, sentry, sentryLogger } from "../utils";
 import type { Cleanup } from "../utils/decorate-prop.js";
 import { clearSubscriptions, pub, sub } from "../core/bus.js";
 import { pubFetch } from "../core/decorate-http.js";
-import {
-  handleError,
-  handleHttp,
-  handleUnhandledRejection,
-} from "../core/handlers.js";
+import { handleError } from "../core/handle-error.js";
+import { handleHttp } from "../core/handle-http.js";
+import { handleUnhandledRejection } from "../core/handle-events.js";
 import reporter from "../reporter/index.js";
 
 export type UnhandledRejectionMode = "strict" | "warn" | "none";
@@ -17,43 +15,11 @@ export interface NodeCaptureOptions {
   unhandledRejectionMode?: UnhandledRejectionMode | undefined;
 }
 
-interface ResolvedCaptureOptions {
-  exitOnUncaughtException: boolean;
-  unhandledRejectionMode: UnhandledRejectionMode;
-}
-
-const DEFAULT_CAPTURE_OPTIONS: ResolvedCaptureOptions = {
-  exitOnUncaughtException: true,
-  unhandledRejectionMode: "strict",
-};
-
 const CRASH_FLUSH_TIMEOUT_MS = 2000;
-
-let captureOptions: ResolvedCaptureOptions = { ...DEFAULT_CAPTURE_OPTIONS };
-let isCrashing = false;
-
-export function setNodeCaptureOptions(options: NodeCaptureOptions): void {
-  captureOptions = {
-    exitOnUncaughtException:
-      options.exitOnUncaughtException ??
-      DEFAULT_CAPTURE_OPTIONS.exitOnUncaughtException,
-    unhandledRejectionMode:
-      options.unhandledRejectionMode ??
-      DEFAULT_CAPTURE_OPTIONS.unhandledRejectionMode,
-  };
-}
-
-export function resetNodeCaptureOptions(): void {
-  captureOptions = { ...DEFAULT_CAPTURE_OPTIONS };
-  isCrashing = false;
-}
 
 async function flushBeforeCrash(): Promise<void> {
   let timeoutID: ReturnType<typeof setTimeout> | undefined;
   try {
-    await new Promise<void>((resolve) => {
-      setTimeout(resolve, 0);
-    });
     await Promise.race([
       reporter.flush(),
       new Promise<void>((resolve) => {
@@ -67,72 +33,70 @@ async function flushBeforeCrash(): Promise<void> {
   }
 }
 
-function pubUncaughtException(): Cleanup {
-  const listener = (error: Error): void => {
+function setup(options: NodeCaptureOptions = {}): Cleanup {
+  const exitOnUncaughtException = options.exitOnUncaughtException ?? true;
+  const unhandledRejectionMode = options.unhandledRejectionMode ?? "strict";
+  let active = true;
+  let isCrashing = false;
+
+  function shutdown(error: unknown): void {
     if (isCrashing) return;
     isCrashing = true;
+    void flushBeforeCrash().finally(() => {
+      if (!active) return;
+      console.error(
+        "[@yukino.js/sentry/node] Uncaught exception, shutting down:",
+        error,
+      );
+      process.exit(1);
+    });
+  }
+
+  function onUncaughtException(error: unknown): void {
+    if (isCrashing) return;
     pub(EventType.Error, {
       ...getBaseData(),
       type: EventType.Error,
       extra: error,
     });
-    void flushBeforeCrash().finally(() => {
-      if (captureOptions.exitOnUncaughtException) {
-        console.error(
-          "[@yukino.js/sentry/node] Uncaught exception, shutting down:",
-          error,
-        );
-        process.exit(1);
-      }
-      isCrashing = false;
-    });
-  };
-  process.on("uncaughtException", listener);
-  return () => {
-    process.off("uncaughtException", listener);
-  };
-}
+    if (exitOnUncaughtException) shutdown(error);
+    else void flushBeforeCrash();
+  }
 
-function pubUnhandledRejection(): Cleanup {
-  const listener = (reason: unknown): void => {
+  function onUnhandledRejection(reason: unknown): void {
+    if (isCrashing) return;
     pub(EventType.UnhandledRejection, {
       ...getBaseData(),
       type: EventType.UnhandledRejection,
       extra: reason,
     });
-    const { unhandledRejectionMode } = captureOptions;
-    if (unhandledRejectionMode === "none") return;
     if (unhandledRejectionMode === "warn") {
       console.warn(
         "[@yukino.js/sentry/node] Unhandled promise rejection:",
         reason,
       );
-      return;
+    } else if (unhandledRejectionMode === "strict") {
+      shutdown(reason);
     }
-    void flushBeforeCrash().finally(() => {
-      setTimeout(() => {
-        throw reason;
-      }, 0);
-    });
-  };
-  process.on("unhandledRejection", listener);
-  return () => {
-    process.off("unhandledRejection", listener);
-  };
-}
+  }
 
-function setup(): Cleanup {
   sentryLogger.info("Initializing Node.js SDK event subscriptions...");
 
   const cleanups: Cleanup[] = [];
 
   if (sentry.options.enableError) {
     cleanups.push(sub(EventType.Error, handleError));
-    cleanups.push(pubUncaughtException());
+    process.on("uncaughtException", onUncaughtException);
+    cleanups.push(() => {
+      process.off("uncaughtException", onUncaughtException);
+    });
   }
   if (sentry.options.enableUnhandledRejection) {
     cleanups.push(sub(EventType.UnhandledRejection, handleUnhandledRejection));
-    cleanups.push(pubUnhandledRejection());
+    process.on("unhandledRejection", onUnhandledRejection);
+    cleanups.push(() => {
+      process.off("unhandledRejection", onUnhandledRejection);
+    });
   }
   if (sentry.options.enableFetch) {
     cleanups.push(sub(EventType.Fetch, handleHttp));
@@ -146,11 +110,11 @@ function setup(): Cleanup {
   });
 
   return () => {
-    cleanups.toReversed().forEach((cleanup) => {
+    active = false;
+    cleanups.reverse().forEach((cleanup) => {
       cleanup();
     });
     clearSubscriptions();
-    isCrashing = false;
   };
 }
 

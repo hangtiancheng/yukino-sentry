@@ -2,11 +2,9 @@ import { DEFAULT_OPTIONS } from "../constants/index.js";
 import type { SentryPlugin } from "../types/index.js";
 import { sentry, sentryLogger } from "../utils/index.js";
 import type { Cleanup } from "../utils/decorate-prop.js";
-import { initIdentity } from "./identity.js";
 import breadcrumb from "./breadcrumb.js";
 import { optionsSchema, type InitOptions } from "./options-schema.js";
 import { destroyPlugins, registerPlugin } from "./plugin-registry.js";
-import setup from "./setup.js";
 import { destroyBatchErrorManager } from "./handle-code-error.js";
 import { resetReporter } from "../reporter/index.js";
 
@@ -52,7 +50,13 @@ export function createSdkLifecycle(hooks: SdkLifecycleHooks): SdkLifecycle {
       ...DEFAULT_OPTIONS,
       ...provided,
     });
-    sentry.setOptions(parsedOptions);
+    sentry.setOptions({
+      ...parsedOptions,
+      beforeSend: parsedOptions.beforeSend,
+      beforeSendBatch: parsedOptions.beforeSendBatch,
+      afterSend: parsedOptions.afterSend,
+      beforeBreadcrumb: parsedOptions.beforeBreadcrumb,
+    });
     const { dsn } = sentry.options;
     if (sentry.options.disabled) {
       sentryLogger.info("SDK disabled by options");
@@ -79,15 +83,3 @@ export function createSdkLifecycle(hooks: SdkLifecycleHooks): SdkLifecycle {
 
   return { init, destroy, isInitialized, enablePlugin };
 }
-
-const browserLifecycle = createSdkLifecycle({
-  setup,
-  onInitialized: () => {
-    void initIdentity();
-  },
-});
-
-export const init = browserLifecycle.init;
-export const destroy = browserLifecycle.destroy;
-export const isInitialized = browserLifecycle.isInitialized;
-export const enablePlugin = browserLifecycle.enablePlugin;

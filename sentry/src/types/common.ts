@@ -1,6 +1,5 @@
 import type { BreadcrumbType, EventType, Status } from "./enums.js";
 
-import type { Metric } from "web-vitals";
 import type { IOptions } from "./options.js";
 
 export interface ISentry {
@@ -55,8 +54,8 @@ export interface IResourceError extends IReportPayload {
 }
 
 interface IPerformanceMetricData extends IReportPayload {
-  value: Metric["value"];
-  rating?: Metric["rating"];
+  value: number;
+  rating?: "good" | "needs-improvement" | "poor";
 }
 
 export interface IPerformanceResourceTiming {
@@ -74,8 +73,15 @@ export interface IPerformanceResourceTiming {
 interface IPerformanceResourceListData extends IReportPayload {
   resourceList: readonly IPerformanceResourceTiming[];
 }
+export interface IPerformanceEntry {
+  readonly name: string;
+  readonly entryType: string;
+  readonly startTime: number;
+  readonly duration: number;
+}
+
 interface IPerformanceLongTaskData extends IReportPayload {
-  longTasks: PerformanceEntry[];
+  longTasks: IPerformanceEntry[];
 }
 
 interface IPerformanceMemoryData extends IReportPayload {

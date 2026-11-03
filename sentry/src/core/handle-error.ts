@@ -18,6 +18,7 @@ import reporter from "../reporter";
 import breadcrumb from "./breadcrumb.js";
 import { reportOncePerError } from "./error-dedup.js";
 import { handleCodeError } from "./handle-code-error.js";
+import { stringify } from "../utils/stringify.js";
 
 export const handleError: TEventHandler<IBaseDataWithEvent> = ({
   extra: err,
@@ -86,7 +87,8 @@ function reportUnknownError(
   err: unknown,
   rest: Omit<IBaseDataWithEvent, "extra">,
 ): void {
-  const message = typeof err === "string" ? err : JSON.stringify(err);
+  const message =
+    typeof err === "object" && err !== null ? stringify(err) : String(err);
   if (isIgnoredError(message)) return;
   reportBaseError({
     ...rest,

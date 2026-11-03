@@ -5,8 +5,9 @@ import type {
   BeforeSendHook,
 } from "../types/index.js";
 import { getBaseData, sentry } from "../utils/index.js";
-import { handleError } from "./handlers.js";
+import { handleError } from "./handle-error.js";
 import reporter from "../reporter/index.js";
+import { flushBatchErrors } from "./handle-code-error.js";
 
 export function traceError(error: unknown): void {
   handleError({
@@ -82,5 +83,6 @@ export async function flushOfflineCache(): Promise<void> {
 }
 
 export async function flush(): Promise<void> {
+  flushBatchErrors();
   await reporter.flush();
 }

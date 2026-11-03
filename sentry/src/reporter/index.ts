@@ -1,6 +1,7 @@
 import type { IDataReporter, IReportData, TReportPayload } from "../types";
 import { generateUUID, sentryLogger, sentry } from "../utils";
 import type { Cleanup } from "../utils/decorate-prop.js";
+import { stringify } from "../utils/stringify.js";
 import { scheduleFlush } from "./flush-scheduler.js";
 import { initNetworkListener } from "./network-listener.js";
 import {
@@ -29,6 +30,9 @@ export class DataReporter implements IDataReporter {
   private retryTimer?: ReturnType<typeof setTimeout>;
   private isOnline = true;
   private isFlushing = false;
+  private inFlight: Promise<void> | undefined;
+  private pendingReports = new Set<Promise<IReportData | null>>();
+  private disposed = false;
   private hasPersistedCache = false;
   private removeNetworkListener: Cleanup;
 
@@ -43,6 +47,7 @@ export class DataReporter implements IDataReporter {
   }
 
   dispose(): void {
+    this.disposed = true;
     if (this.timeoutID) clearTimeout(this.timeoutID);
     if (this.retryTimer) clearTimeout(this.retryTimer);
     this.removeNetworkListener();
@@ -67,7 +72,9 @@ export class DataReporter implements IDataReporter {
   }
 
   private handleServerError(): void {
+    if (this.disposed) return;
     this.retryTimer = scheduleServerRecovery(this.retryTimer, {
+      isActive: () => !this.disposed,
       setOnline: (online) => {
         this.isOnline = online;
       },
@@ -79,8 +86,33 @@ export class DataReporter implements IDataReporter {
   }
 
   async flush(): Promise<void> {
-    if (this.events.length === 0 || this.isFlushing) return;
+    do {
+      await Promise.allSettled([...this.pendingReports]);
+      if (this.disposed) return;
+      if (this.inFlight) await this.inFlight;
+      if (!this.isOnline || this.disposed) return;
+      await this.flushBatch();
+    } while (
+      !this.disposed &&
+      this.isOnline &&
+      (this.events.length > 0 || this.pendingReports.size > 0)
+    );
+  }
+
+  private flushBatch(): Promise<void> {
+    if (this.disposed || this.events.length === 0 || this.isFlushing) {
+      return Promise.resolve();
+    }
     this.isFlushing = true;
+    const task = this.sendNextBatch();
+    this.inFlight = task;
+    void task.then(() => {
+      if (this.inFlight === task) this.inFlight = undefined;
+    });
+    return task;
+  }
+
+  private async sendNextBatch(): Promise<void> {
     try {
       if (!this.isOnline) {
         this.events = this.events.slice(-sentry.options.maxQueueLength);
@@ -89,6 +121,7 @@ export class DataReporter implements IDataReporter {
       }
       const batch = this.takeBatch();
       const finalSendData = isPromise(batch) ? await batch : batch;
+      if (this.disposed) return;
       if (finalSendData.length === 0) {
         this.scheduleNextFlush();
         return;
@@ -96,6 +129,7 @@ export class DataReporter implements IDataReporter {
       const startTime = performance.now();
       const sendResult = this.sendBatch(finalSendData);
       const ok = isPromise(sendResult) ? await sendResult : sendResult;
+      if (this.disposed) return;
       if (!ok) {
         this.events = [...finalSendData, ...this.events].slice(
           -sentry.options.maxQueueLength,
@@ -104,12 +138,22 @@ export class DataReporter implements IDataReporter {
         return;
       }
       this.clearPersistedCache();
-      void sentry.options.afterSend?.(finalSendData);
+      try {
+        const result = sentry.options.afterSend?.(finalSendData);
+        if (result)
+          void result.catch((err) =>
+            sentryLogger.error("afterSend hook failed", err),
+          );
+      } catch (err) {
+        sentryLogger.error("afterSend hook failed", err);
+      }
       sentryLogger.success(
         "Batch report queued or sent",
         { count: finalSendData.length },
         Math.round(performance.now() - startTime),
       );
+    } catch (err) {
+      sentryLogger.error("Failed to prepare report batch", err);
     } finally {
       this.isFlushing = false;
     }
@@ -126,7 +170,7 @@ export class DataReporter implements IDataReporter {
   private sendBatch(
     finalSendData: readonly IReportData[],
   ): Promise<boolean> | boolean {
-    const body = JSON.stringify(finalSendData);
+    const body = stringify(finalSendData);
     const withinKeepaliveBudget =
       getBodyByteLength(body) <= MAX_KEEPALIVE_BYTES;
     if (withinKeepaliveBudget && sendBeacon(body)) return true;
@@ -136,8 +180,10 @@ export class DataReporter implements IDataReporter {
   }
 
   private scheduleNextFlush(): void {
-    if (this.events.length === 0) return;
-    this.timeoutID = scheduleFlush(this.timeoutID, 100, () => this.flush());
+    if (this.disposed || this.events.length === 0) return;
+    this.timeoutID = scheduleFlush(this.timeoutID, 100, () =>
+      this.flushBatch(),
+    );
   }
 
   async flushOfflineCache(): Promise<void> {
@@ -147,26 +193,41 @@ export class DataReporter implements IDataReporter {
 
   async send(payload: TReportPayload, immediate = false): Promise<void> {
     const options = sentry.options;
-    if (!shouldQueuePayload(payload)) return;
-    const reportResult = runBeforeReportHook(this.id, payload);
-    const data = isPromise(reportResult) ? await reportResult : reportResult;
-    if (!data) return;
+    if (this.disposed || !shouldQueuePayload(payload)) return;
+    let data: IReportData | null;
+    try {
+      const reportResult = runBeforeReportHook(this.id, payload);
+      if (isPromise(reportResult)) {
+        this.pendingReports.add(reportResult);
+        try {
+          data = await reportResult;
+        } finally {
+          this.pendingReports.delete(reportResult);
+        }
+      } else {
+        data = reportResult;
+      }
+    } catch (err) {
+      sentryLogger.error("beforeSend hook failed", err);
+      return;
+    }
+    if (!data || this.disposed) return;
     sentryLogger.info(`Type: ${payload.type}`, data);
     this.events.push(data);
+    this.events = this.events.slice(-options.maxQueueLength);
     if (!this.isOnline) {
-      this.events = this.events.slice(-options.maxQueueLength);
       this.saveOfflineCache();
       return;
     }
     if (this.timeoutID) clearTimeout(this.timeoutID);
     if (immediate || this.events.length >= options.cacheMaxLength) {
-      await this.flush();
+      await this.flushBatch();
       return;
     }
     this.timeoutID = scheduleFlush(
       this.timeoutID,
       options.cacheWaitingTime,
-      () => this.flush(),
+      () => this.flushBatch(),
     );
   }
 }

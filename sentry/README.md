@@ -725,10 +725,10 @@ try {
 
 `init` accepts all core `InitOptions` (browser-only switches such as `enableClick` or `enableWhiteScreen` are ignored) plus:
 
-| Option                    | Type                           | Default    | Description                                                                                                                                            |
-| ------------------------- | ------------------------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `exitOnUncaughtException` | `boolean`                      | `true`     | Exit with code 1 after an uncaught exception is reported. Set `false` to keep the process alive.                                                       |
-| `unhandledRejectionMode`  | `"strict" \| "warn" \| "none"` | `"strict"` | `"strict"` rethrows the reason after reporting so Node's default crash behavior applies; `"warn"` logs a warning and continues; `"none"` only reports. |
+| Option                    | Type                           | Default    | Description                                                                                                                                                                                     |
+| ------------------------- | ------------------------------ | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `exitOnUncaughtException` | `boolean`                      | `true`     | Exit with code 1 after an uncaught exception is reported. Set `false` to keep the process alive.                                                                                                |
+| `unhandledRejectionMode`  | `"strict" \| "warn" \| "none"` | `"strict"` | `"strict"` flushes reports (up to 2 seconds) and exits with code 1, independently of `enableError` and `exitOnUncaughtException`; `"warn"` logs a warning and continues; `"none"` only reports. |
 
 ### Available APIs
 
@@ -736,10 +736,13 @@ try {
 
 ### Node Runtime Notes
 
-- Call `flush()` before intentional exits (script end, `SIGTERM` handlers); batch timers are unref'd and never keep a process alive on their own.
+- Call `await flush()` before intentional exits (script end, `SIGTERM` handlers). It waits for asynchronous `beforeSend` hooks, in-flight requests, and all queued batches; it stops when the transport fails and retains unsent events for recovery. Batch timers are unref'd and never keep a process alive on their own.
 - Crash paths (`uncaughtException`, strict-mode rejections) keep the event loop alive until the report is flushed or a 2-second timeout elapses.
 - Device and session ids are stable per process (in-memory) instead of `localStorage`-backed, and the offline cache is disabled; failed batches stay in the in-memory queue (capped by `maxQueueLength`) with exponential-backoff retries.
 - Reported events carry an empty `url` because Node.js events have no page URL.
+- Repeated `init()` calls preserve the active configuration. `destroy()` cancels pending fatal handling and discards pending reports; a later `init()` starts with fresh hooks. Node-specific options are validated at initialization.
+- Rejection reasons and event context support circular references and `bigint` values. Throwing or rejected reporter hooks are logged in debug mode and do not trigger recursive process crash capture.
+- Node declarations work without TypeScript's `DOM` library. Verify the built ESM/CJS entry, subprocess crash behavior, and declarations with `pnpm --filter @yukino.js/sentry test:package`.
 
 ## Vite Dev-Server Plugin
 

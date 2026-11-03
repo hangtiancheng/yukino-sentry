@@ -69,6 +69,7 @@
   },
   "scripts": {
     "test": "vitest run --config ./vitest.config.ts",
+    "test:package": "pnpm build && node --test test/node-package.test.mjs",
     "test:watch": "vitest --config ./vitest.config.ts",
     "test:coverage": "vitest run --config ./vitest.config.ts --coverage",
     "typecheck": "tsc --noEmit",

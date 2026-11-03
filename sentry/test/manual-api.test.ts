@@ -5,10 +5,13 @@ import {
   afterSend,
   beforeSend,
   beforeSendBatch,
+  destroy,
+  flush,
   flushOfflineCache,
   getIdentity,
   setUserId,
   traceCustomEvent,
+  traceError,
   tracePageView,
   tracePerformance,
 } from "@/index.js";
@@ -17,6 +20,7 @@ import { getBaseData, sentry } from "@/utils/index.js";
 
 describe("manual public APIs", () => {
   afterEach(() => {
+    destroy();
     localStorage.clear();
     vi.restoreAllMocks();
     sentry.setOptions(DEFAULT_OPTIONS);
@@ -91,5 +95,15 @@ describe("manual public APIs", () => {
 
     expect(sendBeacon).toHaveBeenCalledTimes(1);
     expect(localStorage.getItem(DEFAULT_OPTIONS.offlineCacheKey)).toBeNull();
+  });
+
+  it("flush includes code errors still in the debounce buffer", async () => {
+    const sendBeacon = vi.spyOn(navigator, "sendBeacon").mockReturnValue(true);
+    sentry.setOptions({ ...DEFAULT_OPTIONS, dsn: "/api/log" });
+    traceError(new ErrorEvent("error", { message: "buffered-code-error" }));
+    expect(sendBeacon).not.toHaveBeenCalled();
+    await flush();
+    expect(sendBeacon).toHaveBeenCalledTimes(1);
+    expect(sendBeacon.mock.calls[0]?.[1]).toContain("buffered-code-error");
   });
 });

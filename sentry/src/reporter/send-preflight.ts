@@ -3,6 +3,7 @@ import { sentryLogger, sentry } from "../utils";
 
 export function shouldQueuePayload(payload: TReportPayload): boolean {
   const options = sentry.options;
+  if (options.disabled) return false;
   if (options.dsn === "") {
     sentryLogger.error("DSN is empty, report cancelled", payload);
     return false;

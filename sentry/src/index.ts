@@ -3,7 +3,7 @@ import {
   init,
   isInitialized,
   enablePlugin,
-} from "./core/sdk-lifecycle.js";
+} from "./core/browser-lifecycle.js";
 import { setUserId, setVisitorId, getIdentity } from "./core/identity.js";
 import {
   afterSend,

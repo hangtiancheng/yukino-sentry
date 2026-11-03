@@ -148,4 +148,29 @@ describe("DataReporter offline and retry behavior", () => {
     await vi.advanceTimersByTimeAsync(60000);
     expect(headProbes()).toBe(8);
   });
+
+  it("does not restart recovery when an in-flight probe finishes after dispose", async () => {
+    vi.useFakeTimers();
+    vi.spyOn(navigator, "sendBeacon").mockReturnValue(false);
+    let finishProbe = () => {};
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(null, { status: 500 }))
+      .mockImplementationOnce(
+        () =>
+          new Promise<Response>((resolve) => {
+            finishProbe = () => resolve(new Response(null, { status: 500 }));
+          }),
+      );
+    vi.stubGlobal("fetch", fetch);
+    sentry.setOptions({ ...DEFAULT_OPTIONS, dsn: "/api/log" });
+    const reporter = new DataReporter();
+    await reporter.send(createPayload(1), true);
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(fetch).toHaveBeenCalledTimes(2);
+    reporter.dispose();
+    finishProbe();
+    await vi.advanceTimersByTimeAsync(60000);
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
 });

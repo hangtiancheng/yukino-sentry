@@ -16,7 +16,11 @@ import { handleCodeError } from "./handle-code-error.js";
 import { handleError } from "./handle-error.js";
 
 function extractRejectionReason(extra: unknown): unknown {
-  if (extra instanceof Event && "reason" in extra) {
+  if (
+    typeof Event !== "undefined" &&
+    extra instanceof Event &&
+    "reason" in extra
+  ) {
     return Reflect.get(extra, "reason");
   }
   return extra;

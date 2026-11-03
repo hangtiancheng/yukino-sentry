@@ -21,15 +21,17 @@ if (typeof window !== "undefined" && !hasGlobalStorage()) {
 
 const uuid = "00000000-0000-4000-8000-000000000000";
 
-Object.defineProperty(globalThis.crypto, "randomUUID", {
-  configurable: true,
-  value: vi.fn(() => uuid),
-});
+if (globalThis.crypto)
+  Object.defineProperty(globalThis.crypto, "randomUUID", {
+    configurable: true,
+    value: vi.fn(() => uuid),
+  });
 
-Object.defineProperty(navigator, "sendBeacon", {
-  configurable: true,
-  value: vi.fn(() => true),
-});
+if (typeof window !== "undefined")
+  Object.defineProperty(navigator, "sendBeacon", {
+    configurable: true,
+    value: vi.fn(() => true),
+  });
 
 Object.defineProperty(globalThis, "requestIdleCallback", {
   configurable: true,

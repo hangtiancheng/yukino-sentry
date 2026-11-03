@@ -20,6 +20,7 @@ const resourceTargetSchema = z.union([
 
 function isIExtendedErrorEvent(err: unknown): err is IExtendedErrorEvent {
   return (
+    typeof Event !== "undefined" &&
     err instanceof Event &&
     err.type === "error" &&
     resourceTargetSchema.safeParse(err.target).success

@@ -187,7 +187,6 @@ describe("node reporting", () => {
   }
 
   beforeEach(() => {
-    Reflect.deleteProperty(navigator, "sendBeacon");
     fetchCalls = [];
     fetchMock = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
       fetchCalls.push([input, init]);
@@ -301,13 +300,20 @@ describe("node reporting", () => {
     expect(exitCode).toBeUndefined();
   });
 
-  it("strict mode rethrows the rejection after reporting", async () => {
+  it("strict mode flushes once and exits even when uncaught capture is disabled", async () => {
     vi.useFakeTimers();
-    nodeSdk.init({ dsn: DSN });
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    nodeSdk.init({
+      dsn: DSN,
+      enableError: false,
+      exitOnUncaughtException: false,
+    });
 
     emitUnhandledRejectionHidden(new Error("strict-boom"));
 
-    await expect(vi.advanceTimersByTimeAsync(1)).rejects.toThrow("strict-boom");
+    await vi.advanceTimersByTimeAsync(1);
+    expect(exitCode).toBe(1);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(DSN, expect.anything());
   });
 
@@ -340,5 +346,243 @@ describe("node reporting", () => {
     nodeSdk.init({ dsn: DSN });
     await expect(nodeSdk.flushOfflineCache()).resolves.toBeUndefined();
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("flush waits for async beforeSend and drains every batch", async () => {
+    let release = () => {};
+    const ready = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    nodeSdk.init({
+      dsn: DSN,
+      cacheMaxLength: 2,
+      beforeSend: async (data) => {
+        await ready;
+        return data;
+      },
+    });
+    for (let i = 0; i < 5; i++) {
+      nodeSdk.traceCustomEvent({ name: `job-${i}`, message: "finished" });
+    }
+    let flushed = false;
+    const flushing = nodeSdk.flush().then(() => {
+      flushed = true;
+    });
+    await Promise.resolve();
+    expect(flushed).toBe(false);
+    expect(fetchCalls).toHaveLength(0);
+    release();
+    await flushing;
+    expect(fetchCalls).toHaveLength(3);
+    const reports = fetchCalls.flatMap(([, options]) =>
+      JSON.parse(String(options?.body)),
+    );
+    expect(reports.map((item) => item.name)).toEqual([
+      "job-0",
+      "job-1",
+      "job-2",
+      "job-3",
+      "job-4",
+    ]);
+  });
+
+  it("flush waits for an in-flight request before draining queued reports", async () => {
+    let release = () => {};
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          release = () => resolve(okResponse());
+        }),
+    );
+    nodeSdk.init({ dsn: DSN, cacheMaxLength: 1 });
+    nodeSdk.traceError(new Error("first"));
+    nodeSdk.traceError(new Error("second"));
+    let flushed = false;
+    const flushing = nodeSdk.flush().then(() => {
+      flushed = true;
+    });
+    await Promise.resolve();
+    expect(flushed).toBe(false);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    release();
+    await flushing;
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("repeated init preserves the active rejection policy", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    nodeSdk.init({ dsn: DSN, unhandledRejectionMode: "warn" });
+    nodeSdk.init({ dsn: DSN });
+    emitUnhandledRejectionHidden(new Error("policy"));
+    await nodeSdk.flush();
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(exitCode).toBeUndefined();
+  });
+
+  it("validates node-specific options before installing listeners", () => {
+    const count = process.listenerCount("unhandledRejection");
+    expect(() =>
+      nodeSdk.init(
+        JSON.parse(
+          '{"dsn":"http://localhost","unhandledRejectionMode":"typo"}',
+        ),
+      ),
+    ).toThrow();
+    expect(nodeSdk.isInitialized()).toBe(false);
+    expect(process.listenerCount("unhandledRejection")).toBe(count);
+  });
+
+  it("does not send manual reports when disabled", async () => {
+    nodeSdk.init({ dsn: DSN, disabled: true });
+    nodeSdk.traceError(new Error("disabled"));
+    await nodeSdk.flush();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("handles non-Error rejection reasons including cycles and bigint", async () => {
+    const cycle: Record<string, unknown> = { code: 10n };
+    cycle.self = cycle;
+    nodeSdk.init({
+      dsn: DSN,
+      unhandledRejectionMode: "none",
+      ignoreErrors: ["ignore-me"],
+    });
+    for (const reason of [undefined, null, Symbol("rejected"), 10n, cycle]) {
+      emitUnhandledRejectionHidden(reason);
+    }
+    await nodeSdk.flush();
+    expect(firstReportBody()).toHaveLength(5);
+    expect(firstReportBody().map((item) => item.payload.message)).toEqual([
+      "undefined",
+      "null",
+      "Symbol(rejected)",
+      "10",
+      '{"code":"10","self":"[Circular]"}',
+    ]);
+  });
+
+  it("captures multiple nonfatal uncaught exceptions without dropping the second", async () => {
+    nodeSdk.init({ dsn: DSN, exitOnUncaughtException: false });
+    emitUncaughtExceptionHidden(new Error("nonfatal-1"));
+    emitUncaughtExceptionHidden(new Error("nonfatal-2"));
+    await nodeSdk.flush();
+    expect(firstReportBody()).toHaveLength(2);
+    expect(exitCode).toBeUndefined();
+  });
+
+  it("bounds fatal flushing even when beforeSend never resolves", async () => {
+    vi.useFakeTimers();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    nodeSdk.init({ dsn: DSN, beforeSend: () => new Promise(() => {}) });
+    emitUncaughtExceptionHidden(new Error("blocked-hook"));
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(exitCode).toBe(1);
+  });
+
+  it("destroy cancels pending fatal handling", async () => {
+    vi.useFakeTimers();
+    nodeSdk.init({ dsn: DSN, beforeSend: () => new Promise(() => {}) });
+    emitUncaughtExceptionHidden(new Error("old-lifecycle"));
+    nodeSdk.destroy();
+    nodeSdk.init({ dsn: DSN });
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(exitCode).toBeUndefined();
+  });
+
+  it("does not retain hooks or revive reports after destroy and reinit", async () => {
+    let release = () => {};
+    const ready = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const hook = vi.fn(async (data: nodeSdk.IReportData) => {
+      await ready;
+      return data;
+    });
+    nodeSdk.init({ dsn: DSN, beforeSend: hook });
+    nodeSdk.traceError(new Error("discarded"));
+    nodeSdk.destroy();
+    nodeSdk.init({ dsn: DSN });
+    nodeSdk.traceError(new Error("new-lifecycle"));
+    release();
+    await nodeSdk.flush();
+    expect(hook).toHaveBeenCalledTimes(1);
+    expect(firstReportBody().map((item) => item.payload.message)).toEqual([
+      "new-lifecycle",
+    ]);
+  });
+
+  it("isolates rejected reporter hooks from process-level crash capture", async () => {
+    nodeSdk.init({
+      dsn: DSN,
+      beforeSend: async () => {
+        throw new Error("hook-failed");
+      },
+    });
+    nodeSdk.traceError(new Error("dropped"));
+    await nodeSdk.flush();
+    nodeSdk.beforeSend((data) => data);
+    nodeSdk.beforeSendBatch(async () => {
+      throw new Error("batch-hook-failed");
+    });
+    nodeSdk.traceError(new Error("dropped-batch"));
+    await nodeSdk.flush();
+    nodeSdk.beforeSendBatch((data) => data);
+    nodeSdk.afterSend(async () => {
+      throw new Error("after-hook-failed");
+    });
+    nodeSdk.traceError(new Error("delivered"));
+    await nodeSdk.flush();
+    expect(firstReportBody()).toHaveLength(1);
+    expect(exitCode).toBeUndefined();
+  });
+
+  it("serializes shared context independently in every report", async () => {
+    nodeSdk.init({ dsn: DSN });
+    const extra = { job: "shared" };
+    nodeSdk.traceCustomEvent({ name: "first", message: "first", extra });
+    nodeSdk.traceCustomEvent({ name: "second", message: "second", extra });
+    await nodeSdk.flush();
+    expect(firstReportBody()).toEqual([
+      expect.objectContaining({
+        deviceInfo: expect.any(Object),
+        payload: expect.objectContaining({ extra }),
+      }),
+      expect.objectContaining({
+        deviceInfo: expect.any(Object),
+        payload: expect.objectContaining({ extra }),
+      }),
+    ]);
+  });
+
+  it("does not capture the SDK's recovery probes", async () => {
+    const beforeSend = vi.fn((data: nodeSdk.IReportData) => data);
+    nodeSdk.init({ dsn: DSN, enableHttpPerformance: true, beforeSend });
+    await fetch(DSN, { method: "HEAD" });
+    await nodeSdk.flush();
+    expect(beforeSend).not.toHaveBeenCalled();
+  });
+
+  it("keeps the queue bounded while a transport is stalled", async () => {
+    let release = () => {};
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          release = () => resolve(okResponse());
+        }),
+    );
+    const names: string[] = [];
+    nodeSdk.init({
+      dsn: DSN,
+      cacheMaxLength: 1,
+      maxQueueLength: 2,
+      afterSend: (events) => {
+        names.push(...events.map((item) => item.name));
+      },
+    });
+    for (let i = 0; i < 5; i++)
+      nodeSdk.traceCustomEvent({ name: `queued-${i}`, message: "finished" });
+    release();
+    await nodeSdk.flush();
+    expect(names).toEqual(["queued-0", "queued-3", "queued-4"]);
   });
 });
