@@ -17,7 +17,7 @@ function payloadToReportData<T extends TReportPayload>(
   id: string,
   payload: T,
 ): IReportData<T> {
-  const { type, name, time, timestamp, message, status } = payload;
+  const { type, name, time, timestamp, message, status, traceId } = payload;
   const data: IReportData<T> = {
     type,
     name,
@@ -25,6 +25,7 @@ function payloadToReportData<T extends TReportPayload>(
     timestamp,
     message,
     status,
+    traceId,
     id,
     url: globalThis.location?.href ?? "",
     userId: sentry.options.userId,

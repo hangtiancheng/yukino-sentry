@@ -20,6 +20,12 @@ import nodeSetup, {
 export { reportFrameworkError } from "../core/framework-error.js";
 export type { InitOptions } from "../core/options-schema.js";
 export type { UnhandledRejectionMode } from "./setup.js";
+export {
+  continueTrace,
+  getActiveTraceContext,
+  getTraceparent,
+} from "./trace.js";
+export type { TraceparentSource } from "./trace.js";
 
 export interface NodeInitOptions extends InitOptions {
   exitOnUncaughtException?: boolean | undefined;

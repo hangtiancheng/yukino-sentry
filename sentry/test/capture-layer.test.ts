@@ -13,6 +13,7 @@ function createHttpData(
 ): IHttpData {
   return {
     id: "http-event",
+    traceId: "trace-http",
     type: EventType.Fetch,
     name: "Fetch",
     time: "2026-01-01T00:00:00.000Z",
@@ -21,6 +22,7 @@ function createHttpData(
     status: Status.OK,
     method: "GET",
     api: "/api/example",
+    spanId: "span-http",
     elapsedTime: 12,
     statusCode,
     serverTiming,

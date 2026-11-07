@@ -56,6 +56,7 @@ export function createSdkLifecycle(hooks: SdkLifecycleHooks): SdkLifecycle {
       beforeSendBatch: parsedOptions.beforeSendBatch,
       afterSend: parsedOptions.afterSend,
       beforeBreadcrumb: parsedOptions.beforeBreadcrumb,
+      tracePropagationTargets: parsedOptions.tracePropagationTargets,
     });
     const { dsn } = sentry.options;
     if (sentry.options.disabled) {

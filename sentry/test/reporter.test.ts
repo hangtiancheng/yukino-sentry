@@ -8,6 +8,7 @@ import { sentry } from "@/utils/index.js";
 function createPayload(): TReportPayload {
   return {
     id: "payload-id",
+    traceId: "trace-payload",
     type: EventType.Custom,
     name: "CustomEvent",
     time: "2026-01-01T00:00:00.000Z",

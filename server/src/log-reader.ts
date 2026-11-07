@@ -207,3 +207,18 @@ export async function readEvents(
 
   return { files: requested.names, count: events.length, events };
 }
+
+const traceRecordSchema = z.looseObject({ traceId: z.string().catch("") });
+
+export async function readTrace(
+  traceId: string,
+  file: string,
+): Promise<LogEventsResult | null> {
+  const result = await readEvents(file);
+  if (result === null) return null;
+  const events = result.events.filter((event) => {
+    const parsed = traceRecordSchema.safeParse(event);
+    return parsed.success && parsed.data.traceId === traceId;
+  });
+  return { files: result.files, count: events.length, events };
+}

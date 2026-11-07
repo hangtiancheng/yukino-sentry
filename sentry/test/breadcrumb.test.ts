@@ -11,6 +11,7 @@ import { isRecord } from "./report-payloads.js";
 function httpData(timestamp: number): IHttpData {
   return {
     id: `http-${timestamp}`,
+    traceId: "trace-http",
     type: EventType.Fetch,
     name: "Fetch",
     time: "2026-01-01T00:00:00.000Z",
@@ -19,6 +20,7 @@ function httpData(timestamp: number): IHttpData {
     status: Status.OK,
     method: "GET",
     api: "/api/example",
+    spanId: "span-http",
     elapsedTime: 12,
     statusCode: 200,
     serverTiming: [],
@@ -79,6 +81,7 @@ describe("breadcrumb attachment", () => {
 
     handleError({
       id: "err-1",
+      traceId: "trace-err",
       type: EventType.Error,
       name: "Error",
       time: "2026-01-01T00:00:00.000Z",

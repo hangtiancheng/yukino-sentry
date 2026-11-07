@@ -6,6 +6,7 @@ import type {
 } from "../types/index.js";
 import { getBaseData, sentry } from "../utils/index.js";
 import { handleError } from "./handle-error.js";
+import { renewTraceContext } from "./trace.js";
 import reporter from "../reporter/index.js";
 import { flushBatchErrors } from "./handle-code-error.js";
 
@@ -53,6 +54,7 @@ export function tracePageView(
     readonly extra?: unknown;
   } = {},
 ): void {
+  renewTraceContext();
   reporter.send({
     ...getBaseData(),
     type: EventType.PV,

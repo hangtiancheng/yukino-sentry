@@ -6,6 +6,7 @@ import { pubFetch } from "../core/decorate-http.js";
 import { handleError } from "../core/handle-error.js";
 import { handleHttp } from "../core/handle-http.js";
 import { handleUnhandledRejection } from "../core/handle-events.js";
+import { installNodeTraceContext } from "./trace.js";
 import reporter from "../reporter/index.js";
 
 export type UnhandledRejectionMode = "strict" | "warn" | "none";
@@ -82,7 +83,7 @@ function setup(options: NodeCaptureOptions = {}): Cleanup {
 
   sentryLogger.info("Initializing Node.js SDK event subscriptions...");
 
-  const cleanups: Cleanup[] = [];
+  const cleanups: Cleanup[] = [installNodeTraceContext()];
 
   if (sentry.options.enableError) {
     cleanups.push(sub(EventType.Error, handleError));

@@ -5,7 +5,12 @@ import getRawBody from "raw-body";
 import type Koa from "koa";
 import { cfg } from "./config.js";
 import { logger } from "./logger.js";
-import { listLogFiles, readEvents, computeEventsEtag } from "./log-reader.js";
+import {
+  listLogFiles,
+  readEvents,
+  readTrace,
+  computeEventsEtag,
+} from "./log-reader.js";
 import { enrichReportRecord, isSourcemapEnabled } from "./source-map.js";
 
 async function enrichSdkLogBody(body: Buffer): Promise<Buffer | string> {
@@ -118,6 +123,25 @@ export function registerRoutes(app: Koa) {
       return;
     }
     ctx.body = result;
+  });
+
+  router.get("/api/logs/trace", async (ctx) => {
+    const traceId = ctx.query.traceId;
+    if (typeof traceId !== "string" || traceId === "") {
+      ctx.status = 400;
+      ctx.body = { code: 400, message: "traceId query parameter is required" };
+      return;
+    }
+    const raw = ctx.query.file;
+    const file = typeof raw === "string" && raw !== "" ? raw : "all";
+    const result = await readTrace(traceId, file);
+    if (result === null) {
+      ctx.status = 400;
+      ctx.body = { code: 400, message: "invalid file name" };
+      return;
+    }
+    ctx.set("Cache-Control", "no-store");
+    ctx.body = { traceId, ...result };
   });
 
   app.use(router.routes());

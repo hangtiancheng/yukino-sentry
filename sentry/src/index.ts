@@ -18,6 +18,7 @@ import {
 } from "./core/api.js";
 export { reportFrameworkError } from "./core/framework-error.js";
 export type { InitOptions } from "./core/options-schema.js";
+export { getTraceContext } from "./core/trace.js";
 export {
   init,
   destroy,

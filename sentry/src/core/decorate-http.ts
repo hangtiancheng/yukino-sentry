@@ -1,3 +1,4 @@
+import { TRACEPARENT_HEADER } from "../constants/index.js";
 import { EventType, type IHttpData, type WithSentry } from "../types";
 import {
   decorateProp,
@@ -7,9 +8,15 @@ import {
   noop,
   parseServerTiming,
   sentry,
+  sentryLogger,
 } from "../utils";
 import type { Cleanup } from "../utils/decorate-prop.js";
 import { pub } from "./bus.js";
+import {
+  formatTraceparent,
+  generateSpanId,
+  shouldPropagateTrace,
+} from "./trace.js";
 
 type TXhrProtoOpen = (
   method: string,
@@ -49,6 +56,7 @@ export function pubXhr(): Cleanup {
           type: EventType.Xhr,
           method: method.toUpperCase(),
           api: String(url),
+          spanId: generateSpanId(),
           elapsedTime: 0,
           statusCode: 200,
         };
@@ -63,6 +71,20 @@ export function pubXhr(): Cleanup {
     ) {
       if (!this.__sentry__) return oldPropVal.call(this, body);
       const { method, api } = this.__sentry__;
+      if (
+        !shouldIgnoreRequest(method, api) &&
+        shouldPropagateTrace(api) &&
+        this.readyState === XMLHttpRequest.OPENED
+      ) {
+        try {
+          this.setRequestHeader(
+            TRACEPARENT_HEADER,
+            formatTraceparent(this.__sentry__.traceId, this.__sentry__.spanId),
+          );
+        } catch (err) {
+          sentryLogger.error("Failed to inject traceparent header", err);
+        }
+      }
       const startedAt = Date.now();
       this.__sentry__.timestamp = startedAt;
       this.__sentry__.time = new Date(startedAt).toISOString();
@@ -132,12 +154,16 @@ export function pubFetch(): Cleanup {
         method,
         name: "Fetch",
         api,
+        spanId: generateSpanId(),
         elapsedTime: 0,
         statusCode: 200,
       };
       const startedAt = httpData.timestamp;
+      const requestInit = shouldPropagateTrace(api)
+        ? withTraceparentHeader(input, options, httpData)
+        : options;
       return oldPropVal
-        .call(globalThis, input, options)
+        .call(globalThis, input, requestInit)
         .then((res: Response) => {
           httpData.elapsedTime = Date.now() - startedAt;
           httpData.statusCode = res.status;
@@ -178,4 +204,23 @@ function shouldIgnoreRequest(method: string, api: string): boolean {
       api === sentry.options.dsn) ||
     isExcludedApi(api)
   );
+}
+
+function withTraceparentHeader(
+  input: RequestInfo | URL,
+  options: RequestInit | undefined,
+  httpData: IHttpData,
+): RequestInit {
+  const isRequest = typeof Request !== "undefined" && input instanceof Request;
+  const headers = new Headers(isRequest ? input.headers : options?.headers);
+  if (isRequest && options?.headers) {
+    new Headers(options.headers).forEach((value, key) => {
+      headers.set(key, value);
+    });
+  }
+  headers.set(
+    TRACEPARENT_HEADER,
+    formatTraceparent(httpData.traceId, httpData.spanId),
+  );
+  return { ...options, headers };
 }

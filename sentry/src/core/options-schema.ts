@@ -50,6 +50,7 @@ export const optionsSchema = z.object({
   enableHttpPerformance: z.boolean(),
   ignoreErrors: z.array(stringOrRegExpSchema),
   excludeAPIs: z.array(stringOrRegExpSchema),
+  tracePropagationTargets: z.array(stringOrRegExpSchema).optional(),
   beforeBreadcrumb: beforeBreadcrumbHookSchema.optional(),
   cacheMaxLength: z.number().int().positive(),
   cacheWaitingTime: z.number().nonnegative(),

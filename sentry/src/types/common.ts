@@ -26,10 +26,16 @@ export interface IDeviceInfo {
   screenResolution: string;
 }
 
+export interface ITraceContext {
+  traceId: string;
+  spanId: string;
+}
+
 export interface IReportPayload {
   id: string;
   deviceId?: string;
   sessionId?: string;
+  traceId: string;
   type: EventType;
   name: string;
   time: string;
@@ -41,6 +47,7 @@ export interface IReportPayload {
 export interface IHttpData extends IReportPayload {
   method: string;
   api: string;
+  spanId: string;
   elapsedTime: number;
   statusCode: number;
   requestData?: unknown;

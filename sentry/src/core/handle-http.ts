@@ -16,7 +16,8 @@ import breadcrumb from "./breadcrumb.js";
 
 export const handleHttp: TEventHandler<IHttpData> = (data: IHttpData) => {
   const transformedData = transformHttpData(data);
-  const { id, name, time, timestamp, message, status, type } = transformedData;
+  const { id, name, time, timestamp, message, status, type, traceId } =
+    transformedData;
 
   if (status === Status.Error) {
     sentryLogger.error(`Request error: ${name}`, data);
@@ -33,6 +34,7 @@ export const handleHttp: TEventHandler<IHttpData> = (data: IHttpData) => {
       message,
       status,
       type,
+      traceId,
       userAction: event2breadcrumb(type),
     });
   }
@@ -52,6 +54,7 @@ export const handleHttp: TEventHandler<IHttpData> = (data: IHttpData) => {
         method: transformedData.method,
         statusCode: transformedData.statusCode,
         serverTiming: transformedData.serverTiming ?? [],
+        spanId: transformedData.spanId,
       },
     });
   }

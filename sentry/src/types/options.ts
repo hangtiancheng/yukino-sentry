@@ -42,6 +42,7 @@ export interface IOptions {
   enableHttpPerformance: boolean;
   ignoreErrors: (string | RegExp)[];
   excludeAPIs: (string | RegExp)[];
+  tracePropagationTargets?: (string | RegExp)[] | undefined;
   beforeBreadcrumb?: BeforeBreadcrumbHook | undefined;
   cacheMaxLength: number;
   cacheWaitingTime: number;

@@ -14,6 +14,8 @@ export const WHITE_SCREEN_SAMPLE_INTERVAL = 1000;
 
 export const UNKNOWN = "unknown";
 
+export const TRACEPARENT_HEADER = "traceparent";
+
 export const DEFAULT_OPTIONS: IOptions = {
   dsn: "",
   projectId: UNKNOWN,

@@ -27,6 +27,7 @@ const reportDataSchema = z.object({
   timestamp: z.number(),
   message: z.string(),
   status: z.enum(Status),
+  traceId: z.string(),
   url: z.string(),
   userId: z.string(),
   anonymousId: z.string(),

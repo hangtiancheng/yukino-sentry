@@ -138,6 +138,7 @@ if (!isInitialized()) {
 | `enableHttpPerformance`      | `boolean`              | `false`                                             | Report successful HTTP requests as performance events. |
 | `ignoreErrors`               | `(string \| RegExp)[]` | `[]`                                                | Runtime error ignore rules.                            |
 | `excludeAPIs`                | `(string \| RegExp)[]` | `[]`                                                | HTTP request ignore rules.                             |
+| `tracePropagationTargets`    | `(string \| RegExp)[]` | `undefined`                                         | Opt-in `traceparent` propagation targets; same-origin only by default in browsers, all outbound requests on Node. |
 | `cacheMaxLength`             | `number`               | `10`                                                | Maximum batch size.                                    |
 | `cacheWaitingTime`           | `number`               | `2000`                                              | Batch wait time in milliseconds.                       |
 | `maxQueueLength`             | `number`               | `200`                                               | Maximum queued events while offline or retrying.       |
@@ -180,6 +181,7 @@ Reporter sends `IReportData` objects to the configured `dsn`.
 | `status`     | `OK` or `Error`.                           |
 | `time`       | Formatted time.                            |
 | `timestamp`  | Numeric timestamp.                         |
+| `traceId`    | W3C trace id shared by all events in one page view or Node request context. |
 | `url`        | Current page URL.                          |
 | `userId`     | User identifier.                           |
 | `projectId`  | Project identifier.                        |
@@ -268,6 +270,47 @@ init({
   enableHttpPerformance: true,
 });
 ```
+
+## Distributed Tracing
+
+Every reported event carries a W3C Trace Context `traceId` (32 hex chars), so a browser session, its HTTP requests, and backend failures can be queried as one trace.
+
+In the browser the trace is scoped to the current page view: the SDK generates a fresh `traceId` at initialization, regenerates it on every history/hash route change and on `tracePageView`, and stamps it on every event (errors, HTTP, clicks, PV, performance, screen records).
+
+Monitored XHR and fetch requests get a per-request `spanId` (16 hex chars), and outbound requests receive an injected `traceparent` header:
+
+```text
+traceparent: 00-<traceId>-<spanId>-01
+```
+
+Propagation rules:
+
+- By default, browsers propagate to same-origin requests only (relative URLs count as same-origin). Cross-origin propagation is opt-in because the `traceparent` header triggers a CORS preflight.
+- Node.js propagates on all outbound fetch requests by default.
+- Setting `tracePropagationTargets` replaces the default rule: string entries match by substring, RegExp entries by `test`. Requests to the `dsn` itself never receive the header.
+
+```ts
+init({
+  dsn: "/api/log",
+  tracePropagationTargets: ["api.example.com", /^https:\/\/.*\.example\.com\//],
+});
+```
+
+Server-side, `@yukino.js/sentry/node` continues an incoming trace with `AsyncLocalStorage`:
+
+```ts
+import { continueTrace, getTraceparent } from "@yukino.js/sentry/node";
+
+// Koa
+app.use((ctx, next) => continueTrace(ctx.req.headers.traceparent, () => next()));
+
+// Express
+app.use((req, _res, next) => continueTrace(req.headers.traceparent, next));
+```
+
+Inside the wrapped async context, every reported event carries the incoming `traceId`, and outbound fetch requests propagate `traceparent` downstream. `getActiveTraceContext()` and `getTraceparent()` expose the active context for manual propagation (for example `http.request`). Events reported outside `continueTrace` get a fresh per-event `traceId`; process-level crashes (`uncaughtException`) lose the async context and cannot be attributed to a request trace.
+
+The bundled log server exposes `GET /api/logs/trace?traceId=<id>&file=all`, returning every event that shares the trace, sorted by timestamp — the whole front-end-to-back-end chain of one failure.
 
 ## Page Views and Dwell Time
 
@@ -759,7 +802,7 @@ try {
 
 ### Available APIs
 
-`init`, `destroy`, `isInitialized`, `enablePlugin`, `setUserId`, `setVisitorId`, `getIdentity`, `beforeSend`, `beforeSendBatch`, `afterSend`, `flush`, `flushOfflineCache`, `traceError`, `tracePerformance`, `traceCustomEvent`, `reportFrameworkError`, all shared types and enums (`EventType`, `Status`, `BreadcrumbType`, `SentryPlugin`, hook types), and the `NodeInitOptions` type. `tracePageView` is browser-only and not exported.
+`init`, `destroy`, `isInitialized`, `enablePlugin`, `setUserId`, `setVisitorId`, `getIdentity`, `beforeSend`, `beforeSendBatch`, `afterSend`, `flush`, `flushOfflineCache`, `traceError`, `tracePerformance`, `traceCustomEvent`, `reportFrameworkError`, `continueTrace`, `getActiveTraceContext`, `getTraceparent`, all shared types and enums (`EventType`, `Status`, `BreadcrumbType`, `SentryPlugin`, hook types), and the `NodeInitOptions` and `TraceparentSource` types. `tracePageView` is browser-only and not exported.
 
 ### Node Runtime Notes
 

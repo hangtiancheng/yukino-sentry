@@ -133,6 +133,19 @@ function ErrorDetail({ event }: { event: ReportEvent }) {
         ) : null}
         <span className="truncate">Session: {payload?.sessionId ?? "-"}</span>
         <span className="truncate">Device: {payload?.deviceId ?? "-"}</span>
+        {event.traceId ? (
+          <span className="col-span-2 truncate font-mono" title={event.traceId}>
+            Trace: {event.traceId}
+          </span>
+        ) : null}
+        {typeof payload?.spanId === "string" ? (
+          <span
+            className="col-span-2 truncate font-mono"
+            title={payload.spanId}
+          >
+            Span: {payload.spanId}
+          </span>
+        ) : null}
       </div>
 
       {frames.length > 0 ? (

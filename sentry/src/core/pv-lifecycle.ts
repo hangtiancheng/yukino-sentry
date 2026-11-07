@@ -1,5 +1,6 @@
 import { EventType, Status } from "../types";
 import { getBaseData } from "../utils";
+import { renewTraceContext } from "./trace.js";
 import reporter from "../reporter/index.js";
 
 const minimumDwellTime = 100;
@@ -65,6 +66,7 @@ function createPageState(
   referrer: string,
   name: string,
 ): PageState {
+  renewTraceContext();
   return {
     url,
     referrer,
