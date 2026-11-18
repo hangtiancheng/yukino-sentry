@@ -3,6 +3,7 @@ import breadcrumb from "../core/breadcrumb.js";
 import { EventType, type IReportData, type TReportPayload } from "../types";
 import { sentry } from "../utils";
 import { isPromise } from "./promise.js";
+import { getEventSampleRate } from "./send-preflight.js";
 
 const BREADCRUMB_EVENT_TYPES = new Set<EventType>([
   EventType.Error,
@@ -35,7 +36,9 @@ function payloadToReportData<T extends TReportPayload>(
     sdkVersion: SDK_VERSION,
     deviceInfo: sentry.deviceInfo,
     payload,
+    sampleRate: getEventSampleRate(type),
   };
+  if (payload.pageViewKind) data.pageViewKind = payload.pageViewKind;
   if (BREADCRUMB_EVENT_TYPES.has(type)) {
     data.breadcrumbs = breadcrumb.dump();
   }

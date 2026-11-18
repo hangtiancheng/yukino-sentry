@@ -61,6 +61,10 @@ export const optionsSchema = z.object({
   afterSend: afterSendHookSchema.optional(),
   offlineCacheKey: z.string(),
   tracesSampleRate: z.number().min(0).max(1),
+  eventSampleRates: z.partialRecord(
+    z.enum(EventType),
+    z.number().min(0).max(1),
+  ),
   debug: z.boolean(),
 });
 

@@ -7,20 +7,26 @@ import reporter from "../../reporter";
 
 import { DEFAULT_OPTIONS } from "../../constants";
 
-import { recorder } from "./recorder.js";
+import { recorder, type ScreenRecordPrivacyOptions } from "./recorder.js";
+
+export type { ScreenRecordPrivacyOptions } from "./recorder.js";
 
 export interface ScreenRecordPluginOptions {
   durationMs?: number;
   eventTypes?: EventType[];
+  /** rrweb privacy options; overrides the plugin's conservative defaults. */
+  recordOptions?: ScreenRecordPrivacyOptions;
 }
 
 class ScreenRecordPlugin extends SentryPlugin {
   durationMs: number;
   eventTypes: EventType[];
+  private readonly recordOptions: ScreenRecordPrivacyOptions;
   private cleanup: Cleanup | null = null;
 
   constructor(options: ScreenRecordPluginOptions = {}) {
     super();
+    this.recordOptions = { ...options.recordOptions };
     this.durationMs =
       options.durationMs ?? DEFAULT_OPTIONS.screenRecordDurationMs;
     this.eventTypes = [
@@ -33,7 +39,7 @@ class ScreenRecordPlugin extends SentryPlugin {
       screenRecordEventTypes: [...this.eventTypes],
       screenRecordDurationMs: this.durationMs,
     });
-    void recorder(reporter).then((cleanup) => {
+    void recorder(reporter, this.recordOptions).then((cleanup) => {
       this.cleanup = cleanup;
     });
   }

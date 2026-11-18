@@ -1,9 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { record } from "@rrweb/record";
 
 import { DEFAULT_OPTIONS } from "@/constants/index.js";
 import { destroy, enablePlugin } from "@/index.js";
 import ExposurePlugin from "@/plugins/exposure/index.js";
 import ScreenRecordPlugin, {
+  type ScreenRecordPrivacyOptions,
   unzipScreenRecord,
 } from "@/plugins/screen-record/index.js";
 import { EventType, SentryPlugin } from "@/types/index.js";
@@ -146,5 +148,48 @@ describe("plugin public surface", () => {
       { timestamp: 50 },
       { timestamp: 150 },
     ]);
+  });
+
+  it("uses conservative recording defaults", async () => {
+    enablePlugin(new ScreenRecordPlugin());
+    await vi.waitFor(() => expect(recordEmit).not.toBeNull());
+
+    const options = vi.mocked(record).mock.calls[0]?.[0];
+    expect(options).toMatchObject({
+      maskAllInputs: true,
+      maskTextSelector: "*",
+      recordCanvas: false,
+      inlineImages: false,
+      checkoutEveryNms: DEFAULT_OPTIONS.screenRecordDurationMs,
+    });
+    expect(options?.maskInputFn).toBeUndefined();
+    expect(options?.maskTextFn).toBeUndefined();
+    expect(options?.maskInputOptions).toBeUndefined();
+  });
+
+  it("passes rrweb privacy overrides through without replacing callbacks", async () => {
+    const recordOptions: ScreenRecordPrivacyOptions = {
+      maskAllInputs: false,
+      maskInputOptions: { text: true, password: true },
+      maskInputFn: () => "[input]",
+      maskTextFn: () => "[text]",
+      maskTextClass: /sensitive/,
+      maskTextSelector: ".private",
+      blockClass: "blocked",
+      blockSelector: "[data-secret]",
+      ignoreClass: "ignore-input",
+      ignoreSelector: "[data-ignore]",
+      recordCanvas: true,
+      inlineImages: true,
+    };
+    enablePlugin(new ScreenRecordPlugin({ durationMs: 5000, recordOptions }));
+    await vi.waitFor(() => expect(recordEmit).not.toBeNull());
+
+    const options = vi.mocked(record).mock.calls[0]?.[0];
+    expect(options).toMatchObject(recordOptions);
+    expect(options?.maskInputFn).toBe(recordOptions.maskInputFn);
+    expect(options?.maskTextFn).toBe(recordOptions.maskTextFn);
+    expect(options?.checkoutEveryNms).toBe(5000);
+    expect(options?.emit).toBe(recordEmit);
   });
 });

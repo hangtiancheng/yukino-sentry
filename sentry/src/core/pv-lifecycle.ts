@@ -24,6 +24,7 @@ function sendPageView(page: PageState, immediate: boolean): void {
       ...getBaseData(),
       type: EventType.PV,
       name: page.name,
+      pageViewKind: "visit",
       message: page.url,
       status: Status.OK,
       extra: {
@@ -49,6 +50,7 @@ function sendDwellTime(
       ...getBaseData(),
       type: EventType.PV,
       name: "PageDwell",
+      pageViewKind: "dwell",
       message: page.url,
       status: Status.OK,
       extra: {

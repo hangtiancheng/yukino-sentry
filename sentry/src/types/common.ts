@@ -32,6 +32,8 @@ export interface ITraceContext {
 }
 
 export interface IReportPayload {
+  /** Present on page-view and dwell records. Absent on historical records. */
+  pageViewKind?: "visit" | "dwell" | undefined;
   id: string;
   deviceId?: string;
   sessionId?: string;
@@ -162,6 +164,8 @@ export type TOnReportPerformanceData = (data: IPerformanceData) => void;
 export interface IReportData<
   T extends TReportPayload = TReportPayload,
 > extends IReportPayload {
+  /** Effective event admission probability; absent on historical records. */
+  sampleRate?: number | undefined;
   url: string;
   userId: string;
   anonymousId: string;

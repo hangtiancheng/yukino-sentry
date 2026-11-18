@@ -107,43 +107,44 @@ if (!isInitialized()) {
 
 `init` accepts partial options. Values not provided by the caller use SDK defaults.
 
-| Option                      | Type                   | Default                                             | Description                                            |
-| --------------------------- | ---------------------- | --------------------------------------------------- | ------------------------------------------------------ |
-| `dsn`                       | `string`               | `""`                                                | Report endpoint. Required for initialization.          |
-| `projectId`                 | `string`               | `"unknown"`                                         | Frontend project identifier.                           |
-| `userId`                    | `string`               | `"unknown"`                                         | Current user identifier.                               |
-| `disabled`                  | `boolean`              | `false`                                             | Disable the SDK.                                       |
-| `enableXhr`                 | `boolean`              | `true`                                              | Capture XMLHttpRequest requests.                       |
-| `enableFetch`               | `boolean`              | `true`                                              | Capture fetch requests.                                |
-| `enableClick`               | `boolean`              | `true`                                              | Capture declarative click events.                      |
-| `enableError`               | `boolean`              | `true`                                              | Capture runtime and resource errors.                   |
-| `enableUnhandledRejection`  | `boolean`              | `true`                                              | Capture unhandled promise rejections.                  |
-| `enableHashChange`          | `boolean`              | `true`                                              | Capture hash navigation.                               |
-| `enableHistory`             | `boolean`              | `true`                                              | Capture history navigation.                            |
-| `enableWhiteScreen`         | `boolean`              | `true`                                              | Enable white-screen detection.                         |
-| `enableFingerprint`         | `boolean`              | `false`                                             | Enable FingerprintJS anonymous visitor identity.       |
-| `anonymousId`               | `string`               | `"unknown"`                                         | SDK-generated anonymous visitor id.                    |
-| `visitorId`                 | `string`               | `"unknown"`                                         | Backend-bound visitor id.                              |
-| `screenRecordDurationMs`    | `number`               | `3000`                                              | Rolling screen record window length.                   |
-| `screenRecordEventTypes`    | `EventType[]`          | `[Error, Xhr, Fetch, Resource, UnhandledRejection]` | Event types that trigger screen record reporting.      |
-| `hasSkeleton`               | `boolean`              | `false`                                             | Whether the page has a skeleton screen.                |
-| `rootCssSelectors`          | `string[]`             | `["html", "body", "#app", "#root"]`                 | Root selectors used by white-screen detection.         |
-| `clickThrottleDelay`        | `number`               | `0`                                                 | Click capture throttle delay in milliseconds.          |
-| `maxBreadcrumbs`            | `number`               | `30`                                                | Breadcrumb capacity.                                   |
-| `repeatCodeError`           | `boolean`              | `false`                                             | Report duplicate code errors.                          |
-| `enableHttpPerformance`     | `boolean`              | `false`                                             | Report successful HTTP requests as performance events. |
-| `ignoreErrors`              | `(string \| RegExp)[]` | `[]`                                                | Runtime error ignore rules.                            |
-| `excludeAPIs`               | `(string \| RegExp)[]` | `[]`                                                | HTTP request ignore rules.                             |
-| `cacheMaxLength`            | `number`               | `10`                                                | Maximum batch size.                                    |
-| `cacheWaitingTime`          | `number`               | `2000`                                              | Batch wait time in milliseconds.                       |
-| `maxQueueLength`            | `number`               | `200`                                               | Maximum queued events while offline or retrying.       |
-| `retryIntervalMilliseconds` | `number`               | `60000`                                             | Server recovery probe interval.                        |
-| `offlineCacheKey`           | `string`               | `"yukino_sentry_offline_cache"`                     | localStorage key for offline cache.                    |
-| `tracesSampleRate`          | `number`               | `1`                                                 | Sampling rate from 0 to 1.                             |
-| `beforeBreadcrumb`          | `function`             | `undefined`                                         | Hook before storing a breadcrumb.                      |
-| `beforeSend`                | `function`             | `undefined`                                         | Hook before one event enters Reporter queue.           |
-| `beforeSendBatch`           | `function`             | `undefined`                                         | Hook before a batch enters transport.                  |
-| `afterSend`                 | `function`             | `undefined`                                         | Hook after a batch enters transport successfully.      |
+| Option                      | Type                                 | Default                                             | Description                                            |
+| --------------------------- | ------------------------------------ | --------------------------------------------------- | ------------------------------------------------------ |
+| `dsn`                       | `string`                             | `""`                                                | Report endpoint. Required for initialization.          |
+| `projectId`                 | `string`                             | `"unknown"`                                         | Frontend project identifier.                           |
+| `userId`                    | `string`                             | `"unknown"`                                         | Current user identifier.                               |
+| `disabled`                  | `boolean`                            | `false`                                             | Disable the SDK.                                       |
+| `enableXhr`                 | `boolean`                            | `true`                                              | Capture XMLHttpRequest requests.                       |
+| `enableFetch`               | `boolean`                            | `true`                                              | Capture fetch requests.                                |
+| `enableClick`               | `boolean`                            | `true`                                              | Capture declarative click events.                      |
+| `enableError`               | `boolean`                            | `true`                                              | Capture runtime and resource errors.                   |
+| `enableUnhandledRejection`  | `boolean`                            | `true`                                              | Capture unhandled promise rejections.                  |
+| `enableHashChange`          | `boolean`                            | `true`                                              | Capture hash navigation.                               |
+| `enableHistory`             | `boolean`                            | `true`                                              | Capture history navigation.                            |
+| `enableWhiteScreen`         | `boolean`                            | `true`                                              | Enable white-screen detection.                         |
+| `enableFingerprint`         | `boolean`                            | `false`                                             | Enable FingerprintJS anonymous visitor identity.       |
+| `anonymousId`               | `string`                             | `"unknown"`                                         | SDK-generated anonymous visitor id.                    |
+| `visitorId`                 | `string`                             | `"unknown"`                                         | Backend-bound visitor id.                              |
+| `screenRecordDurationMs`    | `number`                             | `3000`                                              | Rolling screen record window length.                   |
+| `screenRecordEventTypes`    | `EventType[]`                        | `[Error, Xhr, Fetch, Resource, UnhandledRejection]` | Event types that trigger screen record reporting.      |
+| `hasSkeleton`               | `boolean`                            | `false`                                             | Whether the page has a skeleton screen.                |
+| `rootCssSelectors`          | `string[]`                           | `["html", "body", "#app", "#root"]`                 | Root selectors used by white-screen detection.         |
+| `clickThrottleDelay`        | `number`                             | `0`                                                 | Click capture throttle delay in milliseconds.          |
+| `maxBreadcrumbs`            | `number`                             | `30`                                                | Breadcrumb capacity.                                   |
+| `repeatCodeError`           | `boolean`                            | `false`                                             | Report duplicate code errors.                          |
+| `enableHttpPerformance`     | `boolean`                            | `false`                                             | Report successful HTTP requests as performance events. |
+| `ignoreErrors`              | `(string \| RegExp)[]`               | `[]`                                                | Runtime error ignore rules.                            |
+| `excludeAPIs`               | `(string \| RegExp)[]`               | `[]`                                                | HTTP request ignore rules.                             |
+| `cacheMaxLength`            | `number`                             | `10`                                                | Maximum batch size.                                    |
+| `cacheWaitingTime`          | `number`                             | `2000`                                              | Batch wait time in milliseconds.                       |
+| `maxQueueLength`            | `number`                             | `200`                                               | Maximum queued events while offline or retrying.       |
+| `retryIntervalMilliseconds` | `number`                             | `60000`                                             | Server recovery probe interval.                        |
+| `offlineCacheKey`           | `string`                             | `"yukino_sentry_offline_cache"`                     | localStorage key for offline cache.                    |
+| `tracesSampleRate`          | `number`                             | `1`                                                 | Global event sampling fallback, from 0 to 1.           |
+| `eventSampleRates`          | `Partial<Record<EventType, number>>` | `{}`                                                | Per-event sampling overrides, from 0 to 1.             |
+| `beforeBreadcrumb`          | `function`                           | `undefined`                                         | Hook before storing a breadcrumb.                      |
+| `beforeSend`                | `function`                           | `undefined`                                         | Hook before one event enters Reporter queue.           |
+| `beforeSendBatch`           | `function`                           | `undefined`                                         | Hook before a batch enters transport.                  |
+| `afterSend`                 | `function`                           | `undefined`                                         | Hook after a batch enters transport successfully.      |
 
 Example production configuration:
 
@@ -279,6 +280,19 @@ On hash or history route changes, it:
 
 Dwell time less than or equal to 100 ms is ignored to reduce noise.
 
+Both records retain `type: "PV"` for compatibility. New events include `pageViewKind: "visit"` or `"dwell"` in both the report envelope and its `payload`. Count visits using this discriminator, rather than counting every PV record. For historical records without it, use `name === "PageDwell"` to identify dwell records:
+
+```ts
+const visitCount = reports.filter(
+  (event) =>
+    event.type === "PV" &&
+    (event.pageViewKind ?? (event.name === "PageDwell" ? "dwell" : "visit")) ===
+      "visit",
+).length;
+```
+
+For A → B after more than 100 ms, the SDK sends A's visit, A's dwell, and B's visit: **two visits**. Repeated notifications for the current URL add no automatic visit; flushing dwell adds no visit. Historical manual events named `PageDwell` cannot be reliably distinguished from dwell records; the new discriminator removes that ambiguity.
+
 Manual page-view reporting:
 
 ```ts
@@ -292,6 +306,8 @@ tracePageView({
   },
 });
 ```
+
+Each `tracePageView` call adds a visit, including repeated calls for the same URL. It renews trace context but does not change the automatic route/dwell state. Calling it for a route already tracked automatically will add another visit; reserve manual calls for additional application-defined views.
 
 ## Declarative Clicks
 
@@ -414,7 +430,7 @@ Reporter is the unified data outlet. It transforms captured payloads into report
 Reporter behavior:
 
 - Batches events.
-- Applies sampling through `tracesSampleRate`.
+- Applies `eventSampleRates[type]`, falling back to `tracesSampleRate`.
 - Persists offline events to localStorage.
 - Flushes cached events after network recovery.
 - Probes server recovery with HEAD requests after failed fetch reports.
@@ -433,6 +449,31 @@ import { flushOfflineCache } from "@yukino.js/sentry";
 
 await flushOfflineCache();
 ```
+
+### Event sampling
+
+`tracesSampleRate` retains its existing role as a **global event sampling fallback**, including PV, errors, custom events, performance and recording. To control them independently, configure `eventSampleRates` with `EventType` keys:
+
+```ts
+import { init, EventType } from "@yukino.js/sentry";
+
+init({
+  dsn: "/api/log",
+  tracesSampleRate: 1,
+  eventSampleRates: {
+    [EventType.PV]: 1, // visits and dwell records
+    [EventType.Performance]: 0.1,
+    [EventType.ScreenRecord]: 0.05,
+    [EventType.Error]: 1,
+  },
+});
+```
+
+Omitted event types use `tracesSampleRate`; overrides replace it rather than multiply it. Each event is sampled independently before hooks and queueing. Rates must be finite numbers from 0 to 1: `0` always drops, `1` always admits. This also fixes the former zero-rate boundary where a random value of exactly zero could admit an event. Recording triggers still require admission of the triggering event, and generated `ScreenRecord` reports have their own sampling decision.
+
+New report envelopes include `sampleRate`, the effective admission probability at collection time. It is preserved across offline storage and retries; queued events are not sampled again. Historical events may lack this field. Hooks that replace reports should preserve this metadata.
+
+Raw PV counts are received visit records under the aggregation rule above. Under independent event sampling, summing `1 / sampleRate` over received visits can estimate the number generated before sampling, assuming no other losses; it is not an exact visit count. Do not divide observed UV by the event rate: users generate different numbers of events. Define UV using distinct stable identities and a time window, and treat sampled UV as observed users rather than a corrected total. A rate of `1` means full admission, not guaranteed delivery: hooks, network failures, shutdown, and queue limits can still remove events.
 
 ## Reporter Hooks
 
@@ -571,9 +612,29 @@ enablePlugin(new ScreenRecordPlugin());
 
 // With custom options
 enablePlugin(new ScreenRecordPlugin({ durationMs: 5000 }));
+
+// Pass rrweb privacy controls through recordOptions.
+enablePlugin(
+  new ScreenRecordPlugin({
+    recordOptions: {
+      maskAllInputs: true,
+      maskTextSelector: ".sensitive", // mask selected text instead of all text
+      blockSelector: "[data-private]", // omit this region's contents
+      maskInputFn: () => "[redacted]",
+      recordCanvas: false,
+      inlineImages: false,
+    },
+  }),
+);
 ```
 
 Screen recording is based on rrweb. The plugin keeps a rolling record window. When selected error or network events occur, the recent record window is reported as a `ScreenRecord` event.
+
+`recordOptions` accepts rrweb's `maskAllInputs`, `maskInputOptions`, `maskInputFn`, `maskTextClass`, `maskTextSelector`, `maskTextFn`, `blockClass`, `blockSelector`, `ignoreClass`, `ignoreSelector`, `recordCanvas`, and `inlineImages`, with types derived from the installed recorder. Custom masking callbacks are passed through unchanged. The plugin owns `emit` and `checkoutEveryNms`; use `durationMs` to configure the recording window.
+
+Defaults now mask all inputs (`maskAllInputs: true`) and DOM text (`maskTextSelector: "*"`), disable canvas recording (`recordCanvas: false`), and disable image inlining (`inlineImages: false`). This changes earlier versions, which retained input/text values and enabled canvas and image capture. Existing integrations that need readable text should explicitly narrow `maskTextSelector` (use `""` for rrweb's class-based masking only); canvas capture and image inlining require explicit opt-in. With rrweb, `maskAllInputs: true` takes precedence over `maskInputOptions`; set it to `false` when choosing input types individually, and include `password: true` in that custom map.
+
+Masking text and input values does not redact every DOM attribute, URL, or external asset. Disabling image inlining still records image URLs. Block sensitive regions with `blockSelector`/`blockClass`, and inspect decoded events as well as replay output for your application. Compression is not redaction. See the [rrweb privacy guide](https://github.com/rrweb-io/rrweb/blob/main/docs/recipes/privacy.md) for the underlying controls.
 
 Decode a record payload (async — pako is loaded on demand):
 

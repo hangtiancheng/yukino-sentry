@@ -4,4 +4,7 @@ export {
   default as ScreenRecordPlugin,
   unzipScreenRecord,
 } from "./screen-record";
-export type { ScreenRecordPluginOptions } from "./screen-record";
+export type {
+  ScreenRecordPluginOptions,
+  ScreenRecordPrivacyOptions,
+} from "./screen-record";

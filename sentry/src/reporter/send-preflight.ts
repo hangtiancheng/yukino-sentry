@@ -1,5 +1,11 @@
-import type { TReportPayload } from "../types";
+import type { EventType, TReportPayload } from "../types";
 import { sentryLogger, sentry } from "../utils";
+
+export function getEventSampleRate(type: EventType): number {
+  return (
+    sentry.options.eventSampleRates[type] ?? sentry.options.tracesSampleRate
+  );
+}
 
 export function shouldQueuePayload(payload: TReportPayload): boolean {
   const options = sentry.options;
@@ -8,7 +14,8 @@ export function shouldQueuePayload(payload: TReportPayload): boolean {
     sentryLogger.error("DSN is empty, report cancelled", payload);
     return false;
   }
-  if (Math.random() > options.tracesSampleRate) {
+  const sampleRate = getEventSampleRate(payload.type);
+  if (sampleRate === 0 || (sampleRate < 1 && Math.random() >= sampleRate)) {
     sentryLogger.info(`Dropped by sample rate: ${payload.type}`);
     return false;
   }

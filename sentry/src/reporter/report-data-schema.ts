@@ -22,6 +22,8 @@ const deviceInfoSchema = z.object({
 const reportDataSchema = z.object({
   id: z.string(),
   type: z.enum(EventType),
+  pageViewKind: z.enum(["visit", "dwell"]).optional(),
+  sampleRate: z.number().min(0).max(1).optional(),
   name: z.string(),
   time: z.string(),
   timestamp: z.number(),

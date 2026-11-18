@@ -4,7 +4,7 @@ import {
   type IScreenRecordData,
 } from "../../types";
 
-import { dom2str, getBaseData, noop, sentry, sentryLogger } from "../../utils";
+import { getBaseData, noop, sentry, sentryLogger } from "../../utils";
 import type { Cleanup } from "../../utils/decorate-prop.js";
 import { z } from "zod";
 
@@ -15,6 +15,27 @@ const recordEventSchema = z.looseObject({
 });
 
 type RecordEvent = z.infer<typeof recordEventSchema>;
+
+type RrwebRecordOptions = NonNullable<
+  Parameters<typeof import("@rrweb/record").record>[0]
+>;
+
+/** Privacy controls supported by the installed rrweb recorder. */
+export type ScreenRecordPrivacyOptions = Pick<
+  RrwebRecordOptions,
+  | "blockClass"
+  | "blockSelector"
+  | "ignoreClass"
+  | "ignoreSelector"
+  | "maskAllInputs"
+  | "maskInputOptions"
+  | "maskInputFn"
+  | "maskTextClass"
+  | "maskTextSelector"
+  | "maskTextFn"
+  | "recordCanvas"
+  | "inlineImages"
+>;
 
 function bytesToBase64(bytes: Uint8Array): string {
   const CHUNK_SIZE = 0x8000;
@@ -30,7 +51,10 @@ function base64ToBytes(value: string): Uint8Array {
   return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 }
 
-export async function recorder(reporter: IDataReporter): Promise<Cleanup> {
+export async function recorder(
+  reporter: IDataReporter,
+  recordOptions: ScreenRecordPrivacyOptions = {},
+): Promise<Cleanup> {
   sentryLogger.info("Initializing web recorder...");
   try {
     const [{ record }, pako] = await Promise.all([
@@ -53,6 +77,11 @@ export async function recorder(reporter: IDataReporter): Promise<Cleanup> {
     };
 
     const stopRecord = record({
+      maskAllInputs: true,
+      maskTextSelector: "*",
+      recordCanvas: false,
+      inlineImages: false,
+      ...recordOptions,
       emit(e) {
         const result = recordEventSchema.safeParse(e);
         if (!result.success) {
@@ -75,29 +104,6 @@ export async function recorder(reporter: IDataReporter): Promise<Cleanup> {
           sentry.shouldScreenRecord = false;
         }
       },
-      maskAllInputs: false,
-      maskInputOptions: new Proxy(
-        {},
-        {
-          get() {
-            return false;
-          },
-          set(target, prop, value) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            target[prop] = value;
-            return true;
-          },
-        },
-      ),
-      maskInputFn: (input, elem) => {
-        return input + (elem ? `#${dom2str(elem)}` : "");
-      },
-      maskTextFn: (text, elem) => {
-        return text + (elem ? `#${dom2str(elem)}` : "");
-      },
-      recordCanvas: true,
-      inlineImages: true,
       checkoutEveryNms: sentry.options.screenRecordDurationMs,
     });
     return typeof stopRecord === "function" ? stopRecord : noop;

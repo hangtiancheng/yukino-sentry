@@ -59,6 +59,7 @@ export function tracePageView(
     ...getBaseData(),
     type: EventType.PV,
     name: input.name ?? "ManualPageView",
+    pageViewKind: "visit",
     message: input.message ?? location.href,
     status: Status.OK,
     extra: input.extra ?? {

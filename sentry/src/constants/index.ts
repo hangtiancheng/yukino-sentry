@@ -54,5 +54,6 @@ export const DEFAULT_OPTIONS: IOptions = {
   retryIntervalMilliseconds: 60 * 1000,
   offlineCacheKey: "yukino_sentry_offline_cache",
   tracesSampleRate: 1,
+  eventSampleRates: {},
   debug: false,
 };

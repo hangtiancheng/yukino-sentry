@@ -53,5 +53,7 @@ export interface IOptions {
   afterSend?: AfterSendHook | undefined;
   offlineCacheKey: string;
   tracesSampleRate: number;
+  /** Per-event overrides; unspecified types use tracesSampleRate. */
+  eventSampleRates: Partial<Record<EventType, number>>;
   debug: boolean;
 }
