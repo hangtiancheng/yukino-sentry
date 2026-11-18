@@ -1,6 +1,6 @@
 {
   "name": "@yukino.js/sentry",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Framework-agnostic sentry sdk with first-class support for react and vue3+",
   "keywords": [
     "error-tracking",
