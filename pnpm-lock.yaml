@@ -215,7 +215,7 @@ importers:
         specifier: ^3.14.14
         version: 3.14.14(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@yukino.js/sentry':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../sentry
       class-variance-authority:
         specifier: ^0.7.1
@@ -465,7 +465,7 @@ importers:
         version: 15.7.0(koa@3.2.1)(supports-color@10.2.2)
       '@yukino.js/cache':
         specifier: latest
-        version: 0.0.1
+        version: 0.0.2
       koa:
         specifier: ^3.2.1
         version: 3.2.1
@@ -2200,8 +2200,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  '@yukino.js/cache@0.0.1':
-    resolution: {integrity: sha512-jxhW/xtOmWIWALFpGcllVDCr9zmB/vGeqq7pRqNOPmN8PD7nBTmVdDzno2v31HmqLXjWWR/pHKdn8PGUaHjktw==}
+  '@yukino.js/cache@0.0.2':
+    resolution: {integrity: sha512-VtaApVz51oOPcGU+/jQaaTf8qpuVcHxN0x1arN4k/rJVjxw0yDBvDL5wV/jQF7vKWmD9NSg1kUu1kfKJTsgRDw==}
     engines: {node: '>=20'}
 
   '@yukino.js/lit-jsx@0.0.1':
@@ -7362,7 +7362,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  '@yukino.js/cache@0.0.1':
+  '@yukino.js/cache@0.0.2':
     dependencies:
       '@grpc/grpc-js': 1.14.6
       '@grpc/proto-loader': 0.7.15
