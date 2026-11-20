@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "rm -rf dist && rollup -c ./rollup.config.js",
     "start": "node dist/index.js",
     "format": "prettier -w ./ --experimental-cli",
     "typecheck": "tsc --noEmit"
@@ -21,11 +21,15 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^12.3.1",
     "@types/koa": "^3.0.3",
     "@types/koa__cors": "^5.0.1",
     "@types/koa__router": "^12.0.5",
     "@types/node": "^24.19.2",
+    "javascript-obfuscator": "^5.10.1",
     "prettier": "^3.9.9",
+    "rollup": "^4.68.7",
+    "tslib": "^2.9.1",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3"
   }

@@ -58,11 +58,18 @@ pnpm install
 pnpm server          # tsx watch src/index.ts
 ```
 
-| Command                      | Description         |
-| ---------------------------- | ------------------- |
-| `pnpm server`                | Dev server (watch)  |
-| `pnpm --filter server build` | Compile with tsc    |
-| `pnpm --filter server start` | Run compiled output |
+| Command                          | Description                    |
+| -------------------------------- | ------------------------------ |
+| `pnpm server`                    | Dev server (watch)             |
+| `pnpm --filter server build`     | Bundle & obfuscate with Rollup |
+| `pnpm --filter server start`     | Run bundled output             |
+| `pnpm --filter server typecheck` | Type-check without emitting    |
+
+The production build bundles `src/` into a single `dist/index.js`. Runtime
+dependencies stay external in `node_modules`, while application code is
+minified and obfuscated (`javascript-obfuscator`) with all strings moved into an
+encoded string array. No source maps or declaration files are emitted, so
+`dist/` contains no readable application source.
 
 ## Layout
 
@@ -76,5 +83,6 @@ server/
 │   ├── source-map.ts   # minified frame -> source resolution
 │   ├── logger.ts       # pino logger + JSONL writer
 │   └── config.ts       # config.yml loading + zod validation
+├── rollup.config.js    # single-file build + source protection
 └── config.yml
 ```
